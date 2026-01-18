@@ -2,25 +2,25 @@
   {
     "title": "费马小定理",
     "description": "若 $p$ 为质数，且 $a$ 不被 $p$ 整除，则 $a^{p-1} \\equiv 1 \\pmod{p}$。",
-    "link": "theorems/fermat-little-theorem.html",
+    "link": "fermat-little-theorem.html",
     "tags": ["同余", "质数"]
   },
   {
     "title": "欧几里得算法",
     "description": "用于计算两个整数最大公约数（GCD）的高效方法。",
-    "link": "theorems/euclidean-algorithm.html",
+    "link": "euclidean-algorithm.html",
     "tags": ["最大公约数", "算法"]
   },
   {
     "title": "中国剩余定理",
     "description": "关于一元线性同余方程组的解。又称“孙子定理”。",
-    "link": "theorems/chinese-remainder-theorem.html",
+    "link": "chinese-remainder-theorem.html",
     "tags": ["同余"]
   },
   {
     "title": "素数的无穷性",
     "description": "由欧几里得证明的经典定理：素数的集合是无限的。$$ \\pi(x) \\to \\infty \\text{ as } x \\to \\infty $$",
-    "link": "theorems/infinitude-of-primes.html",
+    "link": "infinitude-of-primes.html",
     "tags": ["素数", "基础理论", "欧几里得"]
   }
 ]

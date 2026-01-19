@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>欧几里得算法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="article-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+        <nav><a href="../index.html">← 返回首页</a></nav>
+        <header><h1>欧几里得算法 (Euclidean Algorithm)</h1></header>
+
+        <section class="theorem-box" style="border-left: 5px solid #d32f2f; background: #fff8f8; padding: 20px; margin: 20px 0;">
+            <strong>基本原理：</strong>
+            <p>对于两个正整数 $a$ 和 $b$（假设 $a > b$），它们的最大公约数等于 $b$ 和 $a \pmod{b}$ 的最大公约数：</p>
+            $$\gcd(a, b) = \gcd(b, a \bmod b)$$
+        </section>
+
+        
+
+        <section class="content">
+            <h3>算法步骤：</h3>
+            <ol>
+                <li>计算 $r = a \bmod b$。</li>
+                <li>如果 $r = 0$，则 $b$ 即为最大公约数。</li>
+                <li>如果 $r \neq 0$，则令 $a = b, b = r$，重复步骤 1。</li>
+            </ol>
+            <h3>代码示例 (JavaScript)：</h3>
+            <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}</pre>
+        </section>
+    </div>
+</body>
+</html>

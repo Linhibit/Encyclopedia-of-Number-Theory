@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    
+    <title>素数的无穷性 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .article-container { max-width: 800px; margin: 40px auto; padding: 20px; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .theorem-box { border-left: 5px solid #d32f2f; background: #fff8f8; padding: 20px; margin: 20px 0; font-style: italic; }
+        .proof-section { line-height: 1.8; }
+        .qed { float: right; font-size: 1.2rem; }
+        nav { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="article-container">
+        <nav><a href="../index.html" style="text-decoration: none; color: #007bff;">← 返回百科首页</a></nav>
+        
+        <header>
+            <h1 style="text-align: left; border: none;">欧几里得定理：素数的无穷性</h1>
+            <p style="color: #666;">分类：素数理论 | 贡献者：百科管理员</p>
+        </header>
+
+        <section class="theorem-box">
+            <strong>定理（欧几里得）：</strong>
+            素数（质数）的个数是无穷多的。
+        </section>
+
+        
+
+        <section class="proof-section">
+            <h3>证明（反证法）：</h3>
+            <p>我们采用欧几里得在《几何原本》中使用的经典反证法：</p>
+            
+            <ol>
+                <li>假设素数的数量是有限的，设所有素数的集合为 $P = \{p_1, p_2, \dots, p_n\}$。</li>
+                <li>构造一个巨大的正整数 $Q$，它是所有已知素数的乘积加 1：
+                    $$Q = (p_1 \times p_2 \times \dots \times p_n) + 1$$
+                </li>
+                <li>现在考虑 $Q$ 的因子：
+                    <ul>
+                        <li>如果 $Q$ 是素数，那么 $Q$ 是一个不在集合 $P$ 中的新素数（因为 $Q$ 显然大于集合中任何一个素数）。</li>
+                        <li>如果 $Q$ 是合数，根据<strong>算术基本定理</strong>，它必然能分解为若干个素数的乘积。</li>
+                    </ul>
+                </li>
+                <li>关键点：由于 $Q$ 除以集合 $P$ 中的任何一个素数 $p_i$ 都会余 1，这意味着 $Q$ 的所有素因子都不在集合 $P$ 中。</li>
+                <li>无论是哪种情况，我们都找到了一个不在原假设集合 $P$ 中的新素数。</li>
+            </ol>
+
+            <p>这与“素数只有 $n$ 个”的假设矛盾。因此，素数的个数必然是无穷多的。</p>
+            <span class="qed">$\square$</span>
+        </section>
+        
+        <div style="clear: both;"></div>
+    </div>
+
+    <footer>
+        <p>© 2026 Encyclopedia of Number Theory</p>
+    </footer>
+</body>
+</html>

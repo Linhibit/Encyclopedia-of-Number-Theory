@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>欧几里得算法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html">← 返回首页</a>
+        </nav>
+        
+        <header>
+            <h1>欧几里得算法 (Euclidean Algorithm)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>基本原理：</strong>
+            <p>
+                对于两个正整数 $a$ 和 $b$（假设 $a > b$），
+                它们的最大公约数等于 $b$ 和 $a \pmod{b}$ 的最大公约数：
+            </p>
+            
+            $$\gcd(a, b) = \gcd(b, a \bmod b)$$
+        </section>
+
+        <section class="algorithm">
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>计算 $r = a \bmod b$。</li>
+                <li>
+                    如果 $r = 0$，则 $b$ 即为最大公约数，算法结束。
+                </li>
+                <li>
+                    如果 $r \neq 0$，则令 $a = b, b = r$，然后返回步骤 1。
+                </li>
+            </ol>
+            
+            <p style="margin-top: 20px; font-style: italic;">
+                <strong>注意：</strong>
+                算法假设 $a > b$，但实际上即使 $a < b$，
+                第一步计算后也会自动交换两个数的位置。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 使用递归实现
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// 使用循环实现
+function gcdIterative(a, b) {
+    while (b !== 0) {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// 示例使用
+console.log(gcd(48, 18));      // 输出: 6
+console.log(gcd(1071, 462));   // 输出: 21
+console.log(gcd(17, 13));      // 输出: 1</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                欧几里得算法的时间复杂度为 $O(\log(\min(a, b)))$，
+                是一种非常高效的计算最大公约数的方法。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

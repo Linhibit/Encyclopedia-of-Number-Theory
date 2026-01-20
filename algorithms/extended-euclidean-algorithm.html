@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>扩展欧几里得算法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html">← 返回首页</a>
+        </nav>
+        
+        <header>
+            <h1>扩展欧几里得算法 (Extended Euclidean Algorithm)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>基本原理：</strong>
+            <p>
+                对于两个整数 $a$ 和 $b$，扩展欧几里得算法在计算 $\gcd(a,b)$ 的同时，
+                还能找到满足<strong>贝祖等式</strong>的整数 $x$ 和 $y$：
+            </p>
+            
+            $$ax + by = \gcd(a, b)$$
+            
+            <p>
+                该算法是欧几里得算法的扩展，在递归计算最大公约数的过程中，
+                同时记录系数 $x$ 和 $y$ 的变化。
+            </p>
+        </section>
+
+        <section class="algorithm">
+            <h3>算法步骤（递归描述）：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>基础情况：</strong>
+                    如果 $b = 0$，则 $\gcd(a,0) = a$，且显然有 $a \times 1 + 0 \times 0 = a$。
+                    因此，此时 $x = 1$, $y = 0$。
+                </li>
+                <li>
+                    <strong>递归步骤：</strong>
+                    假设我们已经计算了 $\gcd(b, a \bmod b)$ 的解 $(x_1, y_1)$，即：
+                    $$b \times x_1 + (a \bmod b) \times y_1 = \gcd(b, a \bmod b)$$
+                </li>
+                <li>
+                    <strong>系数递推：</strong>
+                    由于 $a \bmod b = a - \lfloor a/b \rfloor \times b$，我们有：
+                    $$
+                    \begin{aligned}
+                    \gcd(a,b) &= \gcd(b, a \bmod b) \\
+                    &= b \times x_1 + (a - \lfloor a/b \rfloor \times b) \times y_1 \\
+                    &= a \times y_1 + b \times (x_1 - \lfloor a/b \rfloor \times y_1)
+                    \end{aligned}
+                    $$
+                    因此，原问题的解为：
+                    $$x = y_1, \quad y = x_1 - \lfloor a/b \rfloor \times y_1$$
+                </li>
+            </ol>
+            
+            <p style="margin-top: 20px; font-style: italic;">
+                <strong>关键点：</strong>
+                该算法的核心是在递归过程中维护系数 $x$ 和 $y$，
+                使得每次递归调用都能正确表示当前参数的贝祖等式。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 扩展欧几里得算法（递归实现）
+function extendedGcd(a, b) {
+    if (b === 0) {
+        // 基础情况：gcd(a,0) = a = a*1 + 0*0
+        return { gcd: a, x: 1, y: 0 };
+    }
+    
+    // 递归计算
+    const result = extendedGcd(b, a % b);
+    const { gcd, x: x1, y: y1 } = result;
+    
+    // 计算当前系数
+    const x = y1;
+    const y = x1 - Math.floor(a / b) * y1;
+    
+    return { gcd, x, y };
+}
+
+// 扩展欧几里得算法（循环实现）
+function extendedGcdIterative(a, b) {
+    let x = 1, y = 0;
+    let x1 = 0, y1 = 1;
+    let a1 = a, b1 = b;
+    
+    while (b1 !== 0) {
+        const q = Math.floor(a1 / b1);
+        
+        // 更新a1, b1
+        const temp = b1;
+        b1 = a1 - q * b1;
+        a1 = temp;
+        
+        // 更新x, x1
+        const tempX = x1;
+        x1 = x - q * x1;
+        x = tempX;
+        
+        // 更新y, y1
+        const tempY = y1;
+        y1 = y - q * y1;
+        y = tempY;
+    }
+    
+    return { gcd: a1, x, y };
+}
+
+// 示例使用
+console.log(extendedGcd(48, 18));      // {gcd: 6, x: -1, y: 3}
+console.log(extendedGcd(1071, 462));   // {gcd: 21, x: -7, y: 16}
+console.log(extendedGcd(17, 13));      // {gcd: 1, x: -3, y: 4}
+
+// 验证：检查是否满足 ax + by = gcd
+function verify(a, b, result) {
+    const { gcd, x, y } = result;
+    return a * x + b * y === gcd;
+}</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                <strong>应用：</strong>
+                扩展欧几里得算法在计算模逆元、求解线性同余方程 $ax \equiv 1 \pmod{m}$ 等问题中非常有用。
+                当 $\gcd(a,m) = 1$ 时，算法得到的 $x$ 就是 $a$ 在模 $m$ 下的逆元。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：计算模逆元</h3>
+            
+            <p>
+                要计算 $17$ 在模 $43$ 下的逆元，即寻找 $x$ 使得 $17x \equiv 1 \pmod{43}$。
+            </p>
+            
+            <p>
+                使用扩展欧几里得算法计算 $\gcd(43, 17)$：
+            </p>
+            
+            <pre style="background: #e8f4f8; 
+                        padding: 10px; 
+                        border-radius: 3px; 
+                        overflow-x: auto;">
+43 = 17 * 2 + 9    →   9 = 43 - 17*2
+17 = 9 * 1 + 8     →   8 = 17 - 9*1
+9 = 8 * 1 + 1      →   1 = 9 - 8*1
+8 = 1 * 8 + 0</pre>
+            
+            <p>
+                反向推导系数：
+                $$
+                \begin{aligned}
+                1 &= 9 - 8 \\
+                  &= 9 - (17 - 9) \\
+                  &= 2*9 - 17 \\
+                  &= 2*(43 - 2*17) - 17 \\
+                  &= 2*43 - 5*17
+                \end{aligned}
+                $$
+            </p>
+            
+            <p>
+                因此 $1 = 43*2 + 17*(-5)$，即 $17*(-5) \equiv 1 \pmod{43}$。
+                所以 $17$ 在模 $43$ 下的逆元为 $-5 \equiv 38 \pmod{43}$。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

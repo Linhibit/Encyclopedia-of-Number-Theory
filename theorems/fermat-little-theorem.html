@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>费马小定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="article-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+        <nav><a href="../index.html">← 返回首页</a></nav>
+        <header><h1>费马小定理 (Fermat's Little Theorem)</h1></header>
+
+        <section class="theorem-box" style="border-left: 5px solid #d32f2f; background: #fff8f8; padding: 20px; margin: 20px 0;">
+            <strong>定理内容：</strong>
+            <p>设 $p$ 为质数， $a$ 为任意整数。若 $p \nmid a$（即 $a$ 不是 $p$ 的倍数），则：</p>
+            $$a^{p-1} \equiv 1 \pmod{p}$$
+            <p>另一个更一般的形式是：对于任意整数 $a$，有 $a^p \equiv a \pmod{p}$。</p>
+        </section>
+        <section class="proof">
+            <h3>证明简述：</h3>
+            <p>考虑集合 $S = \{1, 2, 3, \dots, p-1\}$。将集合中每个元素都乘以 $a$，得到：</p>
+            $$S' = \{a, 2a, 3a, \dots, (p-1)a\} \pmod{p}$$
+            <p>由于 $\gcd(a, p) = 1$，这些元素在模 $p$ 意义下两两不同，且都不为 0。因此 $S'$ 实际上是 $S$ 的一个排列。</p>
+            <p>将两个集合的元素分别相乘：</p>
+            $$a \cdot 2a \cdot 3a \dots (p-1)a \equiv 1 \cdot 2 \cdot 3 \dots (p-1) \pmod{p}$$
+            $$a^{p-1} \cdot (p-1)! \equiv (p-1)! \pmod{p}$$
+            <p>由于 $(p-1)!$ 与 $p$ 互质，约去后得：$a^{p-1} \equiv 1 \pmod{p}$。</p>
+            <span style="float:right">$\square$</span>
+        </section>
+    </div>
+</body>
+</html>

@@ -8,7 +8,7 @@
   {
     "title": "欧几里得算法",
     "description": "用于计算两个整数最大公约数（GCD）的高效方法。",
-    "link": "theorems/euclidean-algorithm.html",
+    "link": "algorithms/euclidean-algorithm.html",
     "tags": ["最大公约数", "算法"]
   },
   {
@@ -22,6 +22,17 @@
     "description": "由欧几里得证明的经典定理：素数的集合是无限的。$$ \\pi(x) \\to \\infty \\text{ as } x \\to \\infty $$",
     "link": "theorems/infinitude-of-primes.html",
     "tags": ["素数", "基础理论", "欧几里得"]
+  },
+  {
+    "title": "扩展欧几里得算法",
+    "description": "给定整数 $a$ 和 $b$，扩展欧几里得算法不仅计算最大公约数 $\\gcd(a,b)$，还能找到满足贝祖等式 $ax + by = \\gcd(a,b)$ 的整数 $x$ 和 $y$。",
+    "link": "algorithms/extended-euclidean-algorithm.html",
+    "tags": ["最大公约数", "贝祖等式", "数论算法"]
+  },
+  {
+    "title": "贝祖定理",
+    "description": "对于任意整数 $a$ 和 $b$，存在整数 $x$ 和 $y$，使得 $ax + by = \\gcd(a, b)$。特别地，当 $a$ 和 $b$ 互质时，存在 $x, y$ 使得 $ax + by = 1$。",
+    "link": "theorems/bezout-theorem.html",
+    "tags": ["最大公约数", "整数方程", "数论基础"]
   }
 ]
-

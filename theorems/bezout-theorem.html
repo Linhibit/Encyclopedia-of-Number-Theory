@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>贝祖定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html">← 返回首页</a>
+        </nav>
+        
+        <header>
+            <h1>贝祖定理 (Bézout's Identity)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                对于任意整数 $a$ 和 $b$（不全为零），存在整数 $x$ 和 $y$，
+                使得它们的线性组合等于 $a$ 和 $b$ 的最大公约数：
+            </p>
+            
+            $$ax + by = \gcd(a, b)$$
+            
+            <p>
+                特别地，当 $a$ 和 $b$ 互质（即 $\gcd(a, b) = 1$）时，
+                存在整数 $x$ 和 $y$ 使得：
+            </p>
+            
+            $$ax + by = 1$$
+        </section>
+
+        <section class="proof">
+            <h3>证明简述：</h3>
+            
+            <p>
+                考虑由所有形如 $ax + by$ 的整数组成的集合，其中 $x$ 和 $y$ 取遍所有整数：
+            </p>
+            
+            $$S = \{ax + by \mid x, y \in \mathbb{Z}\}$$
+            
+            <p>
+                令 $d$ 为集合 $S$ 中的最小正整数元素。我们将证明 $d = \gcd(a, b)$。
+            </p>
+            
+            <p>
+                <strong>第一步：证明 $d$ 整除 $a$ 和 $b$</strong><br>
+                设 $d = ax_0 + by_0$。对任意 $a$，我们可以用带余除法写出：
+                $a = qd + r$，其中 $0 \leq r < d$。<br>
+                那么 $r = a - qd = a - q(ax_0 + by_0) = a(1 - qx_0) + b(-qy_0)$，
+                所以 $r \in S$。<br>
+                由于 $d$ 是 $S$ 中的最小正整数且 $0 \leq r < d$，必有 $r = 0$，
+                因此 $d$ 整除 $a$。同理可证 $d$ 整除 $b$。
+            </p>
+            
+            <p>
+                <strong>第二步：证明 $d$ 是最大公约数</strong><br>
+                设 $c$ 是 $a$ 和 $b$ 的任意公约数，即 $c \mid a$ 且 $c \mid b$。<br>
+                由于 $d = ax_0 + by_0$，且 $c$ 整除 $a$ 和 $b$，所以 $c$ 整除 $d$。<br>
+                因此 $d$ 是 $a$ 和 $b$ 的最大公约数。
+            </p>
+            
+            <p>
+                <strong>第三步：存在性证明</strong><br>
+                上面的证明不仅表明 $\gcd(a, b)$ 可以表示为 $a$ 和 $b$ 的线性组合，
+                而且给出了构造方法：$x_0$ 和 $y_0$ 就是满足等式的整数。
+                扩展欧几里得算法提供了计算这些系数的有效方法。
+            </p>
+            
+            <span style="float:right">$\square$</span>
+        </section>
+
+        <section class="corollary" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推论与应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>模逆元的存在性：</strong><br>
+                    如果 $\gcd(a, m) = 1$，则存在整数 $x$ 使得 $ax \equiv 1 \pmod{m}$。
+                    这个 $x$ 就是 $a$ 在模 $m$ 下的乘法逆元。
+                </li>
+                
+                <li>
+                    <strong>线性同余方程的解：</strong><br>
+                    方程 $ax \equiv b \pmod{m}$ 有解当且仅当 $\gcd(a, m) \mid b$。
+                    这是贝祖定理的直接推论。
+                </li>
+                
+                <li>
+                    <strong>互质的等价条件：</strong><br>
+                    两个整数 $a$ 和 $b$ 互质当且仅当存在整数 $x, y$ 使得 $ax + by = 1$。
+                </li>
+                
+                <li>
+                    <strong>线性丢番图方程：</strong><br>
+                    方程 $ax + by = c$ 有整数解当且仅当 $\gcd(a, b) \mid c$。
+                </li>
+            </ol>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例 1：</strong> 求 $252$ 和 $105$ 的贝祖系数<br>
+                计算 $\gcd(252, 105) = 21$，我们想找到整数 $x, y$ 使得：
+                $$252x + 105y = 21$$
+                
+                使用扩展欧几里得算法：
+                $$
+                \begin{aligned}
+                252 &= 105 \times 2 + 42 \\
+                105 &= 42 \times 2 + 21 \\
+                42 &= 21 \times 2 + 0
+                \end{aligned}
+                $$
+                
+                反向推导：
+                $$
+                \begin{aligned}
+                21 &= 105 - 42 \times 2 \\
+                   &= 105 - (252 - 105 \times 2) \times 2 \\
+                   &= 105 - 252 \times 2 + 105 \times 4 \\
+                   &= 252 \times (-2) + 105 \times 5
+                \end{aligned}
+                $$
+                
+                因此 $x = -2, y = 5$ 是一组解。
+            </p>
+            
+            <p>
+                <strong>示例 2：判断线性同余方程是否有解</strong><br>
+                考虑方程 $15x \equiv 6 \pmod{21}$。<br>
+                因为 $\gcd(15, 21) = 3$，且 $3 \mid 6$，所以方程有解。<br>
+                事实上，由贝祖定理，存在 $u, v$ 使得 $15u + 21v = 3$，
+                两边乘以 $2$ 得 $15(2u) + 21(2v) = 6$，
+                所以 $x = 2u$ 是原同余方程的一个解。
+            </p>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                贝祖定理以法国数学家<strong>艾蒂安·贝祖</strong>（Étienne Bézout, 1730-1783）命名，
+                他在研究代数曲线交点问题时提出了这一定理。虽然定理在特殊情况下已为欧几里得所知，
+                但贝祖将其推广到了更一般的情形。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

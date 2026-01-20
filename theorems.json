@@ -36,11 +36,3 @@
     "tags": ["最大公约数", "整数方程", "数论基础"]
   }
 ]
-  },
-  {
-    "title": "扩展欧几里得算法",
-    "description": "给定整数 $a$ 和 $b$，扩展欧几里得算法不仅计算最大公约数 $\\gcd(a,b)$，还能找到满足贝祖等式 $ax + by = \\gcd(a,b)$ 的整数 $x$ 和 $y$。",
-    "link": "algorithms/extended-euclidean-algorithm.html",
-    "tags": ["最大公约数", "贝祖等式", "数论算法"]
-  }
-]

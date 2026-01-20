@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>算术基本定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html">← 返回首页</a>
+        </nav>
+        
+        <header>
+            <h1>算术基本定理 (Fundamental Theorem of Arithmetic)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                任何一个大于1的自然数 $n$，都可以唯一地（不考虑顺序）分解为有限个素数的乘积：
+            </p>
+            
+            $$n = p_1^{\alpha_1} p_2^{\alpha_2} \cdots p_k^{\alpha_k}$$
+            
+            <p>
+                其中 $p_1 < p_2 < \cdots < p_k$ 是素数，
+                $\alpha_1, \alpha_2, \dots, \alpha_k$ 是正整数。
+            </p>
+            
+            <p>
+                这个分解称为 $n$ 的<strong>标准分解式</strong>或<strong>素因数分解</strong>。
+            </p>
+        </section>
+
+        <section class="proof">
+            <h3>证明简述：</h3>
+            
+            <p>
+                算术基本定理的证明包含两个部分：<strong>存在性</strong>和<strong>唯一性</strong>。
+            </p>
+            
+            <h4>第一部分：存在性（每个大于1的整数都可以分解为素数的乘积）</h4>
+            <p>
+                使用数学归纳法或最小数原理证明：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>基础：</strong>对于 $n=2$，它是素数，分解就是它自身。
+                </li>
+                <li>
+                    <strong>归纳假设：</strong>假设对于所有小于 $n$ 且大于1的整数，分解存在。
+                </li>
+                <li>
+                    <strong>归纳步骤：</strong>
+                    <ul>
+                        <li>如果 $n$ 是素数，则分解就是 $n$ 本身。</li>
+                        <li>
+                            如果 $n$ 是合数，则存在正整数 $a, b$ 满足 $1 < a, b < n$ 且 $n = ab$。
+                            由归纳假设，$a$ 和 $b$ 都可以分解为素数的乘积。
+                            将这两个分解相乘，就得到 $n$ 的一个素数分解。
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <h4>第二部分：唯一性（分解在忽略顺序意义下是唯一的）</h4>
+            <p>
+                唯一性的证明依赖于<strong>欧几里得引理</strong>：
+                如果素数 $p$ 整除 $ab$，那么 $p$ 整除 $a$ 或 $p$ 整除 $b$。
+            </p>
+            
+            <p>
+                证明思路（反证法）：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    假设 $n$ 有两个不同的素数分解：
+                    $$n = p_1 p_2 \cdots p_k = q_1 q_2 \cdots q_m$$
+                    其中所有 $p_i$ 和 $q_j$ 都是素数，且按非递减顺序排列。
+                </li>
+                <li>
+                    由欧几里得引理，$p_1$ 必整除某个 $q_j$。因为 $p_1$ 和 $q_j$ 都是素数，
+                    所以 $p_1 = q_j$。约去这个公因子后得到较小的整数，重复此过程。
+                </li>
+                <li>
+                    最终可证 $k = m$ 且对应位置的素数相等（可能有重排），因此分解唯一。
+                </li>
+            </ol>
+            
+            <p>
+                综合两部分，算术基本定理得证。
+            </p>
+            
+            <span style="float:right">$\square$</span>
+        </section>
+
+        <section class="corollary" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推论与应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>约数个数公式：</strong><br>
+                    如果 $n = p_1^{\alpha_1} p_2^{\alpha_2} \cdots p_k^{\alpha_k}$，
+                    则 $n$ 的正约数个数为：
+                    $$d(n) = (\alpha_1 + 1)(\alpha_2 + 1) \cdots (\alpha_k + 1)$$
+                </li>
+                
+                <li>
+                    <strong>约数和公式：</strong><br>
+                    $n$ 的所有正约数之和为：
+                    $$\sigma(n) = \prod_{i=1}^k \frac{p_i^{\alpha_i+1} - 1}{p_i - 1}$$
+                </li>
+                
+                <li>
+                    <strong>最大公约数与最小公倍数：</strong><br>
+                    设 $a = \prod p_i^{\alpha_i}$, $b = \prod p_i^{\beta_i}$（允许指数为0），则：
+                    $$\gcd(a,b) = \prod p_i^{\min(\alpha_i, \beta_i)}$$
+                    $$\operatorname{lcm}(a,b) = \prod p_i^{\max(\alpha_i, \beta_i)}$$
+                </li>
+                
+                <li>
+                    <strong>判断整除关系：</strong><br>
+                    $a \mid b$ 当且仅当对于每个素数 $p$，$a$ 的分解中 $p$ 的指数不超过 $b$ 的分解中 $p$ 的指数。
+                </li>
+            </ol>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例 1：分解 360</strong><br>
+                对 360 进行质因数分解：
+                $$
+                \begin{aligned}
+                360 &= 36 \times 10 \\
+                    &= (6 \times 6) \times (2 \times 5) \\
+                    &= (2 \times 3 \times 2 \times 3) \times (2 \times 5) \\
+                    &= 2^3 \times 3^2 \times 5^1
+                \end{aligned}
+                $$
+                
+                所以 $360$ 的标准分解式为 $360 = 2^3 \cdot 3^2 \cdot 5$。
+            </p>
+            
+            <p>
+                <strong>示例 2：计算约数个数和约数和</strong><br>
+                对于 $360 = 2^3 \cdot 3^2 \cdot 5$：
+                <ul>
+                    <li>约数个数：$d(360) = (3+1)(2+1)(1+1) = 4 \times 3 \times 2 = 24$</li>
+                    <li>
+                        约数和：
+                        $$
+                        \begin{aligned}
+                        \sigma(360) &= \frac{2^{3+1}-1}{2-1} \cdot \frac{3^{2+1}-1}{3-1} \cdot \frac{5^{1+1}-1}{5-1} \\
+                        &= \frac{16-1}{1} \cdot \frac{27-1}{2} \cdot \frac{25-1}{4} \\
+                        &= 15 \cdot 13 \cdot 6 = 1170
+                        \end{aligned}
+                        $$
+                    </li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>示例 3：求最大公约数和最小公倍数</strong><br>
+                设 $a = 108 = 2^2 \cdot 3^3$，$b = 360 = 2^3 \cdot 3^2 \cdot 5$：
+                <ul>
+                    <li>$\gcd(a,b) = 2^{\min(2,3)} \cdot 3^{\min(3,2)} = 2^2 \cdot 3^2 = 36$</li>
+                    <li>$\operatorname{lcm}(a,b) = 2^{\max(2,3)} \cdot 3^{\max(3,2)} \cdot 5 = 2^3 \cdot 3^3 \cdot 5 = 1080$</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                算术基本定理虽然现在被认为是数论的基础，但其完整证明直到<strong>高斯</strong>（Carl Friedrich Gauss）在1801年的《算术研究》中才首次明确给出。
+                实际上，欧几里得在《几何原本》中已经隐含地使用了这个定理的一些特例。
+            </p>
+            
+            <p>
+                需要注意的是，并非所有数系都满足唯一分解定理。
+                例如，在复整数环 $\mathbb{Z}[\sqrt{-5}]$ 中，$6 = 2 \times 3 = (1+\sqrt{-5})(1-\sqrt{-5})$，
+                有两种不同的"素数"分解，这促使了代数数论中"理想"概念的发展。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例：质因数分解算法</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// JavaScript 实现质因数分解
+function primeFactorization(n) {
+    if (n <= 1) {
+        throw new Error("输入必须大于1");
+    }
+    
+    const factors = {};
+    let temp = n;
+    
+    // 处理因子2
+    while (temp % 2 === 0) {
+        factors[2] = (factors[2] || 0) + 1;
+        temp /= 2;
+    }
+    
+    // 处理奇数因子
+    for (let i = 3; i * i <= temp; i += 2) {
+        while (temp % i === 0) {
+            factors[i] = (factors[i] || 0) + 1;
+            temp /= i;
+        }
+    }
+    
+    // 如果最后剩余的数大于1，它本身是素数
+    if (temp > 1) {
+        factors[temp] = (factors[temp] || 0) + 1;
+    }
+    
+    return factors;
+}
+
+// 格式化输出
+function formatFactorization(factors) {
+    const primes = Object.keys(factors).map(Number).sort((a, b) => a - b);
+    const parts = primes.map(p => {
+        const exp = factors[p];
+        return exp === 1 ? `${p}` : `${p}^${exp}`;
+    });
+    return parts.join(" × ");
+}
+
+// 示例使用
+console.log(primeFactorization(360));  // {2: 3, 3: 2, 5: 1}
+console.log(formatFactorization(primeFactorization(360)));  // "2^3 × 3^2 × 5"
+console.log(formatFactorization(primeFactorization(17)));   // "17"
+console.log(formatFactorization(primeFactorization(100)));  // "2^2 × 5^2"</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                该算法的时间复杂度约为 $O(\sqrt{n})$，对于大数可以使用更高效的算法（如Pollard Rho算法）。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

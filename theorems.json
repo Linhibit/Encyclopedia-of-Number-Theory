@@ -34,5 +34,11 @@
     "description": "对于任意整数 $a$ 和 $b$，存在整数 $x$ 和 $y$，使得 $ax + by = \\gcd(a, b)$。特别地，当 $a$ 和 $b$ 互质时，存在 $x, y$ 使得 $ax + by = 1$。",
     "link": "theorems/bezout-theorem.html",
     "tags": ["最大公约数", "整数方程", "数论基础"]
+  },
+  {
+    "title": "算术基本定理",
+    "description": "每个大于1的自然数都可以唯一地分解为素数的乘积（不考虑素数因子的顺序）。这一性质称为整数的唯一分解定理。",
+    "link": "theorems/fundamental-theorem-of-arithmetic.html",
+    "tags": ["质因数分解", "唯一分解", "数论基础"]
   }
 ]

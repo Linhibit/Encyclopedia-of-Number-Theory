@@ -18,9 +18,9 @@
     "tags": ["同余"]
   },
   {
-    "title": "素数的无穷性",
+    "title": "欧几里得定理",
     "description": "由欧几里得证明的经典定理：素数的集合是无限的。$$ \\pi(x) \\to \\infty \\text{ as } x \\to \\infty $$",
-    "link": "theorems/infinitude-of-primes.html",
+    "link": "theorems/euclid-theorem.html",
     "tags": ["素数", "基础理论", "欧几里得"]
   },
   {
@@ -40,5 +40,11 @@
     "description": "每个大于1的自然数都可以唯一地分解为素数的乘积（不考虑素数因子的顺序）。这一性质称为整数的唯一分解定理。",
     "link": "theorems/fundamental-theorem-of-arithmetic.html",
     "tags": ["质因数分解", "唯一分解", "数论基础"]
+  },
+  {
+    "title": "埃拉托斯特尼筛法",
+    "description": "一种用于查找不超过给定整数 $n$ 的所有素数的简单算法。通过标记合数的倍数，逐步筛选出所有素数。",
+    "link": "algorithms/sieve-of-eratosthenes.html",
+    "tags": ["素数筛选", "算法", "数论算法"]
   }
 ]

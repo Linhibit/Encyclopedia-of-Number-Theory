@@ -46,6 +46,10 @@ h1 { font-size: 2.5rem; margin-bottom: 10px; color: #1a1a1a; }
     transition: transform 0.2s;
 }
 
+/* 移除鼠标点击产生的默认蓝色轮廓，但保留键盘导航时的可见聚焦 */
+.theorem-card:focus { outline: none; }
+.theorem-card:focus-visible { outline: 3px solid rgba(33,150,243,0.25); box-shadow: 0 6px 18px rgba(33,150,243,0.08); }
+
 .theorem-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
@@ -96,4 +100,9 @@ footer { text-align: center; margin-top: 80px; color: #888; font-size: 0.9rem; }
 .back-home .icon { width: 18px; height: 18px; display: inline-block; fill: currentColor; }
 .back-home:hover { transform: translateY(-2px); background: #f0f7ff; box-shadow: 0 6px 18px rgba(11,94,219,0.08); }
 
-.theorem-card.selected { outline: 2px solid rgba(33,150,243,0.15); transform: translateY(-3px); }
+/* .theorem-card.selected {
+    outline: none;
+    border-color: rgba(33,150,243,0.12);
+    box-shadow: 0 8px 20px rgba(33,150,243,0.06);
+    transform: translateY(-3px);
+} */

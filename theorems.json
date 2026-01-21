@@ -13,9 +13,9 @@
   },
   {
     "title": "中国剩余定理",
-    "description": "关于一元线性同余方程组的解。又称“孙子定理”。",
+    "description": "给定一组两两互质的正整数 $m_1, m_2, \\dots, m_k$，对于任意整数 $a_1, a_2, \\dots, a_k$，同余方程组 $x \\equiv a_i \\pmod{m_i}$ 在模 $M = m_1 m_2 \\cdots m_k$ 下有唯一解。",
     "link": "theorems/chinese-remainder-theorem.html",
-    "tags": ["同余"]
+    "tags": ["同余方程", "模运算", "数论定理"]
   },
   {
     "title": "欧几里得定理",
@@ -46,5 +46,11 @@
     "description": "一种用于查找不超过给定整数 $n$ 的所有素数的简单算法。通过标记合数的倍数，逐步筛选出所有素数。",
     "link": "algorithms/sieve-of-eratosthenes.html",
     "tags": ["素数筛选", "算法", "数论算法"]
+  },
+  {
+    "title": "欧拉筛法",
+    "description": "一种时间复杂度为 $O(n)$ 的线性筛法，用于高效筛选素数。每个合数只被其最小质因子筛选一次，避免了重复标记。",
+    "link": "algorithms/euler-sieve.html",
+    "tags": ["线性筛法", "素数筛选", "高效算法"]
   }
 ]

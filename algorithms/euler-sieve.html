@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>欧拉筛法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>欧拉筛法 (Euler's Sieve / Linear Sieve)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                欧拉筛法，也称为线性筛法，是一种时间复杂度为 $O(n)$ 的素数筛选算法。
+                其核心思想是：<strong>每个合数只被它的最小质因子筛选一次</strong>，
+                从而避免了埃拉托斯特尼筛法中的重复标记问题。
+            </p>
+            
+            <p>
+                该算法需要维护一个素数列表，并在遍历过程中同时进行筛选和素数收集。
+            </p>
+        </section>
+
+        <section class="algorithm">
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>初始化：</strong>
+                    创建布尔数组 <code>isPrime</code>，长度为 $n+1$，全部初始化为 <code>true</code>。
+                    创建一个空列表 <code>primes</code> 用于存储找到的素数。
+                </li>
+                <li>
+                    <strong>遍历数字：</strong>
+                    从 $i = 2$ 开始遍历到 $n$：
+                    <ul>
+                        <li>
+                            如果 <code>isPrime[i]</code> 为 <code>true</code>，则 $i$ 是素数，
+                            将其加入 <code>primes</code> 列表。
+                        </li>
+                        <li>
+                            遍历当前已找到的素数列表 <code>primes</code>：
+                            <ul>
+                                <li>令当前素数为 $p$。</li>
+                                <li>如果 $i \times p > n$，则跳出循环。</li>
+                                <li>将 <code>isPrime[i × p]</code> 标记为 <code>false</code>。</li>
+                                <li>
+                                    <strong>关键步骤：</strong>
+                                    如果 $i$ 能被 $p$ 整除（即 $p \mid i$），则跳出循环。
+                                    这保证了每个合数只被其最小质因子筛选。
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>输出：</strong>
+                    遍历完成后，<code>primes</code> 列表中包含了所有不超过 $n$ 的素数。
+                </li>
+            </ol>
+            
+            <div style="background: #f0f8ff; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>关键理解：</strong>
+                <ul>
+                    <li>
+                        <strong>为什么当 $p \mid i$ 时要跳出循环？</strong><br>
+                        设 $i = p \times k$，其中 $p$ 是 $i$ 的最小质因子。
+                        如果继续用更大的素数 $q$ 去标记 $i \times q$，那么：
+                        $i \times q = (p \times k) \times q = p \times (k \times q)$，
+                        这意味着 $i \times q$ 的最小质因子是 $p$ 而不是 $q$。
+                        因此，应该由 $p$ 来标记这个合数，而不是 $q$。
+                    </li>
+                    <li>
+                        <strong>时间复杂度为何是 $O(n)$？</strong><br>
+                        每个合数只被标记一次（被其最小质因子），每个素数只被访问一次，
+                        因此总操作次数与 $n$ 成正比。
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 欧拉筛法（线性筛）
+function eulerSieve(n) {
+    // 布尔数组，表示是否为素数
+    const isPrime = new Array(n + 1).fill(true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    
+    // 素数列表
+    const primes = [];
+    
+    // 遍历所有数字
+    for (let i = 2; i <= n; i++) {
+        // 如果i是素数，加入列表
+        if (isPrime[i]) {
+            primes.push(i);
+        }
+        
+        // 遍历当前素数列表
+        for (let j = 0; j < primes.length; j++) {
+            const p = primes[j];
+            const multiple = i * p;
+            
+            // 如果超出范围，跳出循环
+            if (multiple > n) {
+                break;
+            }
+            
+            // 标记合数
+            isPrime[multiple] = false;
+            
+            // 关键：如果i能被p整除，跳出循环
+            if (i % p === 0) {
+                break;
+            }
+        }
+    }
+    
+    return primes;
+}
+
+// 优化的欧拉筛法（使用位运算思想）
+function eulerSieveOptimized(n) {
+    // 使用Uint8Array节省内存
+    const isPrime = new Uint8Array(n + 1);
+    for (let i = 2; i <= n; i++) {
+        isPrime[i] = 1;
+    }
+    
+    const primes = [];
+    
+    for (let i = 2; i <= n; i++) {
+        if (isPrime[i]) {
+            primes.push(i);
+        }
+        
+        for (let j = 0; j < primes.length; j++) {
+            const p = primes[j];
+            const multiple = i * p;
+            
+            if (multiple > n) {
+                break;
+            }
+            
+            isPrime[multiple] = 0;
+            
+            // 关键优化：确保每个合数只被最小质因子标记
+            if (i % p === 0) {
+                break;
+            }
+        }
+    }
+    
+    return primes;
+}
+
+// 示例使用
+console.log(eulerSieve(30));
+// 输出: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+
+console.log(eulerSieve(100).length);  // 输出: 25（100以内有25个素数）
+
+// 性能对比
+console.time('欧拉筛法');
+eulerSieve(1000000);
+console.timeEnd('欧拉筛法');
+
+console.time('优化欧拉筛法');
+eulerSieveOptimized(1000000);
+console.timeEnd('优化欧拉筛法');</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                <strong>算法复杂度分析：</strong>
+                <ul>
+                    <li><strong>时间复杂度：</strong>$O(n)$。每个合数只被标记一次。</li>
+                    <li><strong>空间复杂度：</strong>$O(n)$。需要存储布尔数组和素数列表。</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>欧拉筛 vs 埃氏筛</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">比较项</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">埃拉托斯特尼筛法</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">欧拉筛法</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">时间复杂度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n \log \log n)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n)$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">空间复杂度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n)$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">重复标记</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">有（如30被2、3、5重复标记）</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">无（每个合数只标记一次）</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">实现复杂度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">简单</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">中等</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">适用场景</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">中小规模数据，实现简单</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">大规模数据，需要线性时间</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>
+                <strong>关键区别：</strong><br>
+                对于合数 $n = 30 = 2 \times 3 \times 5$：
+                <ul>
+                    <li>埃氏筛会分别被 $p=2,3,5$ 标记三次（当 $p=2$ 时标记30，$p=3$ 时标记30，$p=5$ 时标记30）</li>
+                    <li>欧拉筛只会在 $i=15, p=2$ 时标记一次（因为 $15 \times 2 = 30$，且2是30的最小质因子）</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：欧拉筛法执行过程（n=20）</h3>
+            
+            <p>以下表格展示了欧拉筛法的详细执行步骤：</p>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 14px;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">$i$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$i$ 是素数?</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">素数列表</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">内层循环 ($p$)</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">标记 $i×p$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$i$ 能被 $p$ 整除?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">是，加入列表</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">[2]</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">是，跳出</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">是，加入列表</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">[2,3]</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">6</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">否</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">9</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">是，跳出</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">否</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">[2,3]</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">8</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">是，跳出</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">5</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">是，加入列表</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">[2,3,5]</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">10</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">否</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">15</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">否</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">5</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">25 > 20</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>最终得到素数列表：[2, 3, 5, 7, 11, 13, 17, 19]（省略了后续步骤）</p>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 注意事项：</h4>
+            <p>
+                1. 欧拉筛法虽然时间复杂度为 $O(n)$，但由于常数因子较大，
+                在小数据范围（如 $n < 10^6$）下可能不如优化后的埃氏筛法快。<br>
+                2. 算法需要存储素数列表，当 $n$ 很大时，素数列表会占用较多内存。<br>
+                3. 欧拉筛法不仅可以筛选素数，还可以用于计算数论函数（如欧拉函数 $\varphi(n)$、
+                莫比乌斯函数 $\mu(n)$）的值，通过稍作修改即可实现。
+            </p>
+            
+            <p>
+                <strong>扩展应用：</strong><br>
+                修改欧拉筛法，可以同时计算每个数的最小质因子、欧拉函数值等，
+                这是欧拉筛法的一个重要优势。例如，在标记合数 $i \times p$ 时，
+                我们可以同时计算该数的欧拉函数值 $\varphi(i \times p)$。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

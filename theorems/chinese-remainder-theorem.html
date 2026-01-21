@@ -4,19 +4,30 @@
     <meta charset="UTF-8">
     <title>中国剩余定理 - 数论百科</title>
     <link rel="stylesheet" href="../style.css">
+    
     <script>
-    window.MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
-        }
-    };
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
 </head>
+
 <body>
-    <div class="article-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
         <nav>
             <a href="../index.html" class="back-home" aria-label="返回首页">
                 <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -25,25 +36,326 @@
                 返回首页
             </a>
         </nav>
-        <header><h1>中国剩余定理 (Chinese Remainder Theorem)</h1></header>
+        
+        <header>
+            <h1>中国剩余定理 (Chinese Remainder Theorem, CRT)</h1>
+        </header>
 
-        <section class="theorem-box" style="border-left: 5px solid #d32f2f; background: #fff8f8; padding: 20px; margin: 20px 0;">
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
             <strong>定理内容：</strong>
-            <p>假设 $m_1, m_2, \dots, m_n$ 是两两互质的正整数。对于任意整数 $a_1, a_2, \dots, a_n$，同余方程组：</p>
-            $$ \begin{cases} x \equiv a_1 \pmod{m_1} \\ x \equiv a_2 \pmod{m_2} \\ \vdots \\ x \equiv a_n \pmod{m_n} \end{cases} $$
-            <p>在模 $M = \prod_{i=1}^n m_i$ 下有唯一解。</p>
+            <p>
+                设 $m_1, m_2, \dots, m_k$ 是两两互质的正整数，即对于 $i \neq j$，有 $\gcd(m_i, m_j) = 1$。
+            </p>
+            
+            <p>
+                考虑同余方程组：
+                $$
+                \begin{cases}
+                x \equiv a_1 \pmod{m_1} \\
+                x \equiv a_2 \pmod{m_2} \\
+                \quad \vdots \\
+                x \equiv a_k \pmod{m_k}
+                \end{cases}
+                $$
+            </p>
+            
+            <p>
+                令 $M = m_1 m_2 \cdots m_k$，$M_i = \dfrac{M}{m_i}$（即 $M_i$ 是除了 $m_i$ 外所有模数的乘积）。
+            </p>
+            
+            <p>
+                由于 $\gcd(m_i, M_i) = 1$，存在整数 $t_i$ 满足 $M_i t_i \equiv 1 \pmod{m_i}$。
+                则原方程组的解为：
+                $$x \equiv a_1 M_1 t_1 + a_2 M_2 t_2 + \cdots + a_k M_k t_k \pmod{M}$$
+            </p>
+            
+            <p>
+                这个解在模 $M$ 意义下是唯一的。
+            </p>
         </section>
 
-        
-
         <section class="proof">
-            <h3>构造性证明：</h3>
-            <p>1. 计算总乘积 $M = m_1 m_2 \dots m_n$。</p>
-            <p>2. 对于每一个 $i$，计算 $M_i = M / m_i$。</p>
-            <p>3. 找到 $M_i$ 模 $m_i$ 的数论倒数（逆元） $t_i$，使得 $M_i t_i \equiv 1 \pmod{m_i}$。</p>
-            <p>4. 最终方程组的一个解为：</p>
-            $$x = \sum_{i=1}^n a_i M_i t_i \pmod{M}$$
+            <h3>证明简述：</h3>
+            
+            <p>
+                <strong>第一步：验证构造的解满足所有同余方程</strong><br>
+                对于任意 $i$（$1 \leq i \leq k$），考虑 $x$ 模 $m_i$：
+                $$
+                x \equiv \sum_{j=1}^k a_j M_j t_j \pmod{m_i}
+                $$
+                
+                当 $j \neq i$ 时，$M_j$ 包含因子 $m_i$，所以 $M_j \equiv 0 \pmod{m_i}$。
+                因此：
+                $$
+                x \equiv a_i M_i t_i \pmod{m_i}
+                $$
+                
+                由 $t_i$ 的定义，$M_i t_i \equiv 1 \pmod{m_i}$，所以：
+                $$
+                x \equiv a_i \cdot 1 \equiv a_i \pmod{m_i}
+                $$
+            </p>
+            
+            <p>
+                <strong>第二步：证明唯一性（模 $M$ 意义下）</strong><br>
+                假设 $x_1$ 和 $x_2$ 都是方程组的解，则对于每个 $i$，有：
+                $$x_1 \equiv a_i \pmod{m_i}, \quad x_2 \equiv a_i \pmod{m_i}$$
+                
+                因此 $x_1 - x_2 \equiv 0 \pmod{m_i}$，即 $m_i \mid (x_1 - x_2)$。
+                由于 $m_1, m_2, \dots, m_k$ 两两互质，根据算术基本定理的推论，
+                有 $M \mid (x_1 - x_2)$，即 $x_1 \equiv x_2 \pmod{M}$。
+            </p>
+            
+            <p>
+                <strong>第三步：存在性</strong><br>
+                上述构造方法给出了一个解，因此解存在。
+            </p>
+            
             <span style="float:right">$\square$</span>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：解同余方程组</h3>
+            
+            <p>
+                <strong>问题：</strong> 解同余方程组
+                $$
+                \begin{cases}
+                x \equiv 2 \pmod{3} \\
+                x \equiv 3 \pmod{5} \\
+                x \equiv 2 \pmod{7}
+                \end{cases}
+                $$
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>$m_1 = 3, m_2 = 5, m_3 = 7$，两两互质。</li>
+                <li>$M = 3 \times 5 \times 7 = 105$</li>
+                <li>$M_1 = 105 / 3 = 35$，$M_2 = 105 / 5 = 21$，$M_3 = 105 / 7 = 15$</li>
+                <li>
+                    求逆元：
+                    <ul>
+                        <li>$35 t_1 \equiv 1 \pmod{3}$ → $35 \equiv 2 \pmod{3}$，所以 $2t_1 \equiv 1 \pmod{3}$，得 $t_1 = 2$</li>
+                        <li>$21 t_2 \equiv 1 \pmod{5}$ → $21 \equiv 1 \pmod{5}$，所以 $t_2 = 1$</li>
+                        <li>$15 t_3 \equiv 1 \pmod{7}$ → $15 \equiv 1 \pmod{7}$，所以 $t_3 = 1$</li>
+                    </ul>
+                </li>
+                <li>
+                    构造解：
+                    $$
+                    \begin{aligned}
+                    x &\equiv a_1 M_1 t_1 + a_2 M_2 t_2 + a_3 M_3 t_3 \pmod{105} \\
+                      &\equiv 2 \times 35 \times 2 + 3 \times 21 \times 1 + 2 \times 15 \times 1 \pmod{105} \\
+                      &\equiv 140 + 63 + 30 \pmod{105} \\
+                      &\equiv 233 \pmod{105} \\
+                      &\equiv 23 \pmod{105}
+                    \end{aligned}
+                    $$
+                </li>
+            </ol>
+            
+            <p>
+                验证：
+                <ul>
+                    <li>$23 \div 3 = 7 \cdots 2$，所以 $23 \equiv 2 \pmod{3}$</li>
+                    <li>$23 \div 5 = 4 \cdots 3$，所以 $23 \equiv 3 \pmod{5}$</li>
+                    <li>$23 \div 7 = 3 \cdots 2$，所以 $23 \equiv 2 \pmod{7}$</li>
+                </ul>
+                符合所有方程。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 扩展欧几里得算法求逆元
+function modInverse(a, m) {
+    let [old_r, r] = [a, m];
+    let [old_s, s] = [1, 0];
+    let [old_t, t] = [0, 1];
+    
+    while (r !== 0) {
+        const quotient = Math.floor(old_r / r);
+        [old_r, r] = [r, old_r - quotient * r];
+        [old_s, s] = [s, old_s - quotient * s];
+        [old_t, t] = [t, old_t - quotient * t];
+    }
+    
+    // 确保逆元是正数
+    return (old_s % m + m) % m;
+}
+
+// 中国剩余定理实现
+function chineseRemainderTheorem(congruences) {
+    // congruences: [{a: 余数, m: 模数}, ...]
+    const n = congruences.length;
+    
+    // 计算M = m1 * m2 * ... * mk
+    let M = 1;
+    for (const cong of congruences) {
+        M *= cong.m;
+    }
+    
+    let solution = 0;
+    for (const cong of congruences) {
+        const a_i = cong.a;
+        const m_i = cong.m;
+        const M_i = M / m_i;
+        
+        // 求M_i在模m_i下的逆元
+        const t_i = modInverse(M_i, m_i);
+        
+        // 累加
+        solution += a_i * M_i * t_i;
+    }
+    
+    // 取模M得到最小非负解
+    return ((solution % M) + M) % M;
+}
+
+// 示例使用
+const congruences = [
+    { a: 2, m: 3 },
+    { a: 3, m: 5 },
+    { a: 2, m: 7 }
+];
+
+const result = chineseRemainderTheorem(congruences);
+console.log(`解为: x ≡ ${result} (mod 105)`);  // 输出: 解为: x ≡ 23 (mod 105)
+
+// 验证
+console.log(`验证:`);
+for (const cong of congruences) {
+    const remainder = result % cong.m;
+    console.log(`${result} ≡ ${remainder} (mod ${cong.m})，要求 ${cong.a}，${remainder === cong.a ? '✓' : '✗'}`);
+}
+
+// 更复杂的例子
+const example2 = [
+    { a: 1, m: 2 },
+    { a: 2, m: 3 },
+    { a: 3, m: 5 },
+    { a: 4, m: 7 }
+];
+
+console.log(`第二个例子解为: ${chineseRemainderTheorem(example2)}`);</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                <strong>算法复杂度：</strong>
+                设模数的个数为 $k$，最大模数为 $m_{\text{max}}$，则：
+                <ul>
+                    <li>时间复杂度：$O(k \log m_{\text{max}})$，主要开销在于求逆元的扩展欧几里得算法。</li>
+                    <li>空间复杂度：$O(k)$，存储中间计算结果。</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>大整数表示：</strong>
+                    中国剩余定理可将大整数运算分解为多个小模数下的运算，提高计算效率。
+                </li>
+                <li>
+                    <strong>密码学：</strong>
+                    在RSA密码系统中，中国剩余定理被用于加速解密过程。
+                </li>
+                <li>
+                    <strong>计算机代数：</strong>
+                    用于多项式插值和多项式同余方程的求解。
+                </li>
+                <li>
+                    <strong>历法计算：</strong>
+                    历史上用于解决天文周期和历法推算问题。
+                </li>
+                <li>
+                    <strong>错误检测与纠正：</strong>
+                    在编码理论中，利用不同模数的同余关系检测和纠正数据传输中的错误。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                中国剩余定理最早出现在公元3-4世纪的中国数学著作<strong>《孙子算经》</strong>中，
+                提出了"物不知数"问题："今有物不知其数，三三数之剩二，五五数之剩三，七七数之剩二，问物几何？"
+                这就是中国剩余定理的经典例子。
+            </p>
+            
+            <p>
+                该定理在秦九韶的<strong>《数书九章》</strong>（1247年）中得到了系统化的阐述。
+                在欧洲，类似的结果直到18世纪才由欧拉和高斯重新发现并证明。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                定理要求模数两两互质。当模数不互质时，方程组可能有解也可能无解，
+                需要先将模数分解为互质的部分或使用其他方法。
+            </p>
+        </section>
+
+        <section class="generalization" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推广：模数不互质的情况</h3>
+            
+            <p>
+                当模数 $m_1, m_2, \dots, m_k$ 不一定两两互质时，方程组
+                $$
+                \begin{cases}
+                x \equiv a_1 \pmod{m_1} \\
+                x \equiv a_2 \pmod{m_2} \\
+                \quad \vdots
+                \end{cases}
+                $$
+                有解的充要条件是：对于所有 $i \neq j$，有
+                $$a_i \equiv a_j \pmod{\gcd(m_i, m_j)}$$
+            </p>
+            
+            <p>
+                当有解时，解在模 $\operatorname{lcm}(m_1, m_2, \dots, m_k)$ 意义下唯一。
+            </p>
         </section>
     </div>
 </body>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>欧拉定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>欧拉定理 (Euler's Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $n$ 是一个正整数，$a$ 是一个整数，且 $\gcd(a, n) = 1$（即 $a$ 与 $n$ 互质），
+                则有：
+            </p>
+            
+            $$a^{\varphi(n)} \equiv 1 \pmod{n}$$
+            
+            <p>
+                其中 $\varphi(n)$ 是欧拉函数，表示小于 $n$ 且与 $n$ 互质的正整数的个数。
+            </p>
+            
+            <p>
+                <strong>特例（费马小定理）：</strong>
+                当 $n = p$ 为质数时，$\varphi(p) = p-1$，于是有：
+                $$a^{p-1} \equiv 1 \pmod{p}$$
+                这就是费马小定理。
+            </p>
+        </section>
+
+        <section class="proof">
+            <h3>证明简述：</h3>
+            
+            <p>
+                <strong>第一步：构造互质数集合</strong><br>
+                设 $r_1, r_2, \dots, r_{\varphi(n)}$ 是小于 $n$ 且与 $n$ 互质的所有正整数。
+                这些数构成一个缩剩余系（既约剩余系）。
+            </p>
+            
+            <p>
+                <strong>第二步：构造新集合</strong><br>
+                考虑集合 $S = \{a r_1, a r_2, \dots, a r_{\varphi(n)}\}$，
+                其中每个元素都在模 $n$ 意义下考虑。
+                
+                由于 $\gcd(a, n) = 1$ 且 $\gcd(r_i, n) = 1$，所以 $\gcd(a r_i, n) = 1$。
+                另外，如果 $a r_i \equiv a r_j \pmod{n}$，则 $a(r_i - r_j) \equiv 0 \pmod{n}$。
+                由于 $\gcd(a, n) = 1$，可得 $r_i \equiv r_j \pmod{n}$，但 $r_i$ 和 $r_j$ 都小于 $n$，
+                所以 $r_i = r_j$。因此 $S$ 中的元素在模 $n$ 意义下两两不同。
+            </p>
+            
+            <p>
+                <strong>第三步：乘积比较</strong><br>
+                由于 $S$ 和 $\{r_1, r_2, \dots, r_{\varphi(n)}\}$ 在模 $n$ 意义下是相同的集合（只是顺序不同），
+                它们的乘积也相等：
+                $$(a r_1)(a r_2) \cdots (a r_{\varphi(n)}) \equiv r_1 r_2 \cdots r_{\varphi(n)} \pmod{n}$$
+            </p>
+            
+            <p>
+                <strong>第四步：化简得结论</strong><br>
+                将上式改写为：
+                $$a^{\varphi(n)} (r_1 r_2 \cdots r_{\varphi(n)}) \equiv r_1 r_2 \cdots r_{\varphi(n)} \pmod{n}$$
+                
+                由于每个 $r_i$ 都与 $n$ 互质，所以乘积 $r_1 r_2 \cdots r_{\varphi(n)}$ 也与 $n$ 互质，
+                可以在模 $n$ 意义下约去，得到：
+                $$a^{\varphi(n)} \equiv 1 \pmod{n}$$
+            </p>
+            
+            <span style="float:right">$\square$</span>
+        </section>
+
+        <section class="euler-function" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>欧拉函数 $\varphi(n)$ 的性质：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>定义：</strong>
+                    $\varphi(n) = |\{k \in \mathbb{N} : 1 \leq k \leq n, \gcd(k, n) = 1\}|$
+                </li>
+                <li>
+                    <strong>质数的欧拉函数：</strong>
+                    若 $p$ 是质数，则 $\varphi(p) = p - 1$
+                </li>
+                <li>
+                    <strong>质数幂的欧拉函数：</strong>
+                    若 $p$ 是质数，$k \geq 1$，则 $\varphi(p^k) = p^k - p^{k-1} = p^{k-1}(p - 1)$
+                </li>
+                <li>
+                    <strong>积性函数：</strong>
+                    若 $\gcd(m, n) = 1$，则 $\varphi(mn) = \varphi(m)\varphi(n)$
+                </li>
+                <li>
+                    <strong>计算公式：</strong>
+                    若 $n = p_1^{k_1} p_2^{k_2} \cdots p_r^{k_r}$ 是 $n$ 的质因数分解，则：
+                    $$\varphi(n) = n \left(1 - \frac{1}{p_1}\right)\left(1 - \frac{1}{p_2}\right) \cdots \left(1 - \frac{1}{p_r}\right)$$
+                </li>
+            </ol>
+            
+            <div style="margin-top: 15px;">
+                <strong>欧拉函数值示例：</strong>
+                <ul>
+                    <li>$\varphi(1) = 1$（特殊情况）</li>
+                    <li>$\varphi(2) = 1$（与2互质的数：1）</li>
+                    <li>$\varphi(6) = 2$（与6互质的数：1, 5）</li>
+                    <li>$\varphi(12) = 4$（与12互质的数：1, 5, 7, 11）</li>
+                    <li>$\varphi(30) = 8$（与30互质的数：1, 7, 11, 13, 17, 19, 23, 29）</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 计算欧拉函数 φ(n)
+function eulerPhi(n) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    let result = n;
+    let temp = n;
+    
+    // 试除法分解质因数
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            // p是质因子
+            while (temp % p === 0) {
+                temp /= p;
+            }
+            result -= result / p;
+        }
+    }
+    
+    // 如果还有大于1的质因子
+    if (temp > 1) {
+        result -= result / temp;
+    }
+    
+    return result;
+}
+
+// 使用欧拉定理计算模幂 a^k mod n（当gcd(a,n)=1时）
+function modularExponentiation(a, k, n) {
+    if (gcd(a, n) !== 1) {
+        throw new Error("a和n必须互质才能使用欧拉定理");
+    }
+    
+    // 计算欧拉函数值
+    const phi_n = eulerPhi(n);
+    
+    // 利用欧拉定理简化指数
+    const reduced_k = k % phi_n;
+    
+    // 使用快速幂算法计算模幂
+    return fastModularExponentiation(a, reduced_k, n);
+}
+
+// 辅助函数：最大公约数
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// 快速幂算法
+function fastModularExponentiation(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    
+    let result = 1;
+    base = base % modulus;
+    
+    while (exponent > 0) {
+        if (exponent % 2 === 1) {
+            result = (result * base) % modulus;
+        }
+        exponent = Math.floor(exponent / 2);
+        base = (base * base) % modulus;
+    }
+    
+    return result;
+}
+
+// 验证欧拉定理
+function verifyEulerTheorem(a, n) {
+    if (gcd(a, n) !== 1) {
+        return false;
+    }
+    
+    const phi_n = eulerPhi(n);
+    const left = fastModularExponentiation(a, phi_n, n);
+    
+    return left === 1;
+}
+
+// 示例使用
+console.log("欧拉函数值示例:");
+console.log(`φ(1) = ${eulerPhi(1)}`);
+console.log(`φ(6) = ${eulerPhi(6)}`);
+console.log(`φ(12) = ${eulerPhi(12)}`);
+console.log(`φ(30) = ${eulerPhi(30)}`);
+console.log(`φ(100) = ${eulerPhi(100)}`);
+
+console.log("\n欧拉定理验证:");
+console.log(`验证 7^φ(12) ≡ 1 mod 12: ${verifyEulerTheorem(7, 12)}`);
+console.log(`7^4 mod 12 = ${fastModularExponentiation(7, eulerPhi(12), 12)}`);
+
+console.log("\n使用欧拉定理计算大指数模幂:");
+// 计算 5^100 mod 13，由于gcd(5,13)=1，φ(13)=12
+// 100 mod 12 = 4，所以 5^100 mod 13 = 5^4 mod 13
+const result = modularExponentiation(5, 100, 13);
+console.log(`5^100 mod 13 = ${result}`);
+console.log(`直接计算验证: ${fastModularExponentiation(5, 100, 13)}`);</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                <strong>算法应用：</strong>
+                欧拉定理在计算大指数模幂时非常有用。当 $\gcd(a, n) = 1$ 时，
+                可以将指数对 $\varphi(n)$ 取模，大大减少计算量。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：欧拉定理的应用</h3>
+            
+            <p>
+                <strong>示例1：验证欧拉定理</strong><br>
+                取 $n = 12$，则 $\varphi(12) = 4$（与12互质的数：1, 5, 7, 11）。<br>
+                取 $a = 7$，由于 $\gcd(7, 12) = 1$，根据欧拉定理：
+                $$7^4 \equiv 1 \pmod{12}$$
+                验证：$7^2 = 49 \equiv 1 \pmod{12}$，所以 $7^4 = (7^2)^2 \equiv 1^2 = 1 \pmod{12}$。
+            </p>
+            
+            <p>
+                <strong>示例2：计算大指数模幂</strong><br>
+                计算 $3^{100} \bmod 14$。
+                <ol>
+                    <li>首先验证 $\gcd(3, 14) = 1$，可以使用欧拉定理。</li>
+                    <li>计算 $\varphi(14)$：14 = 2 × 7，所以 $\varphi(14) = 14 \times (1-\frac{1}{2}) \times (1-\frac{1}{7}) = 14 \times \frac{1}{2} \times \frac{6}{7} = 6$。</li>
+                    <li>根据欧拉定理，$3^6 \equiv 1 \pmod{14}$。</li>
+                    <li>将指数化简：$100 \div 6 = 16 \cdots 4$，所以 $100 = 6 \times 16 + 4$。</li>
+                    <li>$3^{100} = 3^{6 \times 16 + 4} = (3^6)^{16} \times 3^4 \equiv 1^{16} \times 3^4 \pmod{14}$。</li>
+                    <li>$3^4 = 81 \equiv 81 \bmod 14 = 11$。</li>
+                    <li>因此 $3^{100} \equiv 11 \pmod{14}$。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用领域：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>密码学：</strong>
+                    RSA加密算法的理论基础之一，用于密钥生成和解密过程。
+                </li>
+                <li>
+                    <strong>模幂运算优化：</strong>
+                    简化大指数模幂计算，降低计算复杂度。
+                </li>
+                <li>
+                    <strong>同余方程求解：</strong>
+                    用于求解形如 $a^x \equiv b \pmod{n}$ 的指数同余方程。
+                </li>
+                <li>
+                    <strong>数论证明：</strong>
+                    许多数论定理和性质的证明中会用到欧拉定理。
+                </li>
+                <li>
+                    <strong>循环群理论：</strong>
+                    在抽象代数中，欧拉定理说明了有限循环群的基本性质。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                欧拉定理以瑞士数学家<strong>莱昂哈德·欧拉</strong>（Leonhard Euler，1707-1783）命名。
+                欧拉在1763年证明了这一定理，它推广了费马在1640年提出的费马小定理。
+            </p>
+            
+            <p>
+                <strong>重要关系：</strong>
+                欧拉定理是费马小定理的推广。当模数 $n$ 为质数 $p$ 时，
+                $\varphi(p) = p-1$，欧拉定理退化为费马小定理。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                定理要求 $a$ 与 $n$ 互质。当 $\gcd(a, n) \neq 1$ 时，
+                结论不一定成立。例如，取 $a=2, n=4$，$\varphi(4)=2$，
+                但 $2^2 = 4 \equiv 0 \pmod{4}$，不等于1。
+            </p>
+        </section>
+
+        <section class="corollary" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推论：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>乘法逆元存在性：</strong>
+                    若 $\gcd(a, n) = 1$，则 $a$ 在模 $n$ 下有乘法逆元 $a^{-1}$，
+                    且 $a^{-1} \equiv a^{\varphi(n)-1} \pmod{n}$。
+                </li>
+                <li>
+                    <strong>简化模幂运算：</strong>
+                    若 $\gcd(a, n) = 1$，则对任意整数 $k$，有：
+                    $$a^k \equiv a^{k \bmod \varphi(n)} \pmod{n}$$
+                </li>
+                <li>
+                    <strong>广义欧拉定理：</strong>
+                    对于任意整数 $a$ 和 $n > 1$，有：
+                    $$a^{k} \equiv a^{k \bmod \varphi(n) + \varphi(n)} \pmod{n}$$
+                    对足够大的 $k$ 成立（当 $k \geq \log_2 n$ 时）。
+                </li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>

@@ -52,5 +52,11 @@
     "description": "一种时间复杂度为 $O(n)$ 的线性筛法，用于高效筛选素数。每个合数只被其最小质因子筛选一次，避免了重复标记。",
     "link": "algorithms/euler-sieve.html",
     "tags": ["线性筛法", "素数筛选", "高效算法"]
+  },
+  {
+    "title": "欧拉定理",
+    "description": "若正整数 $n$ 和整数 $a$ 互质，则 $a^{\\varphi(n)} \\equiv 1 \\pmod{n}$，其中 $\\varphi(n)$ 是欧拉函数，表示小于 $n$ 且与 $n$ 互质的正整数的个数。",
+    "link": "theorems/euler-theorem.html",
+    "tags": ["欧拉函数", "同余", "费马小定理推广"]
   }
 ]

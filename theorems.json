@@ -58,5 +58,12 @@
     "description": "若正整数 $n$ 和整数 $a$ 互质，则 $a^{\\varphi(n)} \\equiv 1 \\pmod{n}$，其中 $\\varphi(n)$ 是欧拉函数，表示小于 $n$ 且与 $n$ 互质的正整数的个数。",
     "link": "theorems/euler-theorem.html",
     "tags": ["欧拉函数", "同余", "费马小定理推广"]
+  },
+  {
+    "title": "威尔逊定理",
+    "description": "一个大于1的自然数$p$是质数的充分必要条件是$(p-1)! \\equiv -1 \\pmod{p}$。",
+    "link": "theorems/wilson-theorem.html",
+    "tags": ["质数判定", "同余", "数论定理"]
   }
 ]
+

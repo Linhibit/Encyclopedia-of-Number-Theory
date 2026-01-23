@@ -81,6 +81,13 @@ h1 { font-size: 2.5rem; margin-bottom: 10px; color: #1a1a1a; }
 
 footer { text-align: center; margin-top: 80px; color: #888; font-size: 0.9rem; }
 
+/* 已收录数量小字 */
+.entry-count {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 8px;
+}
+
 /* 返回首页按钮样式（用于文章页顶部） */
 .article-container nav { margin-bottom: 18px; }
 .back-home {

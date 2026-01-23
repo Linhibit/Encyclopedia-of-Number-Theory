@@ -156,6 +156,17 @@ function renderTheorems(theorems, highlightTokens = []) {
     const grid = document.getElementById('theoremGrid');
     grid.innerHTML = ''; // 清空加载提示
 
+    // 更新已收录数量显示（若有全量数据则显示总数与当前显示数）
+    const countEl = document.getElementById('entryCount');
+    if (countEl) {
+        const total = (window.allTheorems && Array.isArray(window.allTheorems)) ? window.allTheorems.length : theorems.length;
+        if (total !== theorems.length) {
+            countEl.textContent = `已收录 ${total} 项，显示 ${theorems.length} 项`;
+        } else {
+            countEl.textContent = `已收录 ${total} 项`;
+        }
+    }
+
     theorems.forEach((t, idx) => {
         const card = document.createElement('div');
         card.className = 'theorem-card';

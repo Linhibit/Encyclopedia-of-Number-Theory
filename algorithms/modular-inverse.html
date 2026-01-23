@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>模逆元 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>模逆元 (Modular Inverse)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定义与存在条件：</strong>
+            <p>
+                设 $a$ 和 $m$ 为整数，$m > 0$。如果存在整数 $x$ 使得：
+                $$ax \equiv 1 \pmod{m}$$
+                则称 $x$ 为 $a$ 模 $m$ 的逆元，记作 $a^{-1} \pmod{m}$。
+            </p>
+            
+            <p>
+                <strong>存在性定理：</strong>
+                $a$ 模 $m$ 的逆元存在当且仅当 $\gcd(a, m) = 1$（即 $a$ 与 $m$ 互质）。
+            </p>
+            
+            <p>
+                当逆元存在时，在模 $m$ 意义下是唯一的（通常取 $0 \leq x < m$ 的那个）。
+            </p>
+        </section>
+
+        <section class="algorithm">
+            <h3>计算方法：</h3>
+            
+            <h4>方法一：扩展欧几里得算法（通用方法）</h4>
+            <p>
+                要求 $ax \equiv 1 \pmod{m}$，等价于求方程 $ax + my = 1$ 的整数解 $x$。
+                使用扩展欧几里得算法可以求出 $\gcd(a, m)$ 以及满足 $ax + my = \gcd(a, m)$ 的 $x, y$。
+                当 $\gcd(a, m) = 1$ 时，得到的 $x$ 就是 $a$ 模 $m$ 的逆元（可能需要调整到 $0 \leq x < m$）。
+            </p>
+            
+            <h4>方法二：快速幂法（费马小定理，仅当 $m$ 为质数）</h4>
+            <p>
+                如果 $m$ 是质数，记 $m = p$，根据费马小定理：
+                $$a^{p-1} \equiv 1 \pmod{p}$$
+                因此 $a \cdot a^{p-2} \equiv 1 \pmod{p}$，即 $a$ 模 $p$ 的逆元为 $a^{p-2} \pmod{p}$。
+                使用快速幂算法可以高效计算 $a^{p-2} \bmod p$。
+            </p>
+            
+            <h4>方法三：欧拉定理（$m$ 为合数但 $a$ 与 $m$ 互质）</h4>
+            <p>
+                如果 $\gcd(a, m) = 1$，根据欧拉定理：
+                $$a^{\varphi(m)} \equiv 1 \pmod{m}$$
+                其中 $\varphi(m)$ 是欧拉函数。因此 $a$ 模 $m$ 的逆元为 $a^{\varphi(m)-1} \pmod{m}$。
+            </p>
+            
+            <div style="background: #f0f8ff; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>方法选择建议：</strong>
+                <ul>
+                    <li><strong>扩展欧几里得算法</strong>：通用，适用于任意模数 $m$（只要逆元存在），时间复杂度 $O(\log m)$。</li>
+                    <li><strong>快速幂法</strong>：仅当 $m$ 为质数时使用，时间复杂度 $O(\log m)$。</li>
+                    <li><strong>欧拉定理法</strong>：需要计算 $\varphi(m)$，通常只在 $\varphi(m)$ 容易计算时使用。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #2d2d2d; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 方法1：扩展欧几里得算法求逆元（通用）
+function modInverseExtendedEuclidean(a, m) {
+    // 扩展欧几里得算法
+    function extendedGcd(a, b) {
+        if (b === 0) {
+            return { gcd: a, x: 1, y: 0 };
+        }
+        const result = extendedGcd(b, a % b);
+        const { gcd, x: x1, y: y1 } = result;
+        const x = y1;
+        const y = x1 - Math.floor(a / b) * y1;
+        return { gcd, x, y };
+    }
+    
+    const { gcd, x } = extendedGcd(a, m);
+    
+    // 如果gcd不为1，则逆元不存在
+    if (gcd !== 1) {
+        throw new Error(`逆元不存在：gcd(${a}, ${m}) = ${gcd} ≠ 1`);
+    }
+    
+    // 调整x到[0, m)范围内
+    return ((x % m) + m) % m;
+}
+
+// 方法2：快速幂法求逆元（仅当m为质数）
+function modInverseFermat(a, m) {
+    // 快速幂算法
+    function fastPow(base, exp, mod) {
+        if (mod === 1) return 0;
+        let result = 1;
+        base = base % mod;
+        while (exp > 0) {
+            if (exp % 2 === 1) {
+                result = (result * base) % mod;
+            }
+            exp = Math.floor(exp / 2);
+            base = (base * base) % mod;
+        }
+        return result;
+    }
+    
+    // 假设m是质数，根据费马小定理
+    return fastPow(a, m - 2, m);
+}
+
+// 方法3：预计算逆元（线性求逆元，适用于求1到n的所有逆元）
+function modInverseLinear(n, mod) {
+    if (mod <= n) {
+        throw new Error("模数必须大于n");
+    }
+    
+    const inv = new Array(n + 1);
+    inv[1] = 1;
+    
+    for (let i = 2; i <= n; i++) {
+        // 公式：inv[i] = mod - mod / i * inv[mod % i] % mod
+        inv[i] = mod - Math.floor(mod / i) * inv[mod % i] % mod;
+    }
+    
+    return inv;
+}
+
+// 示例使用
+console.log("=== 扩展欧几里得算法求逆元 ===");
+console.log(`5 模 11 的逆元: ${modInverseExtendedEuclidean(5, 11)}`); // 9，因为5*9=45≡1 mod 11
+console.log(`7 模 13 的逆元: ${modInverseExtendedEuclidean(7, 13)}`); // 2，因为7*2=14≡1 mod 13
+
+try {
+    console.log(`6 模 8 的逆元: ${modInverseExtendedEuclidean(6, 8)}`);
+} catch (e) {
+    console.log(e.message); // 逆元不存在：gcd(6, 8) = 2 ≠ 1
+}
+
+console.log("\n=== 费马小定理求逆元（模为质数） ===");
+console.log(`5 模 11 的逆元: ${modInverseFermat(5, 11)}`); // 9
+console.log(`7 模 13 的逆元: ${modInverseFermat(7, 13)}`); // 2
+
+console.log("\n=== 线性求逆元（求1到5模7的逆元） ===");
+const inv = modInverseLinear(5, 7);
+for (let i = 1; i <= 5; i++) {
+    console.log(`${i} 模 7 的逆元: ${inv[i]}`);
+}
+// 输出：
+// 1 模 7 的逆元: 1
+// 2 模 7 的逆元: 4
+// 3 模 7 的逆元: 5
+// 4 模 7 的逆元: 2
+// 5 模 7 的逆元: 3
+
+// 验证线性求逆元公式：对于i=4，inv[4] = 7 - floor(7/4)*inv[7%4] % 7 = 7 - 1*inv[3] % 7 = 7 - 5 = 2</code>
+            </pre>
+            
+            <p style="margin-top: 15px;">
+                <strong>线性求逆元原理：</strong><br>
+                对于质数模数 $p$，要求 $1$ 到 $n$（$n < p$）的所有逆元，可以使用递推公式：
+                $$\text{inv}[i] = p - \lfloor p/i \rfloor \times \text{inv}[p \bmod i] \bmod p$$
+                其中 $\text{inv}[1] = 1$。该公式基于以下推导：
+                $$p = \lfloor p/i \rfloor \times i + (p \bmod i) \equiv 0 \pmod{p}$$
+                所以 $\lfloor p/i \rfloor \times i \equiv -(p \bmod i) \pmod{p}$，
+                两边乘以 $\text{inv}[i] \times \text{inv}[p \bmod i]$ 即得递推式。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：扩展欧几里得算法求逆元</strong><br>
+                求 $5$ 模 $11$ 的逆元。<br>
+                解：需要解 $5x \equiv 1 \pmod{11}$，即 $5x + 11y = 1$。<br>
+                使用扩展欧几里得算法：
+                $$
+                \begin{aligned}
+                11 &= 5 \times 2 + 1 \\
+                5 &= 1 \times 5 + 0
+                \end{aligned}
+                $$
+                回代：$1 = 11 - 5 \times 2$，所以 $x = -2$，调整到模 $11$ 下为 $-2 \equiv 9 \pmod{11}$。<br>
+                验证：$5 \times 9 = 45 \equiv 1 \pmod{11}$。
+            </p>
+            
+            <p>
+                <strong>示例2：费马小定理求逆元</strong><br>
+                求 $7$ 模 $13$ 的逆元（$13$ 是质数）。<br>
+                根据费马小定理：$7^{13-2} = 7^{11} \equiv 7^{-1} \pmod{13}$。<br>
+                计算 $7^{11} \bmod 13$：
+                $$
+                \begin{aligned}
+                7^2 &= 49 \equiv 10 \pmod{13} \\
+                7^4 &= (7^2)^2 \equiv 10^2 = 100 \equiv 9 \pmod{13} \\
+                7^8 &= (7^4)^2 \equiv 9^2 = 81 \equiv 3 \pmod{13} \\
+                7^{11} &= 7^8 \times 7^2 \times 7^1 \equiv 3 \times 10 \times 7 = 210 \equiv 2 \pmod{13}
+                \end{aligned}
+                $$
+                所以 $7^{-1} \equiv 2 \pmod{13}$。<br>
+                验证：$7 \times 2 = 14 \equiv 1 \pmod{13}$。
+            </p>
+            
+            <p>
+                <strong>示例3：线性求逆元</strong><br>
+                求 $1$ 到 $5$ 模 $7$ 的逆元（$7$ 是质数）。<br>
+                使用递推公式：
+                <ul>
+                    <li>$\text{inv}[1] = 1$</li>
+                    <li>$\text{inv}[2] = 7 - \lfloor 7/2 \rfloor \times \text{inv}[7 \bmod 2] \bmod 7 = 7 - 3 \times \text{inv}[1] = 7 - 3 = 4$</li>
+                    <li>$\text{inv}[3] = 7 - \lfloor 7/3 \rfloor \times \text{inv}[7 \bmod 3] \bmod 7 = 7 - 2 \times \text{inv}[1] = 7 - 2 = 5$</li>
+                    <li>$\text{inv}[4] = 7 - \lfloor 7/4 \rfloor \times \text{inv}[7 \bmod 4] \bmod 7 = 7 - 1 \times \text{inv}[3] = 7 - 5 = 2$</li>
+                    <li>$\text{inv}[5] = 7 - \lfloor 7/5 \rfloor \times \text{inv}[7 \bmod 5] \bmod 7 = 7 - 1 \times \text{inv}[2] = 7 - 4 = 3$</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>模除运算：</strong>
+                    在模运算中，除法 $a/b \pmod{m}$ 定义为 $a \times b^{-1} \pmod{m}$，
+                    其中 $b^{-1}$ 是 $b$ 模 $m$ 的逆元。
+                </li>
+                <li>
+                    <strong>密码学：</strong>
+                    RSA、ElGamal 等公钥密码系统中需要大量模逆元计算。
+                </li>
+                <li>
+                    <strong>组合数学：</strong>
+                    计算组合数 $C_n^k \bmod p$ 时，需要用到逆元来计算阶乘的逆元。
+                </li>
+                <li>
+                    <strong>解线性同余方程：</strong>
+                    方程 $ax \equiv b \pmod{m}$ 的解为 $x \equiv a^{-1}b \pmod{m}$（当 $\gcd(a,m)=1$）。
+                </li>
+                <li>
+                    <strong>中国剩余定理：</strong>
+                    在构造解时需要计算模逆元。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 注意：</h4>
+            <p>
+                1. 逆元存在的充要条件是 $\gcd(a, m) = 1$。如果 $\gcd(a, m) \neq 1$，则 $a$ 模 $m$ 的逆元不存在。<br>
+                2. 当模数 $m$ 为质数时，可以使用费马小定理求逆元，否则一般使用扩展欧几里得算法。<br>
+                3. 线性求逆元方法仅适用于求连续整数的逆元，且模数 $m$ 必须是质数。<br>
+                4. 在编程竞赛中，通常预处理阶乘及其逆元，以便快速计算组合数。
+            </p>
+            
+            <p>
+                <strong>扩展：</strong>
+                对于合数模数 $m$，如果 $\gcd(a, m) = 1$，逆元仍然存在，但费马小定理不再适用，
+                必须使用扩展欧几里得算法或欧拉定理法。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

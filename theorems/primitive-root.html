@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>原根 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>原根 (Primitive Root)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定义与存在性定理：</strong>
+            <p>
+                设 $n$ 是正整数，$a$ 是整数，且 $\gcd(a, n) = 1$。$a$ 模 $n$ 的<strong>阶</strong>定义为最小的正整数 $k$，使得：
+                $$a^k \equiv 1 \pmod{n}$$
+            </p>
+            
+            <p>
+                如果 $a$ 模 $n$ 的阶等于欧拉函数 $\varphi(n)$，则称 $a$ 为模 $n$ 的一个<strong>原根</strong>。
+            </p>
+            
+            <p>
+                <strong>存在性定理：</strong><br>
+                模 $n$ 有原根当且仅当 $n$ 是以下形式之一：
+                $$n = 1,\ 2,\ 4,\ p^k,\ 2p^k$$
+                其中 $p$ 是奇素数，$k$ 是正整数。
+            </p>
+            
+            <p>
+                特别地，当 $n$ 为奇素数 $p$ 时，模 $p$ 的原根总是存在的。
+            </p>
+        </section>
+
+        <section class="definition" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关概念：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>阶 (Order)：</strong>
+                    设 $\gcd(a, n) = 1$，则 $a$ 模 $n$ 的阶 $d = \operatorname{ord}_n(a)$ 是最小的正整数满足 $a^d \equiv 1 \pmod{n}$。
+                    阶的性质：
+                    <ul>
+                        <li>$a^k \equiv 1 \pmod{n}$ 当且仅当 $\operatorname{ord}_n(a) \mid k$</li>
+                        <li>$\operatorname{ord}_n(a) \mid \varphi(n)$</li>
+                        <li>若 $\operatorname{ord}_n(a) = \varphi(n)$，则 $a$ 是模 $n$ 的原根</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>循环群：</strong>
+                    若模 $n$ 有原根 $g$，则乘法群 $(\mathbb{Z}/n\mathbb{Z})^\times$ 是循环群，
+                    且 $g$ 是该循环群的一个生成元：
+                    $$(\mathbb{Z}/n\mathbb{Z})^\times = \{g^1, g^2, \dots, g^{\varphi(n)}\} \pmod{n}$$
+                </li>
+                
+                <li>
+                    <strong>指数 (Index) / 离散对数：</strong>
+                    若 $g$ 是模 $n$ 的原根，对于任意与 $n$ 互质的 $a$，存在唯一的 $k \in \{1, 2, \dots, \varphi(n)\}$，
+                    使得 $a \equiv g^k \pmod{n}$，这个 $k$ 称为 $a$ 以 $g$ 为底的<strong>指数</strong>或<strong>离散对数</strong>，记作 $\operatorname{ind}_g(a)$。
+                </li>
+            </ol>
+        </section>
+
+        <section class="properties" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>原根的性质：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>数量：</strong>
+                    如果模 $n$ 有原根，那么模 $n$ 的原根个数为 $\varphi(\varphi(n))$。
+                </li>
+                
+                <li>
+                    <strong>结构：</strong>
+                    若 $g$ 是模 $n$ 的原根，则所有模 $n$ 的原根为 $\{g^k \mid 1 \leq k \leq \varphi(n), \gcd(k, \varphi(n)) = 1\}$。
+                </li>
+                
+                <li>
+                    <strong>幂的性质：</strong>
+                    若 $g$ 是模 $n$ 的原根，则 $g^k$ 也是模 $n$ 的原根当且仅当 $\gcd(k, \varphi(n)) = 1$。
+                </li>
+                
+                <li>
+                    <strong>最小原根：</strong>
+                    模素数 $p$ 的最小原根通常很小。Artin猜想断言：对于任意非平方数 $a$，$a$ 是无穷多个素数的原根。
+                </li>
+                
+                <li>
+                    <strong>原根的阶：</strong>
+                    原根的阶总是 $\varphi(n)$，这是最大可能的阶。
+                </li>
+            </ol>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>寻找原根的算法：</h3>
+            
+            <h4>当 $n$ 为素数 $p$ 时：</h4>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>筛选候选数：</strong>
+                    通常原根很小，可以从 $a = 2$ 开始测试。
+                </li>
+                
+                <li>
+                    <strong>快速判定：</strong>
+                    对于候选数 $a$，检查对于 $\varphi(p) = p-1$ 的每个素因子 $q$，是否都有：
+                    $$a^{\frac{p-1}{q}} \not\equiv 1 \pmod{p}$$
+                    如果对于 $p-1$ 的所有素因子 $q$ 都满足上述条件，则 $a$ 是模 $p$ 的原根。
+                </li>
+                
+                <li>
+                    <strong>原理：</strong>
+                    如果 $a$ 不是原根，那么它的阶 $d$ 是 $p-1$ 的真因子，因此必然整除某个 $(p-1)/q$。
+                </li>
+            </ol>
+            
+            <h4>一般情况：</h4>
+            <p>
+                对于 $n = p^k$ 或 $2p^k$（$p$ 为奇素数）：
+                <ul>
+                    <li>先找到模 $p$ 的一个原根 $g$。</li>
+                    <li>然后检查 $g$ 或 $g+p$ 是否为模 $p^k$ 的原根。</li>
+                    <li>对于 $2p^k$，如果 $g$ 是模 $p^k$ 的原根，且 $g$ 是奇数，则 $g$ 也是模 $2p^k$ 的原根；如果 $g$ 是偶数，则 $g+p^k$ 是模 $2p^k$ 的原根。</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 快速幂算法
+function fastPow(base, exp, mod) {
+    if (mod === 1) return 0;
+    let result = 1n;
+    base = BigInt(base) % BigInt(mod);
+    let e = BigInt(exp);
+    while (e > 0n) {
+        if (e % 2n === 1n) {
+            result = (result * base) % BigInt(mod);
+        }
+        e >>= 1n;
+        base = (base * base) % BigInt(mod);
+    }
+    return Number(result);
+}
+
+// 质因数分解
+function primeFactors(n) {
+    const factors = [];
+    let temp = n;
+    
+    // 处理因子2
+    while (temp % 2 === 0) {
+        factors.push(2);
+        temp /= 2;
+    }
+    
+    // 处理奇数因子
+    for (let i = 3; i * i <= temp; i += 2) {
+        while (temp % i === 0) {
+            factors.push(i);
+            temp /= i;
+        }
+    }
+    
+    if (temp > 1) {
+        factors.push(temp);
+    }
+    
+    // 去重，返回不同的质因子
+    return [...new Set(factors)];
+}
+
+// 寻找模素数p的原根
+function findPrimitiveRoot(p) {
+    if (p <= 1) return null;
+    
+    // 特殊情况
+    if (p === 2) return 1;
+    if (p === 3) return 2;
+    if (p === 4) return 3;
+    
+    // 计算p-1的质因子
+    const phi = p - 1;
+    const factors = primeFactors(phi);
+    
+    // 从2开始测试
+    for (let a = 2; a < p; a++) {
+        let isPrimitiveRoot = true;
+        
+        // 检查对于每个质因子q，a^{(p-1)/q} ≠ 1 mod p
+        for (const q of factors) {
+            const power = fastPow(a, phi / q, p);
+            if (power === 1) {
+                isPrimitiveRoot = false;
+                break;
+            }
+        }
+        
+        if (isPrimitiveRoot) {
+            return a;
+        }
+    }
+    
+    return null; // 理论上应该不会发生
+}
+
+// 找到所有原根
+function findAllPrimitiveRoots(p) {
+    const g = findPrimitiveRoot(p);
+    if (!g) return [];
+    
+    const phi = p - 1;
+    const roots = [];
+    
+    // 所有与phi互质的k，g^k都是原根
+    for (let k = 1; k <= phi; k++) {
+        if (gcd(k, phi) === 1) {
+            roots.push(fastPow(g, k, p));
+        }
+    }
+    
+    roots.sort((a, b) => a - b);
+    return roots;
+}
+
+// 辅助函数：最大公约数
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// 示例使用
+console.log("=== 寻找模素数的原根 ===");
+console.log(`模 7 的最小原根: ${findPrimitiveRoot(7)}`); // 3
+console.log(`模 7 的所有原根: ${findAllPrimitiveRoots(7)}`); // [3, 5]
+
+console.log(`\n模 13 的最小原根: ${findPrimitiveRoot(13)}`); // 2
+console.log(`模 13 的所有原根: ${findAllPrimitiveRoots(13)}`); // [2, 6, 7, 11]
+
+console.log(`\n模 17 的最小原根: ${findPrimitiveRoot(17)}`); // 3
+console.log(`模 17 的原根数量: ${findAllPrimitiveRoots(17).length}`); // φ(16)=8
+
+// 验证原根性质
+console.log("\n=== 验证原根性质 ===");
+const p = 13;
+const g = findPrimitiveRoot(p);
+console.log(`模 ${p} 的一个原根是 ${g}`);
+console.log(`验证 ${g} 的阶是 ${p-1}:`);
+let order = 1;
+let value = g % p;
+while (value !== 1) {
+    value = (value * g) % p;
+    order++;
+}
+console.log(`ord_${p}(${g}) = ${order}, φ(${p}) = ${p-1}`);</code>
+            </pre>
+            
+            <p style="margin-top: 15px; color: #f8f8f2;">
+                <strong>算法复杂度：</strong>
+                寻找原根的主要开销在于对 $\varphi(n)$ 的每个素因子进行幂运算测试。
+                设 $\varphi(n)$ 的不同素因子个数为 $\omega(\varphi(n))$，则时间复杂度为 $O(\omega(\varphi(n)) \log n)$。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：模7的原根</strong><br>
+                对于 $p=7$，$\varphi(7)=6$，$6$ 的素因子为 $2$ 和 $3$。
+                
+                <ul>
+                    <li>测试 $a=2$：$2^{6/2}=2^3=8 \equiv 1 \pmod{7}$，所以 $2$ 不是原根。</li>
+                    <li>测试 $a=3$：$3^{6/2}=3^3=27 \equiv 6 \pmod{7}$，$3^{6/3}=3^2=9 \equiv 2 \pmod{7}$，都不等于1，所以 $3$ 是原根。</li>
+                    <li>所有原根：$\{3^k \mid 1 \leq k \leq 6, \gcd(k,6)=1\} = \{3^1=3, 3^5=243 \equiv 5 \pmod{7}\}$。</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>示例2：模15是否有原根？</strong><br>
+                由于 $15=3 \times 5$，不属于 $1,2,4,p^k,2p^k$ 的形式，所以模15没有原根。
+                实际上，$(\mathbb{Z}/15\mathbb{Z})^\times = \{1,2,4,7,8,11,13,14\}$ 不是循环群。
+            </p>
+            
+            <p>
+                <strong>示例3：离散对数的应用</strong><br>
+                设 $p=7$，取原根 $g=3$，则：
+                <ul>
+                    <li>$3^1 \equiv 3 \pmod{7}$，所以 $\operatorname{ind}_3(3) = 1$</li>
+                    <li>$3^2 \equiv 2 \pmod{7}$，所以 $\operatorname{ind}_3(2) = 2$</li>
+                    <li>$3^3 \equiv 6 \pmod{7}$，所以 $\operatorname{ind}_3(6) = 3$</li>
+                    <li>$3^4 \equiv 4 \pmod{7}$，所以 $\operatorname{ind}_3(4) = 4$</li>
+                    <li>$3^5 \equiv 5 \pmod{7}$，所以 $\operatorname{ind}_3(5) = 5$</li>
+                    <li>$3^6 \equiv 1 \pmod{7}$，所以 $\operatorname{ind}_3(1) = 6$</li>
+                </ul>
+                利用离散对数可以将乘法转换为加法：$\operatorname{ind}_g(ab) \equiv \operatorname{ind}_g(a) + \operatorname{ind}_g(b) \pmod{\varphi(p)}$。
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用领域：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>密码学：</strong>
+                    Diffie-Hellman密钥交换协议、ElGamal加密系统、数字签名算法等都基于原根和离散对数问题。
+                </li>
+                
+                <li>
+                    <strong>数论变换：</strong>
+                    在快速傅里叶变换的离散版本中，原根可用于构造数论变换，用于整数卷积计算。
+                </li>
+                
+                <li>
+                    <strong>随机数生成：</strong>
+                    原根可用于构造伪随机数生成器。
+                </li>
+                
+                <li>
+                    <strong>编码理论：</strong>
+                    在纠错码和循环码的构造中应用。
+                </li>
+                
+                <li>
+                    <strong>计算数论：</strong>
+                    利用原根的离散对数表可以加速模运算。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>离散对数问题 (DLP)：</strong><br>
+                给定素数 $p$，原根 $g$，和 $h = g^x \pmod{p}$，求 $x$。
+                这是一个计算困难问题，是许多公钥密码系统安全性的基础。
+            </p>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                原根的概念可以追溯到欧拉和高斯的工作。高斯在《算术研究》中系统研究了原根的性质，
+                证明了对于奇素数 $p$，模 $p$ 的原根总是存在的。
+            </p>
+            
+            <p>
+                <strong>未解决问题：</strong>
+                <ul>
+                    <li>
+                        <strong>Artin猜想：</strong>
+                        对于任意非平方数 $a$，$a$ 是无穷多个素数的原根。这尚未被完全证明。
+                    </li>
+                    <li>
+                        <strong>最小原根的上界：</strong>
+                        对于充分大的素数 $p$，最小原根的上界估计是数论中的重要问题。
+                    </li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>实际应用注意事项：</strong>
+                <ul>
+                    <li>在密码学中，通常选择大素数 $p$ 和它的一个原根 $g$。</li>
+                    <li>离散对数问题的难度依赖于群的阶和结构，使用原根可以确保群是循环群，阶为 $p-1$。</li>
+                    <li>对于某些特殊形式的素数（如安全素数 $p=2q+1$，其中 $q$ 也是素数），原根更容易找到。</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="corollary" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关定理：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>欧拉定理：</strong>
+                    若 $\gcd(a, n) = 1$，则 $a^{\varphi(n)} \equiv 1 \pmod{n}$。
+                </li>
+                
+                <li>
+                    <strong>费马小定理：</strong>
+                    若 $p$ 是素数，$\gcd(a, p) = 1$，则 $a^{p-1} \equiv 1 \pmod{p}$。
+                </li>
+                
+                <li>
+                    <strong>拉格朗日定理：</strong>
+                    有限群的子群的阶整除群的阶。应用于乘法群，得到阶整除 $\varphi(n)$。
+                </li>
+                
+                <li>
+                    <strong>中国剩余定理：</strong>
+                    可用于从模 $p^k$ 的原根构造模 $2p^k$ 的原根。
+                </li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>

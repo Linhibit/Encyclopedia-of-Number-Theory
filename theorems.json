@@ -52,5 +52,17 @@
     "description": "一种时间复杂度为 $O(n)$ 的线性筛法，用于高效筛选素数。每个合数只被其最小质因子筛选一次，避免了重复标记。",
     "link": "algorithms/euler-sieve.html",
     "tags": ["线性筛法", "素数筛选", "高效算法"]
+  },
+  {
+    "title": "模逆元",
+    "description": "在模运算中，若整数 $a$ 与模数 $m$ 互质，则存在整数 $x$ 使得 $ax \\equiv 1 \\pmod{m}$，$x$ 称为 $a$ 模 $m$ 的逆元，记作 $a^{-1}$。",
+    "link": "algorithms/modular-inverse.html",
+    "tags": ["模运算", "逆元", "扩展欧几里得算法", "费马小定理"]
+  },
+  {
+    "title": "原根",
+    "description": "对于正整数$n$，若整数$a$模$n$的阶等于欧拉函数$\\varphi(n)$，则称$a$为模$n$的一个原根。原根的存在性为：模$n$有原根当且仅当$n=1,2,4,p^k,2p^k$，其中$p$为奇素数。",
+    "link": "theorems/primitive-root.html",
+    "tags": ["原根", "阶", "欧拉函数", "循环群", "离散对数"]
   }
 ]

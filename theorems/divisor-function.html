@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>除数函数公式 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>除数函数公式 (Divisor Function Formulas)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $n$ 是一个正整数，其素因数分解为：
+                $$n = p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k}$$
+                其中 $p_i$ 是互不相同的素数，$a_i$ 是正整数。
+            </p>
+            
+            <p>
+                <strong>除数函数 $d(n)$</strong>（约数个数函数）定义为 $n$ 的正约数的个数，计算公式为：
+                $$d(n) = (a_1 + 1)(a_2 + 1) \cdots (a_k + 1) = \prod_{i=1}^k (a_i + 1)$$
+            </p>
+            
+            <p>
+                <strong>除数和函数 $\sigma(n)$</strong> 定义为 $n$ 的所有正约数之和，计算公式为：
+                $$\sigma(n) = \prod_{i=1}^k \frac{p_i^{a_i+1} - 1}{p_i - 1} = \prod_{i=1}^k (1 + p_i + p_i^2 + \cdots + p_i^{a_i})$$
+            </p>
+            
+            <p>
+                更一般地，<strong>除数函数 $\sigma_x(n)$</strong> 定义为 $n$ 的所有正约数的 $x$ 次幂之和：
+                $$\sigma_x(n) = \prod_{i=1}^k \frac{p_i^{(a_i+1)x} - 1}{p_i^x - 1} \quad (\text{当 } x \neq 0)$$
+                当 $x=0$ 时，$\sigma_0(n) = d(n)$；当 $x=1$ 时，$\sigma_1(n) = \sigma(n)$。
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思路：</h3>
+            
+            <h4>1. $d(n)$ 公式的证明：</h4>
+            <p>
+                $n$ 的任意正约数 $m$ 可以唯一地表示为：
+                $$m = p_1^{b_1} p_2^{b_2} \cdots p_k^{b_k}$$
+                其中 $0 \leq b_i \leq a_i$。每个 $b_i$ 有 $a_i + 1$ 种选择（从 $0$ 到 $a_i$），
+                且不同选择给出不同的约数。因此总约数个数为：
+                $$d(n) = (a_1 + 1)(a_2 + 1) \cdots (a_k + 1)$$
+            </p>
+            
+            <h4>2. $\sigma(n)$ 公式的证明：</h4>
+            <p>
+                考虑乘积：
+                $$(1 + p_1 + p_1^2 + \cdots + p_1^{a_1}) \times (1 + p_2 + p_2^2 + \cdots + p_2^{a_2}) \times \cdots \times (1 + p_k + p_k^2 + \cdots + p_k^{a_k})$$
+                
+                展开这个乘积，每一项的形式为 $p_1^{b_1} p_2^{b_2} \cdots p_k^{b_k}$，
+                其中 $0 \leq b_i \leq a_i$，这正好是 $n$ 的一个正约数。
+                因此乘积等于所有正约数之和，即 $\sigma(n)$。
+                
+                而每个括号内是等比数列，其和为 $\frac{p_i^{a_i+1} - 1}{p_i - 1}$，因此：
+                $$\sigma(n) = \prod_{i=1}^k \frac{p_i^{a_i+1} - 1}{p_i - 1}$$
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 计算 $n = 360$ 的约数个数和约数和。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>分解质因数：$360 = 2^3 \times 3^2 \times 5$</li>
+                    <li>约数个数：$d(360) = (3+1) \times (2+1) \times (1+1) = 4 \times 3 \times 2 = 24$</li>
+                    <li>约数和：
+                        $$\sigma(360) = \frac{2^{4}-1}{2-1} \times \frac{3^{3}-1}{3-1} \times \frac{5^{2}-1}{5-1} = \frac{16-1}{1} \times \frac{27-1}{2} \times \frac{25-1}{4} = 15 \times 13 \times 6 = 1170$$
+                    </li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 求所有正约数之和为 $72$ 的最小正整数 $n$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                我们需要解 $\sigma(n) = 72$。尝试小的 $n$：
+                <ul>
+                    <li>$\sigma(30) = \sigma(2 \times 3 \times 5) = 3 \times 4 \times 6 = 72$</li>
+                </ul>
+                所以 $n = 30$ 是一个解。验证：$30 = 2 \times 3 \times 5$，其正约数有 $1,2,3,5,6,10,15,30$，和为 $1+2+3+5+6+10+15+30=72$。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 完全数：一个正整数等于它的所有真约数（除了自身以外的约数）之和，即 $\sigma(n) = 2n$。
+                例如 $6 = 1+2+3$，$28 = 1+2+4+7+14$。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 质因数分解
+function primeFactorization(n) {
+    const factors = {};
+    let temp = n;
+    
+    // 处理因子2
+    while (temp % 2 === 0) {
+        factors[2] = (factors[2] || 0) + 1;
+        temp /= 2;
+    }
+    
+    // 处理奇数因子
+    for (let i = 3; i * i <= temp; i += 2) {
+        while (temp % i === 0) {
+            factors[i] = (factors[i] || 0) + 1;
+            temp /= i;
+        }
+    }
+    
+    // 如果还有剩余的大于1的因子
+    if (temp > 1) {
+        factors[temp] = (factors[temp] || 0) + 1;
+    }
+    
+    return factors;
+}
+
+// 计算约数个数 d(n)
+function divisorCount(n) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    const factors = primeFactorization(n);
+    let count = 1;
+    
+    for (const exponent of Object.values(factors)) {
+        count *= (exponent + 1);
+    }
+    
+    return count;
+}
+
+// 计算约数和 σ(n)
+function divisorSum(n) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    const factors = primeFactorization(n);
+    let sum = 1;
+    
+    for (const [prime, exponent] of Object.entries(factors)) {
+        const p = Number(prime);
+        const a = exponent;
+        
+        // 计算 (p^(a+1) - 1) / (p - 1)
+        let term = 1;
+        let power = 1;
+        for (let i = 0; i <= a; i++) {
+            term += power;
+            power *= p;
+        }
+        term -= 1; // 因为初始 term=1，所以需要减去1
+        
+        // 使用公式 (p^(a+1)-1)/(p-1) 避免大数计算
+        // 注意：当a较大时，p^(a+1)可能溢出，这里使用BigInt
+        const numerator = BigInt(p) ** BigInt(a + 1) - 1n;
+        const denominator = BigInt(p) - 1n;
+        term = Number(numerator / denominator);
+        
+        sum *= term;
+    }
+    
+    return sum;
+}
+
+// 计算 σ_x(n)：约数的x次幂之和
+function divisorFunction(n, x) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    const factors = primeFactorization(n);
+    let result = 1;
+    
+    if (x === 0) {
+        // σ_0(n) = d(n)
+        return divisorCount(n);
+    }
+    
+    for (const [prime, exponent] of Object.entries(factors)) {
+        const p = Number(prime);
+        const a = exponent;
+        
+        if (x === 1) {
+            // 使用约数和的简化公式
+            const numerator = BigInt(p) ** BigInt(a + 1) - 1n;
+            const denominator = BigInt(p) - 1n;
+            result *= Number(numerator / denominator);
+        } else {
+            // 一般公式：σ_x(n) = ∏ (p_i^{(a_i+1)x} - 1) / (p_i^x - 1)
+            const p_x = Math.pow(p, x);
+            if (Math.abs(p_x - 1) < 1e-10) {
+                // 当 p^x ≈ 1 时，公式退化为 a+1
+                result *= (a + 1);
+            } else {
+                const numerator = Math.pow(p, (a + 1) * x) - 1;
+                const denominator = p_x - 1;
+                result *= (numerator / denominator);
+            }
+        }
+    }
+    
+    return result;
+}
+
+// 示例使用
+console.log("=== 除数函数计算 ===");
+
+// 计算 360 的约数个数和约数和
+const n = 360;
+console.log(`n = ${n}`);
+console.log(`质因数分解: ${JSON.stringify(primeFactorization(n))}`);
+console.log(`约数个数 d(${n}) = ${divisorCount(n)}`);
+console.log(`约数和 σ(${n}) = ${divisorSum(n)}`);
+
+// 验证一些完全数
+console.log("\n=== 完全数验证 ===");
+const perfectNumbers = [6, 28, 496, 8128];
+for (const num of perfectNumbers) {
+    const sum = divisorSum(num);
+    console.log(`σ(${num}) = ${sum}, 2×${num} = ${2*num}, ${sum === 2*num ? '是完全数 ✓' : '不是完全数 ✗'}`);
+}
+
+// 计算前20个数的约数个数
+console.log("\n=== 前20个正整数的约数个数 ===");
+for (let i = 1; i <= 20; i++) {
+    const count = divisorCount(i);
+    process.stdout.write(`d(${i})=${count}\t`);
+    if (i % 5 === 0) console.log();
+}
+
+// 寻找亲和数对：两个数中，每一个数的所有约数之和等于另一个数
+console.log("\n=== 寻找亲和数对 ===");
+function findAmicablePairs(limit) {
+    const pairs = [];
+    const sumCache = new Array(limit + 1).fill(0);
+    
+    for (let i = 1; i <= limit; i++) {
+        sumCache[i] = divisorSum(i);
+    }
+    
+    for (let a = 2; a <= limit; a++) {
+        const b = sumCache[a];
+        if (b > a && b <= limit && sumCache[b] === a) {
+            pairs.push([a, b]);
+        }
+    }
+    
+    return pairs;
+}
+
+const amicablePairs = findAmicablePairs(10000);
+console.log(`10000以内的亲和数对:`);
+for (const [a, b] of amicablePairs) {
+    console.log(`(${a}, ${b})：σ(${a})=${divisorSum(a)}, σ(${b})=${divisorSum(b)}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>完全数：</strong>
+                    满足 $\sigma(n) = 2n$ 的数，如 $6, 28, 496, 8128$。
+                </li>
+                
+                <li>
+                    <strong>亲和数：</strong>
+                    两个数 $m, n$ 满足 $\sigma(m) = \sigma(n) = m + n$，如 $(220, 284)$。
+                </li>
+                
+                <li>
+                    <strong>盈数和亏数：</strong>
+                    $\sigma(n) > 2n$ 称为盈数，$\sigma(n) < 2n$ 称为亏数。
+                </li>
+                
+                <li>
+                    <strong>数论函数研究：</strong>
+                    除数函数是乘性数论函数的典型例子。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    某些加密算法中需要计算大数的约数个数。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 注意：</h4>
+            <p>
+                1. 除数函数 $d(n)$ 和 $\sigma(n)$ 都是乘性函数：如果 $\gcd(m, n) = 1$，则 $d(mn) = d(m)d(n)$，$\sigma(mn) = \sigma(m)\sigma(n)$。<br>
+                2. 计算大数的约数个数时，只需要质因数分解，不需要列出所有约数。<br>
+                3. 完全数的欧几里得-欧拉定理：偶完全数可以表示为 $2^{p-1}(2^p - 1)$，其中 $2^p - 1$ 是梅森素数。<br>
+                4. 奇完全数是否存在是数论中著名的未解决问题。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

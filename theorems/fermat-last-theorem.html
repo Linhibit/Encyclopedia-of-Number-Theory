@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>费马大定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>费马大定理 (Fermat's Last Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                当整数 $n > 2$ 时，关于 $x, y, z$ 的不定方程：
+                $$x^n + y^n = z^n$$
+                没有正整数解。
+            </p>
+            
+            <p>
+                即：不存在正整数 $x, y, z$ 满足 $x^n + y^n = z^n$（$n > 2$）。
+            </p>
+            
+            <p>
+                <strong>特例：</strong>
+                <ul>
+                    <li>当 $n = 1$ 时，方程 $x + y = z$ 显然有无穷多组正整数解。</li>
+                    <li>当 $n = 2$ 时，方程 $x^2 + y^2 = z^2$ 有无穷多组正整数解，即勾股数。</li>
+                    <li>当 $n > 2$ 时，费马断言没有正整数解，这就是费马大定理。</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>费马的原注：</strong><br>
+                "我发现了一个真正奇妙的证明，但这里的空白太小，写不下。"
+                （"Cujus rei demonstrationem mirabilem sane detexi. Hanc marginis exiguitas non caperet."）
+            </p>
+        </section>
+
+        <section class="history" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>历史背景：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>提出：</strong>
+                    1637年，法国数学家皮埃尔·德·费马在阅读丢番图的《算术》时，
+                    在书页边写下了这个猜想，并留下了那段著名的批注。
+                </li>
+                
+                <li>
+                    <strong>费马死后：</strong>
+                    费马的儿子在整理父亲遗物时发现了这个批注，并于1670年将其公之于世。
+                </li>
+                
+                <li>
+                    <strong>特殊情况的证明：</strong>
+                    <ul>
+                        <li>费马本人证明了 $n = 4$ 的情况。</li>
+                        <li>欧拉证明了 $n = 3$ 的情况（证明有缺陷，后来被修正）。</li>
+                        <li>1825年，狄利克雷和勒让德独立证明了 $n = 5$ 的情况。</li>
+                        <li>1839年，拉梅证明了 $n = 7$ 的情况。</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>重大突破：</strong>
+                    1847年，库默尔引入了理想数的概念，证明了对于所有<strong>正则素数</strong> $p$，
+                    费马方程 $x^p + y^p = z^p$ 无正整数解。
+                </li>
+                
+                <li>
+                    <strong>最终证明：</strong>
+                    1995年，英国数学家安德鲁·怀尔斯（Andrew Wiles）在《数学年刊》上发表了完整的证明，
+                    终结了这个长达358年的数学难题。
+                </li>
+            </ol>
+        </section>
+
+        <section class="proof-outline" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>怀尔斯证明概述：</h3>
+            
+            <p>
+                怀尔斯的证明使用了现代数论中极其深奥的工具，主要步骤包括：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>联系椭圆曲线：</strong>
+                    假设费马方程有解 $(a, b, c)$，构造一个特殊的椭圆曲线（弗雷曲线）：
+                    $$y^2 = x(x - a^n)(x + b^n)$$
+                </li>
+                
+                <li>
+                    <strong>谷山-志村猜想：</strong>
+                    证明这条椭圆曲线是模形式（即具有高度对称性的复解析函数）。
+                    谷山-志村猜想断言：所有有理数域上的椭圆曲线都是模的。
+                </li>
+                
+                <li>
+                    <strong>里贝特定理：</strong>
+                    里贝特证明了：如果费马方程有解，那么对应的弗雷曲线不是模形式。
+                </li>
+                
+                <li>
+                    <strong>怀尔斯的贡献：</strong>
+                    怀尔斯（与泰勒合作）证明了谷山-志村猜想对于半稳定椭圆曲线成立，
+                    而弗雷曲线如果是存在的，就是半稳定的。
+                </li>
+                
+                <li>
+                    <strong>矛盾：</strong>
+                    如果费马方程有解，则弗雷曲线既是模形式（由谷山-志村猜想）又不是模形式（由里贝特定理），矛盾。
+                    因此费马方程无解。
+                </li>
+            </ol>
+            
+            <p>
+                怀尔斯的证明长达100多页，使用了20世纪数论几乎所有的重要成果，
+                包括模形式、伽罗瓦表示、岩沢理论等。
+            </p>
+        </section>
+
+        <section class="special-cases" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>特殊情况的初等证明：</h3>
+            
+            <h4>1. $n = 4$ 的情况（费马的证明）</h4>
+            <p>
+                费马使用了他发明的<strong>无穷递降法</strong>。
+            </p>
+            
+            <p>
+                <strong>证明思路：</strong>
+                <ol>
+                    <li>假设存在正整数解 $(x, y, z)$ 满足 $x^4 + y^4 = z^4$。</li>
+                    <li>令 $X = x^2, Y = y^2, Z = z^2$，则 $X^2 + Y^2 = Z^2$，即 $(X, Y, Z)$ 是勾股数。</li>
+                    <li>由勾股数公式，存在互质的 $m, n$ 使得 $X = m^2 - n^2, Y = 2mn, Z = m^2 + n^2$（或交换 $X, Y$）。</li>
+                    <li>由于 $X = x^2$ 是完全平方数，可以推出存在更小的正整数解。</li>
+                    <li>无穷递降导致矛盾，因此无解。</li>
+                </ol>
+            </p>
+            
+            <h4>2. $n = 3$ 的情况（欧拉的证明）</h4>
+            <p>
+                欧拉的证明使用了形如 $a + b\sqrt{-3}$ 的复整数，但最初证明有漏洞，
+                后来由其他数学家补全。
+            </p>
+            
+            <p>
+                关键思想：在环 $\mathbb{Z}[\omega]$ 中（其中 $\omega = \frac{-1+\sqrt{-3}}{2}$ 是三次单位根），
+                利用唯一分解性质证明方程 $x^3 + y^3 = z^3$ 无解。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 费马大定理验证（小范围暴力搜索）
+// 注意：这只能验证小范围的数，不能作为证明
+function fermatLastTheoremCheck(n, limit) {
+    console.log(`检查 n=${n}, x,y,z ≤ ${limit}:`);
+    
+    let counter = 0;
+    const solutions = [];
+    
+    // 暴力搜索，但需要优化以避免过多循环
+    for (let x = 1; x <= limit; x++) {
+        const xn = Math.pow(x, n);
+        if (xn > Math.pow(limit, n) * 2) break; // 优化：如果x^n已经太大
+        
+        for (let y = x; y <= limit; y++) { // 令 y ≥ x 以避免重复
+            const yn = Math.pow(y, n);
+            const sum = xn + yn;
+            
+            // 检查sum是否是某个整数的n次幂
+            const z = Math.round(Math.pow(sum, 1/n));
+            
+            if (z <= limit && Math.abs(Math.pow(z, n) - sum) < 1e-10) {
+                solutions.push([x, y, z]);
+                counter++;
+            }
+        }
+    }
+    
+    if (solutions.length === 0) {
+        console.log(`  在范围 ${limit} 内未找到解`);
+    } else {
+        console.log(`  找到 ${solutions.length} 个解:`);
+        for (const [x, y, z] of solutions) {
+            console.log(`  ${x}^${n} + ${y}^${n} = ${z}^${n}`);
+            console.log(`  ${Math.pow(x, n)} + ${Math.pow(y, n)} = ${Math.pow(z, n)}`);
+        }
+    }
+    
+    return solutions;
+}
+
+// 验证n=2的情况（应找到许多勾股数）
+console.log("=== 验证 n=2 (勾股数) ===");
+const pythagoreanTriples = fermatLastTheoremCheck(2, 50);
+console.log(`共找到 ${pythagoreanTriples.length} 组勾股数`);
+
+// 验证n=3的情况（应无解）
+console.log("\n=== 验证 n=3 ===");
+const n3solutions = fermatLastTheoremCheck(3, 100);
+console.log(`结论: ${n3solutions.length === 0 ? '在范围内无解，符合费马大定理' : '找到解！'}`);
+
+// 验证n=4的情况（应无解）
+console.log("\n=== 验证 n=4 ===");
+const n4solutions = fermatLastTheoremCheck(4, 50);
+console.log(`结论: ${n4solutions.length === 0 ? '在范围内无解，符合费马大定理' : '找到解！'}`);
+
+// 验证n=5的情况（应无解）
+console.log("\n=== 验证 n=5 ===");
+const n5solutions = fermatLastTheoremCheck(5, 30);
+console.log(`结论: ${n5solutions.length === 0 ? '在范围内无解，符合费马大定理' : '找到解！'}`);
+
+// 费马大定理的等价形式
+console.log("\n=== 费马大定理的等价形式 ===");
+console.log("1. 对于任何奇素数p，方程 x^p + y^p = z^p 无正整数解。");
+console.log("2. 方程 x^4 + y^4 = z^4 无正整数解（费马本人证明）。");
+console.log("3. 方程 x^n + y^n = z^n 对于n>2无正整数解。");
+
+// 费马大定理的相关猜想
+console.log("\n=== 相关猜想 ===");
+console.log("1. 欧拉猜想：对于n>2，方程 x1^n + x2^n + ... + x_{n-1}^n = z^n 无正整数解。");
+console.log("   但被推翻：例如 27^5 + 84^5 + 110^5 + 133^5 = 144^5 (1966年发现)。");
+console.log("2. 比尔猜想：若 a^x + b^y = c^z，且a,b,c互质，则x,y,z不能全大于2。");
+console.log("   仍未解决，悬赏100万美元。");
+
+// 计算费马数：F_n = 2^(2^n) + 1
+console.log("\n=== 费马数 ===");
+console.log("费马曾猜想所有形如 F_n = 2^(2^n) + 1 的数都是素数。");
+console.log("但后来发现：");
+console.log("F0 = 3 (素数)");
+console.log("F1 = 5 (素数)");
+console.log("F2 = 17 (素数)");
+console.log("F3 = 257 (素数)");
+console.log("F4 = 65537 (素数)");
+console.log("F5 = 4294967297 = 641 × 6700417 (合数，欧拉证明)");
+console.log("目前已知的费马素数只有以上5个。");
+
+// 费马大定理在数学中的意义
+console.log("\n=== 费马大定理的意义 ===");
+console.log("1. 促进了数论的发展，特别是代数数论和模形式理论。");
+console.log("2. 谷山-志村猜想的证明连接了椭圆曲线和模形式两个重要领域。");
+console.log("3. 展示了数学中不同分支之间的深刻联系。");
+console.log("4. 激励了无数数学家的工作，推动了数学的进步。");
+
+// 比尔猜想的简单验证（小范围）
+console.log("\n=== 比尔猜想的小范围验证 ===");
+function bealConjectureCheck(limit) {
+    const solutions = [];
+    
+    for (let a = 2; a <= limit; a++) {
+        for (let b = 2; b <= limit; b++) {
+            if (gcd(a, b) !== 1) continue;
+            
+            const a2 = a * a;
+            const b2 = b * b;
+            const sum = a2 + b2;
+            
+            // 检查sum是否是完全平方数
+            const c = Math.round(Math.sqrt(sum));
+            if (c * c === sum && gcd(gcd(a, b), c) === 1) {
+                solutions.push([a, b, c, 2, 2, 2]);
+            }
+        }
+    }
+    
+    return solutions;
+}
+
+const bealSolutions = bealConjectureCheck(20);
+console.log(`比尔猜想：若a^x + b^y = c^z，且a,b,c互质，则x,y,z不能全大于2。`);
+console.log(`在a,b≤20范围内，找到${bealSolutions.length}组互质的解，但指数都是2:`);
+for (const [a, b, c, x, y, z] of bealSolutions.slice(0, 5)) {
+    console.log(`  ${a}^${x} + ${b}^${y} = ${c}^${z} (${a**x} + ${b**y} = ${c**z})`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="significance" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>数学意义与影响：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>推动了代数数论的发展：</strong>
+                    为了证明费马大定理，库默尔发展了理想数理论，这是现代代数数论的基础。
+                </li>
+                
+                <li>
+                    <strong>连接不同数学分支：</strong>
+                    怀尔斯的证明将椭圆曲线、模形式、伽罗瓦表示等看似不相关的领域联系起来。
+                </li>
+                
+                <li>
+                    <strong>证明了谷山-志村猜想：</strong>
+                    这是20世纪数论最重大的成就之一，有深远的影响。
+                </li>
+                
+                <li>
+                    <strong>激励了数学研究：</strong>
+                    费马大定理被称为"会下金蛋的鹅"，在试图证明它的过程中，
+                    数学家发展了许多新的数学理论和工具。
+                </li>
+                
+                <li>
+                    <strong>公众对数学的兴趣：</strong>
+                    怀尔斯证明费马大定理的消息登上了全球各大媒体的头条，
+                    激发了公众对数学的兴趣。
+                </li>
+            </ol>
+        </section>
+
+        <section class="trivia" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 趣闻轶事：</h4>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>费马的"真正奇妙的证明"：</strong>
+                    大多数学者认为费马当时可能以为自己有了证明，但那个证明可能有误。
+                    以17世纪的数学工具，不太可能证明这个定理。
+                </li>
+                
+                <li>
+                    <strong>沃尔夫斯凯尔奖：</strong>
+                    1908年，德国实业家沃尔夫斯凯尔设立10万马克的奖金，
+                    奖励能证明费马大定理的人。这吸引了无数业余数学家的尝试。
+                </li>
+                
+                <li>
+                    <strong>怀尔斯的七年孤独：</strong>
+                    怀尔斯从1986年开始秘密研究这个问题，几乎与世隔绝地工作了七年，
+                    终于在1993年宣布证明，但后来发现一个漏洞。
+                    又经过一年的紧张工作，与他的学生泰勒一起补救了证明。
+                </li>
+                
+                <li>
+                    <strong>数学的终结？</strong>
+                    当怀尔斯的证明公布时，有记者问："这是否意味着数学的终结？"
+                    怀尔斯回答："不，数学中还有无数未解决的问题。"
+                </li>
+            </ol>
+        </section>
+
+        <section class="related-problems" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关未解决问题：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>比尔猜想：</strong>
+                    若 $a^x + b^y = c^z$，其中 $a, b, c, x, y, z$ 都是正整数，
+                    且 $a, b, c$ 互质，则 $x, y, z$ 不能都大于 $2$。
+                </li>
+                
+                <li>
+                    <strong>欧拉猜想：</strong>
+                    对于 $n > 2$，$n-1$ 个 $n$ 次幂之和不可能等于一个 $n$ 次幂。
+                    已被证明是错误的（反例：$27^5 + 84^5 + 110^5 + 133^5 = 144^5$）。
+                </li>
+                
+                <li>
+                    <strong>abc猜想：</strong>
+                    数论中非常重要的未解决问题，如果成立，可以推出许多重要的数论结果，
+                    包括费马大定理的推广形式。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>费马大定理的推广：</strong>
+                方程 $x^n + y^n = z^n$ 可以推广为 $x^n + y^n = z^m$ 或更一般的 $ax^n + by^n = cz^m$，
+                这些方程的研究仍在进行中。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

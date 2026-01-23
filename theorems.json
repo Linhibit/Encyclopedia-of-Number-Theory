@@ -94,6 +94,30 @@
     "description": "一个大于1的自然数$p$是质数的充分必要条件是$(p-1)! \\equiv -1 \\pmod{p}$。",
     "link": "theorems/wilson-theorem.html",
     "tags": ["质数判定", "同余", "数论定理"]
+  },
+  {
+    "title": "除数函数公式",
+    "description": "除数函数$d(n)$和$\\sigma(n)$的计算公式：若$n = p_1^{a_1} p_2^{a_2} \\cdots p_k^{a_k}$，则$d(n) = (a_1+1)(a_2+1)\\cdots(a_k+1)$，$\\sigma(n) = \\prod_{i=1}^k \\frac{p_i^{a_i+1}-1}{p_i-1}$。",
+    "link": "theorems/divisor-function.html",
+    "tags": ["除数函数", "约数个数", "约数和", "数论函数"]
+  },
+  {
+    "title": "欧拉函数公式",
+    "description": "欧拉函数$\\varphi(n)$表示小于$n$且与$n$互质的正整数的个数。计算公式：若$n = p_1^{a_1} p_2^{a_2} \\cdots p_k^{a_k}$，则$\\varphi(n) = n \\prod_{i=1}^k (1 - \\frac{1}{p_i})$。",
+    "link": "theorems/euler-function-formula.html",
+    "tags": ["欧拉函数", "互质", "数论函数", "积性函数"]
+  },
+  {
+    "title": "勾股数公式",
+    "description": "所有本原勾股数（即满足$a^2+b^2=c^2$且$\\gcd(a,b,c)=1$的正整数三元组）都可以由公式$a=m^2-n^2, b=2mn, c=m^2+n^2$生成，其中$m>n>0$，$\\gcd(m,n)=1$，$m,n$一奇一偶。",
+    "link": "theorems/pythagorean-triples.html",
+    "tags": ["勾股数", "毕达哥拉斯三元组", "不定方程", "数论公式"]
+  },
+  {
+    "title": "费马大定理",
+    "description": "当整数$n>2$时，关于$x,y,z$的不定方程$x^n+y^n=z^n$没有正整数解。这一定理由皮埃尔·德·费马于1637年提出，但直到1995年才被安德鲁·怀尔斯证明。",
+    "link": "theorems/fermat-last-theorem.html",
+    "tags": ["费马大定理", "不定方程", "怀尔斯证明", "数论难题"]
   }
 ]
 

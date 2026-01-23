@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>勾股数公式 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>勾股数公式 (Pythagorean Triple Formulas)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>勾股数定义：</strong>
+            <p>
+                满足 $a^2 + b^2 = c^2$ 的正整数三元组 $(a, b, c)$ 称为<strong>勾股数</strong>或<strong>毕达哥拉斯三元组</strong>。
+            </p>
+            
+            <p>
+                如果 $\gcd(a, b, c) = 1$，则称 $(a, b, c)$ 为<strong>本原勾股数</strong>。
+            </p>
+            
+            <strong>本原勾股数生成公式：</strong>
+            <p>
+                所有本原勾股数 $(a, b, c)$（其中 $a$ 是奇数，$b$ 是偶数）都可以由以下公式生成：
+                $$
+                \begin{cases}
+                a = m^2 - n^2 \\
+                b = 2mn \\
+                c = m^2 + n^2
+                \end{cases}
+                $$
+                其中 $m$ 和 $n$ 是满足以下条件的正整数：
+                <ol style="line-height: 1.6;">
+                    <li>$m > n > 0$</li>
+                    <li>$\gcd(m, n) = 1$（即 $m$ 与 $n$ 互质）</li>
+                    <li>$m$ 和 $n$ 一奇一偶（即 $m + n$ 是奇数）</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>所有勾股数：</strong>
+                一般的勾股数可以通过将本原勾股数乘以一个正整数 $k$ 得到：
+                $$(ka, kb, kc) = (k(m^2 - n^2), 2kmn, k(m^2 + n^2))$$
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思路：</h3>
+            
+            <h4>必要性（公式生成的是本原勾股数）：</h4>
+            <p>
+                设 $m > n > 0$，$\gcd(m, n) = 1$，且 $m$ 和 $n$ 一奇一偶。令：
+                $$a = m^2 - n^2, \quad b = 2mn, \quad c = m^2 + n^2$$
+                
+                验证：
+                $$a^2 + b^2 = (m^2 - n^2)^2 + (2mn)^2 = m^4 - 2m^2n^2 + n^4 + 4m^2n^2 = m^4 + 2m^2n^2 + n^4 = (m^2 + n^2)^2 = c^2$$
+                
+                再证 $\gcd(a, b, c) = 1$：
+                <ul>
+                    <li>由于 $m$ 和 $n$ 一奇一偶，所以 $a$ 是奇数，$b$ 是偶数。</li>
+                    <li>假设素数 $p$ 整除 $a$ 和 $b$，则 $p$ 整除 $b^2 = 4m^2n^2$ 和 $c^2 = a^2 + b^2$，从而 $p$ 整除 $c$。</li>
+                    <li>但 $c + a = 2m^2$，$c - a = 2n^2$，所以 $p$ 整除 $2m^2$ 和 $2n^2$。</li>
+                    <li>由于 $p$ 是奇数（因为 $a$ 是奇数），$p$ 整除 $m^2$ 和 $n^2$，从而 $p$ 整除 $m$ 和 $n$，与 $\gcd(m, n) = 1$ 矛盾。</li>
+                </ul>
+                因此 $\gcd(a, b, c) = 1$，确实是本原勾股数。
+            </p>
+            
+            <h4>充分性（所有本原勾股数都可以这样表示）：</h4>
+            <p>
+                设 $(a, b, c)$ 是本原勾股数，不妨设 $a$ 是奇数，$b$ 是偶数（否则交换 $a, b$）。
+                则方程 $a^2 + b^2 = c^2$ 可以改写为：
+                $$\left(\frac{b}{2}\right)^2 = \frac{c^2 - a^2}{4} = \frac{c+a}{2} \cdot \frac{c-a}{2}$$
+                
+                可以证明 $\frac{c+a}{2}$ 和 $\frac{c-a}{2}$ 互质且都是完全平方数，
+                设 $\frac{c+a}{2} = m^2$，$\frac{c-a}{2} = n^2$，则：
+                $$a = m^2 - n^2, \quad b = 2mn, \quad c = m^2 + n^2$$
+                且 $m > n > 0$，$\gcd(m, n) = 1$，$m$ 和 $n$ 一奇一偶。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 生成一些本原勾股数。
+            </p>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">$m$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$n$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$a=m^2-n^2$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$b=2mn$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$c=m^2+n^2$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">验证 $a^2+b^2=c^2$</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">5</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$3^2+4^2=9+16=25=5^2$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">5</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">12</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">13</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$5^2+12^2=25+144=169=13^2$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">15</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">8</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">17</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$15^2+8^2=225+64=289=17^2$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">7</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">24</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">25</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$7^2+24^2=49+576=625=25^2$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">5</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">21</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">20</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">29</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$21^2+20^2=441+400=841=29^2$</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>
+                <strong>示例2：</strong> 判断 $(9, 12, 15)$ 是否是本原勾股数。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                $\gcd(9, 12, 15) = 3 \neq 1$，所以不是本原勾股数。
+                但它可以由本原勾股数 $(3, 4, 5)$ 乘以 $3$ 得到。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 求面积为 $84$ 的直角三角形的边长（边长为整数）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                设直角边为 $a, b$，斜边为 $c$，则面积 $S = \frac{1}{2}ab = 84$，即 $ab = 168$。
+                同时 $a^2 + b^2 = c^2$。枚举可能的 $a, b$：
+                <ul>
+                    <li>若 $(a, b) = (12, 14)$，则 $ab=168$，但 $12^2+14^2=144+196=340$ 不是完全平方数。</li>
+                    <li>若 $(a, b) = (8, 21)$，则 $8^2+21^2=64+441=505$ 不是完全平方数。</li>
+                    <li>若 $(a, b) = (7, 24)$，则 $7^2+24^2=49+576=625=25^2$，符合条件。</li>
+                </ul>
+                所以边长为 $(7, 24, 25)$，面积为 $\frac{1}{2} \times 7 \times 24 = 84$。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 生成本原勾股数
+function generatePrimitiveTriples(limit) {
+    const triples = [];
+    
+    // m和n的范围：m^2 + n^2 <= limit
+    const maxM = Math.floor(Math.sqrt(limit));
+    
+    for (let m = 2; m <= maxM; m++) {
+        const maxN = Math.min(m - 1, Math.floor(Math.sqrt(limit - m * m)));
+        for (let n = 1; n <= maxN; n++) {
+            // 检查条件：m > n, gcd(m, n) = 1, m和n一奇一偶
+            if (gcd(m, n) === 1 && (m % 2 !== n % 2)) {
+                const a = m * m - n * n;
+                const b = 2 * m * n;
+                const c = m * m + n * n;
+                
+                if (c <= limit) {
+                    // 确保a是正数（实际上m>n保证a>0）
+                    triples.push([a, b, c]);
+                }
+            }
+        }
+    }
+    
+    // 按c从小到大排序
+    triples.sort((t1, t2) => t1[2] - t2[2]);
+    
+    return triples;
+}
+
+// 生成所有勾股数（包括非本原）
+function generateAllTriples(limit, maxK = 10) {
+    const primitives = generatePrimitiveTriples(limit);
+    const allTriples = [];
+    
+    // 添加本原勾股数
+    for (const triple of primitives) {
+        allTriples.push({triple: triple, primitive: true});
+    }
+    
+    // 添加非本原勾股数
+    for (const [a, b, c] of primitives) {
+        for (let k = 2; k <= maxK; k++) {
+            const ka = a * k;
+            const kb = b * k;
+            const kc = c * k;
+            
+            if (kc <= limit) {
+                allTriples.push({triple: [ka, kb, kc], primitive: false, multiple: k});
+            } else {
+                break;
+            }
+        }
+    }
+    
+    // 按斜边c排序
+    allTriples.sort((t1, t2) => t1.triple[2] - t2.triple[2]);
+    
+    return allTriples;
+}
+
+// 最大公约数
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// 验证勾股数
+function verifyTriple(a, b, c) {
+    return a * a + b * b === c * c;
+}
+
+// 判断是否为本原勾股数
+function isPrimitiveTriple(a, b, c) {
+    return gcd(gcd(a, b), c) === 1;
+}
+
+// 示例使用
+console.log("=== 生成本原勾股数（c ≤ 50） ===");
+const primitives = generatePrimitiveTriples(50);
+console.log("共找到 " + primitives.length + " 个本原勾股数:");
+for (const [a, b, c] of primitives) {
+    console.log(`(${a}, ${b}, ${c})，验证：${a}²+${b}²=${a*a}+${b*b}=${c}²，${verifyTriple(a, b, c) ? '✓' : '✗'}`);
+}
+
+// 生成所有勾股数（c ≤ 50）
+console.log("\n=== 生成所有勾股数（c ≤ 50） ===");
+const allTriples = generateAllTriples(50, 5);
+console.log("共找到 " + allTriples.length + " 个勾股数（包括非本原）:");
+for (const {triple, primitive} of allTriples) {
+    const [a, b, c] = triple;
+    console.log(`(${a}, ${b}, ${c}) ${primitive ? '[本原]' : '[非本原]'}`);
+}
+
+// 查找特定条件的勾股数
+console.log("\n=== 查找面积为84的直角三角形 ===");
+function findTripleByArea(area) {
+    // 面积 S = ab/2，所以 ab = 2S
+    const targetProduct = 2 * area;
+    const candidates = [];
+    
+    // 枚举a和b
+    for (let a = 1; a * a <= targetProduct; a++) {
+        if (targetProduct % a === 0) {
+            const b = targetProduct / a;
+            const c2 = a * a + b * b;
+            const c = Math.sqrt(c2);
+            
+            if (Math.abs(c - Math.round(c)) < 1e-10) {
+                candidates.push([a, b, Math.round(c)]);
+            }
+        }
+    }
+    
+    return candidates;
+}
+
+const area84 = findTripleByArea(84);
+console.log("面积为84的勾股数:");
+for (const [a, b, c] of area84) {
+    console.log(`(${a}, ${b}, ${c})，面积=${0.5*a*b}，${verifyTriple(a, b, c) ? '有效' : '无效'}`);
+}
+
+// 验证勾股数公式
+console.log("\n=== 验证公式正确性 ===");
+console.log("测试m=5, n=2:");
+const m = 5, n = 2;
+const a = m*m - n*n;
+const b = 2*m*n;
+const c = m*m + n*n;
+console.log(`a = ${m}² - ${n}² = ${a}`);
+console.log(`b = 2×${m}×${n} = ${b}`);
+console.log(`c = ${m}² + ${n}² = ${c}`);
+console.log(`验证: ${a}² + ${b}² = ${a*a} + ${b*b} = ${a*a+b*b}, ${c}² = ${c*c}`);
+console.log(`是否勾股数: ${verifyTriple(a, b, c) ? '是' : '否'}`);
+console.log(`是否本原: ${isPrimitiveTriple(a, b, c) ? '是' : '否'}`);
+
+// 计算勾股数的其他性质
+console.log("\n=== 勾股数的性质 ===");
+function tripleProperties(a, b, c) {
+    const perimeter = a + b + c;
+    const area = 0.5 * a * b;
+    const inradius = area / (0.5 * perimeter); // 内切圆半径
+    const circumradius = c / 2; // 外接圆半径
+    
+    return {
+        perimeter: perimeter,
+        area: area,
+        inradius: inradius,
+        circumradius: circumradius
+    };
+}
+
+const triple = [3, 4, 5];
+const props = tripleProperties(...triple);
+console.log(`勾股数 (${triple[0]}, ${triple[1]}, ${triple[2]}) 的性质:`);
+console.log(`周长: ${props.perimeter}`);
+console.log(`面积: ${props.area}`);
+console.log(`内切圆半径: ${props.inradius}`);
+console.log(`外接圆半径: ${props.circumradius}`);</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>几何学：</strong>
+                    直角三角形边长的整数解。
+                </li>
+                
+                <li>
+                    <strong>数论：</strong>
+                    平方和问题，费马平方和定理等。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    某些加密算法中用到勾股数。
+                </li>
+                
+                <li>
+                    <strong>计算机图形学：</strong>
+                    生成整数坐标的直角三角形。
+                </li>
+                
+                <li>
+                    <strong>数学竞赛：</strong>
+                    常见的数论问题。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>相关推广：</strong>
+                <ul>
+                    <li>
+                        <strong>费马大定理：</strong>
+                        方程 $x^n + y^n = z^n$ 在 $n > 2$ 时没有正整数解。
+                        这是勾股数方程的推广，但结论完全不同。
+                    </li>
+                    <li>
+                        <strong>椭圆曲线：</strong>
+                        勾股数方程可以转化为椭圆曲线，与现代数论有深刻联系。
+                    </li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="history" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                勾股数在古代文明中就被发现。巴比伦泥板普林顿322（约公元前1800年）列出了15组勾股数。
+            </p>
+            
+            <p>
+                欧几里得在《几何原本》中给出了勾股数公式的证明。但现代形式的公式通常归功于古希腊数学家丢番图。
+            </p>
+            
+            <p>
+                勾股数公式是数论中为数不多的能给出所有解的完全参数化公式之一，
+                这使它成为研究不定方程的典范。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

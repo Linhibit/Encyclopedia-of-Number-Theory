@@ -64,5 +64,23 @@
     "description": "对于正整数$n$，若整数$a$模$n$的阶等于欧拉函数$\\varphi(n)$，则称$a$为模$n$的一个原根。原根的存在性为：模$n$有原根当且仅当$n=1,2,4,p^k,2p^k$，其中$p$为奇素数。",
     "link": "theorems/primitive-root.html",
     "tags": ["原根", "阶", "欧拉函数", "循环群", "离散对数"]
+  },
+  {
+    "title": "二次互反律",
+    "description": "对于奇素数$p$和$q$，勒让德符号满足$\\left(\\frac{p}{q}\\right)\\left(\\frac{q}{p}\\right) = (-1)^{\\frac{p-1}{2}\\frac{q-1}{2}}$。这是判断二次剩余的核心定理。",
+    "link": "theorems/quadratic-reciprocity.html",
+    "tags": ["二次剩余", "勒让德符号", "高斯定理"]
+  },
+  {
+    "title": "素数定理",
+    "description": "描述素数分布渐近规律的定理：当$x$趋近于无穷大时，不超过$x$的素数个数$\\pi(x)$渐近等于$x/\\ln x$，即$\\pi(x) \\sim \\frac{x}{\\ln x}$。",
+    "link": "theorems/prime-number-theorem.html",
+    "tags": ["素数分布", "渐近分析", "解析数论"]
+  },
+  {
+    "title": "莫比乌斯反演公式",
+    "description": "如果数论函数$f$和$g$满足$f(n) = \\sum_{d|n} g(d)$，则$g(n) = \\sum_{d|n} \\mu(d) f(n/d)$，其中$\\mu$是莫比乌斯函数。",
+    "link": "theorems/mobius-inversion.html",
+    "tags": ["莫比乌斯函数", "数论函数", "反演公式", "容斥原理"]
   }
 ]

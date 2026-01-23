@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>二次互反律 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>二次互反律 (Quadratic Reciprocity Law)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $p$ 和 $q$ 是两个不同的奇素数，则勒让德符号满足以下关系：
+            </p>
+            
+            $$\left(\frac{p}{q}\right)\left(\frac{q}{p}\right) = (-1)^{\frac{p-1}{2}\frac{q-1}{2}}$$
+            
+            <p>
+                等价形式：
+                $$\left(\frac{p}{q}\right) = 
+                \begin{cases}
+                \displaystyle \left(\frac{q}{p}\right) & \text{如果 } p \equiv 1 \pmod{4} \text{ 或 } q \equiv 1 \pmod{4}\\
+                \displaystyle -\left(\frac{q}{p}\right) & \text{如果 } p \equiv q \equiv 3 \pmod{4}
+                \end{cases}$$
+            </p>
+            
+            <p>
+                即：对于奇素数 $p$ 和 $q$，$p$ 是模 $q$ 的二次剩余当且仅当 $q$ 是模 $p$ 的二次剩余，除非 $p \equiv q \equiv 3 \pmod{4}$，此时恰好相反。
+            </p>
+        </section>
+
+        <section class="definition" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>前置概念：勒让德符号</h3>
+            
+            <p>
+                对于奇素数 $p$ 和整数 $a$，<strong>勒让德符号</strong>定义为：
+                $$\left(\frac{a}{p}\right) =
+                \begin{cases}
+                0 & \text{如果 } p \mid a \\
+                1 & \text{如果 } a \text{ 是模 } p \text{ 的二次剩余，且 } p \nmid a \\
+                -1 & \text{如果 } a \text{ 不是模 } p \text{ 的二次剩余}
+                \end{cases}$$
+            </p>
+            
+            <p>
+                <strong>二次剩余：</strong> 如果存在整数 $x$ 使得 $x^2 \equiv a \pmod{p}$，则称 $a$ 是模 $p$ 的二次剩余。
+            </p>
+            
+            <p>
+                <strong>欧拉判别准则：</strong> 对于奇素数 $p$ 和 $p \nmid a$，
+                $$\left(\frac{a}{p}\right) \equiv a^{\frac{p-1}{2}} \pmod{p}$$
+                且勒让德符号的值就是 $\pm 1$。
+            </p>
+        </section>
+
+        <section class="supplementary-theorems" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>补充定理（二次互反律的补充）：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>第一补充定律：</strong>
+                    $$\left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}} = 
+                    \begin{cases}
+                    1 & \text{如果 } p \equiv 1 \pmod{4} \\
+                    -1 & \text{如果 } p \equiv 3 \pmod{4}
+                    \end{cases}$$
+                    即：$-1$ 是模 $p$ 的二次剩余当且仅当 $p \equiv 1 \pmod{4}$。
+                </li>
+                
+                <li>
+                    <strong>第二补充定律：</strong>
+                    $$\left(\frac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}} = 
+                    \begin{cases}
+                    1 & \text{如果 } p \equiv \pm 1 \pmod{8} \\
+                    -1 & \text{如果 } p \equiv \pm 3 \pmod{8}
+                    \end{cases}$$
+                    即：$2$ 是模 $p$ 的二次剩余当且仅当 $p \equiv \pm 1 \pmod{8}$。
+                </li>
+            </ol>
+        </section>
+
+        <section class="example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：判断二次剩余</h3>
+            
+            <p>
+                <strong>问题1：</strong> 判断 $7$ 是否是模 $19$ 的二次剩余。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                计算勒让德符号 $\left(\frac{7}{19}\right)$。
+                <ol>
+                    <li>由于 $7$ 和 $19$ 都是奇素数，且 $7 \equiv 19 \equiv 3 \pmod{4}$，根据二次互反律：
+                        $$\left(\frac{7}{19}\right) = -\left(\frac{19}{7}\right)$$
+                    </li>
+                    <li>简化 $\left(\frac{19}{7}\right)$：$19 \equiv 5 \pmod{7}$，所以 $\left(\frac{19}{7}\right) = \left(\frac{5}{7}\right)$。</li>
+                    <li>再对 $\left(\frac{5}{7}\right)$ 应用二次互反律：$5 \equiv 1 \pmod{4}$，所以 $\left(\frac{5}{7}\right) = \left(\frac{7}{5}\right)$。</li>
+                    <li>简化 $\left(\frac{7}{5}\right)$：$7 \equiv 2 \pmod{5}$，所以 $\left(\frac{7}{5}\right) = \left(\frac{2}{5}\right)$。</li>
+                    <li>根据第二补充定律：$\left(\frac{2}{5}\right) = (-1)^{\frac{5^2-1}{8}} = (-1)^{\frac{24}{8}} = (-1)^3 = -1$。</li>
+                    <li>因此 $\left(\frac{7}{19}\right) = -(-1) = 1$，所以 $7$ 是模 $19$ 的二次剩余。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>验证：</strong>
+                寻找 $x$ 使得 $x^2 \equiv 7 \pmod{19}$。尝试 $x=8$：$8^2=64 \equiv 64-3\times19=64-57=7 \pmod{19}$，确实成立。
+            </p>
+            
+            <p>
+                <strong>问题2：</strong> 判断 $5$ 是否是模 $13$ 的二次剩余。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                计算 $\left(\frac{5}{13}\right)$。
+                <ol>
+                    <li>$5 \equiv 1 \pmod{4}$，所以 $\left(\frac{5}{13}\right) = \left(\frac{13}{5}\right)$。</li>
+                    <li>$13 \equiv 3 \pmod{5}$，所以 $\left(\frac{13}{5}\right) = \left(\frac{3}{5}\right)$。</li>
+                    <li>$3 \equiv 3 \pmod{4}$ 且 $5 \equiv 1 \pmod{4}$，所以 $\left(\frac{3}{5}\right) = \left(\frac{5}{3}\right)$。</li>
+                    <li>$5 \equiv 2 \pmod{3}$，所以 $\left(\frac{5}{3}\right) = \left(\frac{2}{3}\right)$。</li>
+                    <li>根据第二补充定律：$\left(\frac{2}{3}\right) = (-1)^{\frac{3^2-1}{8}} = (-1)^1 = -1$。</li>
+                    <li>因此 $\left(\frac{5}{13}\right) = -1$，所以 $5$ 不是模 $13$ 的二次剩余。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 快速幂算法
+function modPow(base, exp, mod) {
+    if (mod === 1) return 0;
+    let result = 1n;
+    base = BigInt(base) % BigInt(mod);
+    let e = BigInt(exp);
+    while (e > 0n) {
+        if (e % 2n === 1n) {
+            result = (result * base) % BigInt(mod);
+        }
+        e >>= 1n;
+        base = (base * base) % BigInt(mod);
+    }
+    return Number(result);
+}
+
+// 判断是否为奇素数（简单版本）
+function isOddPrime(n) {
+    if (n <= 2) return false;
+    if (n % 2 === 0) return false;
+    for (let i = 3; i * i <= n; i += 2) {
+        if (n % i === 0) return false;
+    }
+    return true;
+}
+
+// 计算勒让德符号 (a/p) - 使用欧拉判别准则
+function legendreSymbolEuler(a, p) {
+    if (p <= 2 || p % 2 === 0) {
+        throw new Error("p必须是奇素数");
+    }
+    if (a % p === 0) return 0;
+    
+    const result = modPow(a, (p - 1) / 2, p);
+    return result === 1 ? 1 : -1;
+}
+
+// 计算勒让德符号 (a/p) - 使用二次互反律（递归）
+function legendreSymbolRecursive(a, p) {
+    if (a % p === 0) return 0;
+    if (a === 1) return 1;
+    if (a === 2) {
+        // 第二补充定律
+        const r = p % 8;
+        return (r === 1 || r === 7) ? 1 : -1;
+    }
+    if (a === -1) {
+        // 第一补充定律
+        return (p % 4 === 1) ? 1 : -1;
+    }
+    
+    // 如果a是负数，化为正数
+    if (a < 0) {
+        return legendreSymbolRecursive(-1, p) * legendseSymbolRecursive(-a, p);
+    }
+    
+    // 如果a是偶数，提取因子2
+    if (a % 2 === 0) {
+        return legendreSymbolRecursive(2, p) * legendreSymbolRecursive(a / 2, p);
+    }
+    
+    // 如果a不是素数，分解质因数
+    if (!isOddPrime(a)) {
+        // 简单分解：假设a是素数或已处理了2和-1
+        // 这里简化处理，实际应用需要完全分解
+        return legendreSymbolRecursive(a % p, p);
+    }
+    
+    // 现在a和p都是奇素数，应用二次互反律
+    const aMod4 = a % 4;
+    const pMod4 = p % 4;
+    
+    let factor = 1;
+    if (aMod4 === 3 && pMod4 === 3) {
+        factor = -1;
+    }
+    
+    return factor * legendreSymbolRecursive(p % a, a);
+}
+
+// 判断a是否为模p的二次剩余
+function isQuadraticResidue(a, p) {
+    const symbol = legendreSymbolEuler(a, p);
+    return symbol === 1;
+}
+
+// 示例使用
+console.log("=== 勒让德符号计算 ===");
+console.log(`(7/19) = ${legendreSymbolEuler(7, 19)}`); // 1
+console.log(`(5/13) = ${legendreSymbolEuler(5, 13)}`); // -1
+console.log(`(2/17) = ${legendreSymbolEuler(2, 17)}`); // 1
+console.log(`(-1/5) = ${legendreSymbolEuler(-1, 5)}`); // 1
+
+console.log("\n=== 递归方法验证 ===");
+console.log(`(7/19) = ${legendreSymbolRecursive(7, 19)}`); // 1
+console.log(`(5/13) = ${legendreSymbolRecursive(5, 13)}`); // -1
+
+console.log("\n=== 二次剩余判断 ===");
+console.log(`7是模19的二次剩余？ ${isQuadraticResidue(7, 19)}`); // true
+console.log(`5是模13的二次剩余？ ${isQuadraticResidue(5, 13)}`); // false
+
+// 验证第一补充定律
+console.log("\n=== 验证第一补充定律 ===");
+const primes = [5, 7, 13, 17];
+for (const p of primes) {
+    const expected = (p % 4 === 1) ? 1 : -1;
+    const computed = legendreSymbolEuler(-1, p);
+    console.log(`p=${p}: (-1/${p}) = ${computed}, 期望=${expected}, ${computed === expected ? '✓' : '✗'}`);
+}</code>
+            </pre>
+            
+            <p style="margin-top: 15px; color: #f8f8f2;">
+                <strong>算法说明：</strong>
+                代码实现了两种计算勒让德符号的方法：
+                1. 欧拉判别准则（直接计算 $a^{(p-1)/2} \bmod p$）
+                2. 递归方法（应用二次互反律及其补充定律）
+                实际应用中，递归方法在 $a$ 和 $p$ 较大时更高效。
+            </p>
+        </section>
+
+        <section class="history" 
+                 style="background: #fffde7; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                二次互反律最早由欧拉在1783年提出猜想，但未能证明。勒让德在1785年独立提出并尝试证明，但证明不完整。
+            </p>
+            
+            <p>
+                <strong>高斯</strong>在1796年（当时仅19岁）给出了第一个完整的证明，并称其为"数论之母"（fundamental theorem of number theory）。
+                高斯一生中给出了<strong>八个不同的证明</strong>，显示出他对这个定理的重视。
+            </p>
+            
+            <p>
+                截至现在，二次互反律已有超过200种不同的证明，是数学中证明方法最多的定理之一。
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>二次剩余判定：</strong>
+                    快速判断一个数是否是模素数的二次剩余。
+                </li>
+                
+                <li>
+                    <strong>二次同余方程：</strong>
+                    求解形如 $x^2 \equiv a \pmod{p}$ 的方程。
+                </li>
+                
+                <li>
+                    <strong>素数判定：</strong>
+                    某些素数测试算法中会用到。
+                </li>
+                
+                <li>
+                    <strong>代数数论：</strong>
+                    研究二次域类数的关键工具。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    在某些加密方案和零知识证明中应用。
+                </li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>

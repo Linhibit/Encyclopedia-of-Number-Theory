@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>莫比乌斯反演公式 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>莫比乌斯反演公式 (Möbius Inversion Formula)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            
+            <h4>第一形式（约数和形式）：</h4>
+            <p>
+                设 $f$ 和 $g$ 是两个数论函数（定义在正整数集上的函数）。
+                如果对于所有正整数 $n$，有：
+                $$f(n) = \sum_{d \mid n} g(d)$$
+                那么对于所有正整数 $n$，有：
+                $$g(n) = \sum_{d \mid n} \mu(d) f\left(\frac{n}{d}\right)$$
+            </p>
+            
+            <h4>第二形式（倍数和形式）：</h4>
+            <p>
+                如果对于所有正整数 $n$，有：
+                $$f(n) = \sum_{n \mid d} g(d)$$
+                那么对于所有正整数 $n$，有：
+                $$g(n) = \sum_{n \mid d} \mu\left(\frac{d}{n}\right) f(d)$$
+            </p>
+            
+            <p>
+                其中 $\mu(n)$ 是<strong>莫比乌斯函数</strong>。
+            </p>
+        </section>
+
+        <section class="definition" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>莫比乌斯函数 $\mu(n)$ 的定义：</h3>
+            
+            <p>
+                莫比乌斯函数 $\mu: \mathbb{N}^+ \to \{-1, 0, 1\}$ 定义为：
+                $$\mu(n) =
+                \begin{cases}
+                1 & \text{如果 } n = 1 \\
+                (-1)^k & \text{如果 } n \text{ 是 } k \text{ 个不同素数的乘积} \\
+                0 & \text{如果 } n \text{ 被某个素数的平方整除}
+                \end{cases}$$
+            </p>
+            
+            <p>
+                <strong>等价定义：</strong>
+                如果 $n = p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k}$ 是 $n$ 的素因数分解，则：
+                $$\mu(n) =
+                \begin{cases}
+                1 & \text{如果 } n = 1 \\
+                (-1)^k & \text{如果 } a_1 = a_2 = \cdots = a_k = 1 \\
+                0 & \text{否则（即某个 } a_i \geq 2 \text{）}
+                \end{cases}$$
+            </p>
+            
+            <p>
+                <strong>示例：</strong>
+                <ul>
+                    <li>$\mu(1) = 1$</li>
+                    <li>$\mu(2) = -1$（一个素数）</li>
+                    <li>$\mu(3) = -1$</li>
+                    <li>$\mu(4) = 0$（被 $2^2$ 整除）</li>
+                    <li>$\mu(6) = 1$（$6=2\times3$，两个不同素数）</li>
+                    <li>$\mu(30) = -1$（$30=2\times3\times5$，三个不同素数）</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>关键性质：</strong>
+                $$\sum_{d \mid n} \mu(d) =
+                \begin{cases}
+                1 & \text{如果 } n = 1 \\
+                0 & \text{如果 } n > 1
+                \end{cases}$$
+                这个性质是莫比乌斯反演的核心。
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明简述：</h3>
+            
+            <h4>莫比乌斯反演公式的证明：</h4>
+            <p>
+                假设 $f(n) = \sum_{d \mid n} g(d)$，我们要证明 $g(n) = \sum_{d \mid n} \mu(d) f(n/d)$。
+            </p>
+            
+            <p>
+                将 $f$ 的定义代入：
+                $$
+                \begin{aligned}
+                \sum_{d \mid n} \mu(d) f\left(\frac{n}{d}\right) 
+                &= \sum_{d \mid n} \mu(d) \sum_{e \mid (n/d)} g(e) \\
+                &= \sum_{e \mid n} g(e) \sum_{d \mid (n/e)} \mu(d)
+                \end{aligned}
+                $$
+            </p>
+            
+            <p>
+                根据莫比乌斯函数的性质：$\sum_{d \mid m} \mu(d) = 1$ 当且仅当 $m = 1$，否则为0。
+                因此，只有当 $n/e = 1$，即 $e = n$ 时，内层求和为1；否则为0。
+            </p>
+            
+            <p>
+                于是：
+                $$\sum_{d \mid n} \mu(d) f\left(\frac{n}{d}\right) = g(n)$$
+                证毕。
+            </p>
+            
+            <p>
+                逆方向的证明类似。
+            </p>
+            
+            <span style="float:right">$\square$</span>
+        </section>
+
+        <section class="example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>经典示例：</h3>
+            
+            <p>
+                <strong>示例1：欧拉函数公式</strong><br>
+                我们知道 $n = \sum_{d \mid n} \varphi(d)$，其中 $\varphi$ 是欧拉函数。
+                应用莫比乌斯反演：
+                $$\varphi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d} = n \sum_{d \mid n} \frac{\mu(d)}{d}$$
+                
+                这给出了欧拉函数的另一个表达式。
+            </p>
+            
+            <p>
+                <strong>示例2：单位函数</strong><br>
+                定义数论函数 $\varepsilon(n) = \lfloor \frac{1}{n} \rfloor$，即：
+                $$\varepsilon(n) = 
+                \begin{cases}
+                1 & \text{如果 } n = 1 \\
+                0 & \text{如果 } n > 1
+                \end{cases}$$
+                
+                那么对于任意数论函数 $f$，有：
+                $$f(n) = \sum_{d \mid n} f(d) \varepsilon\left(\frac{n}{d}\right)$$
+                
+                而根据莫比乌斯函数的性质，$\varepsilon(n) = \sum_{d \mid n} \mu(d)$，
+                这正是莫比乌斯反演的基础。
+            </p>
+            
+            <p>
+                <strong>示例3：约数个数函数</strong><br>
+                设 $d(n)$ 表示 $n$ 的正约数个数。
+                我们知道 $d(n) = \sum_{d \mid n} 1$。
+                令 $g(d) = 1$ 常数函数，则 $f(n) = d(n)$。
+                
+                虽然这个例子很简单，但说明了莫比乌斯反演的结构。
+            </p>
+            
+            <p>
+                <strong>示例4：容斥原理</strong><br>
+                莫比乌斯反演可以看作容斥原理在数论中的体现。
+                
+                考虑 $n = p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k}$，要计算与 $n$ 互质的数的个数 $\varphi(n)$。
+                设 $A_i$ 表示能被 $p_i$ 整除的数的集合，则：
+                $$\varphi(n) = n - \sum_i \frac{n}{p_i} + \sum_{i<j} \frac{n}{p_i p_j} - \sum_{i<j<k} \frac{n}{p_i p_j p_k} + \cdots$$
+                
+                这正是莫比乌斯反演公式：
+                $$\varphi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}$$
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 计算莫比乌斯函数 μ(n)
+function mobius(n) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    let primeCount = 0;
+    let temp = n;
+    
+    // 检查平方因子
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            primeCount++;
+            temp /= p;
+            
+            // 检查p²是否整除n
+            if (temp % p === 0) {
+                return 0; // 有平方因子
+            }
+        }
+    }
+    
+    // 处理剩余的质因子
+    if (temp > 1) {
+        primeCount++;
+    }
+    
+    // 根据质因子个数的奇偶性返回±1
+    return primeCount % 2 === 0 ? 1 : -1;
+}
+
+// 预计算莫比乌斯函数表（筛法）
+function mobiusSieve(n) {
+    const mu = new Array(n + 1).fill(1);
+    const isPrime = new Array(n + 1).fill(true);
+    const primes = [];
+    
+    // 初始化
+    mu[0] = 0;
+    if (n >= 1) mu[1] = 1;
+    
+    // 线性筛法计算莫比乌斯函数
+    for (let i = 2; i <= n; i++) {
+        if (isPrime[i]) {
+            primes.push(i);
+            mu[i] = -1; // 单个质数
+        }
+        
+        for (const p of primes) {
+            if (i * p > n) break;
+            
+            isPrime[i * p] = false;
+            
+            if (i % p === 0) {
+                mu[i * p] = 0; // p²整除i*p
+                break;
+            } else {
+                mu[i * p] = -mu[i]; // 新加一个质因子
+            }
+        }
+    }
+    
+    return mu;
+}
+
+// 莫比乌斯反演：从f(n)=Σg(d)计算g(n)
+function mobiusInversionSumOverDivisors(f, n) {
+    let result = 0;
+    
+    // 遍历n的所有约数
+    const divisors = getDivisors(n);
+    
+    for (const d of divisors) {
+        result += mobius(d) * f(n / d);
+    }
+    
+    return result;
+}
+
+// 辅助函数：获取所有正约数
+function getDivisors(n) {
+    const divisors = [];
+    const sqrtN = Math.sqrt(n);
+    
+    for (let i = 1; i <= sqrtN; i++) {
+        if (n % i === 0) {
+            divisors.push(i);
+            if (i !== n / i) {
+                divisors.push(n / i);
+            }
+        }
+    }
+    
+    return divisors.sort((a, b) => a - b);
+}
+
+// 示例1：验证欧拉函数公式
+console.log("=== 验证欧拉函数公式 ===");
+function eulerPhi(n) {
+    let result = n;
+    let temp = n;
+    
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            while (temp % p === 0) {
+                temp /= p;
+            }
+            result -= result / p;
+        }
+    }
+    
+    if (temp > 1) {
+        result -= result / temp;
+    }
+    
+    return result;
+}
+
+// 定义 f(n) = n = Σ φ(d)
+function f(n) {
+    return n;
+}
+
+for (let n = 1; n <= 20; n++) {
+    const phiFromInversion = mobiusInversionSumOverDivisors(f, n);
+    const phiDirect = eulerPhi(n);
+    console.log(`n=${n}: φ(n)=${phiDirect}, 反演得到=${phiFromInversion}, ${phiDirect === phiFromInversion ? '✓' : '✗'}`);
+}
+
+// 示例2：自定义函数验证
+console.log("\n=== 自定义函数验证 ===");
+
+// 定义 g(n) = n²
+function g(n) {
+    return n * n;
+}
+
+// 计算 f(n) = Σ g(d)
+function computeF(n) {
+    let sum = 0;
+    const divisors = getDivisors(n);
+    for (const d of divisors) {
+        sum += g(d);
+    }
+    return sum;
+}
+
+// 验证反演公式
+for (let n = 1; n <= 10; n++) {
+    const fValue = computeF(n);
+    
+    // 从f反演回g
+    const gFromInversion = mobiusInversionSumOverDivisors(computeF, n);
+    
+    console.log(`n=${n}: g(n)=${g(n)}, f(n)=${fValue}, 反演得g=${gFromInversion}, ${g(n) === gFromInversion ? '✓' : '✗'}`);
+}
+
+// 示例3：计算莫比乌斯函数表
+console.log("\n=== 莫比乌斯函数值 μ(n) (n=1..30) ===");
+const mu = mobiusSieve(30);
+for (let n = 1; n <= 30; n++) {
+    process.stdout.write(`μ(${n})=${mu[n]}\t`);
+    if (n % 5 === 0) console.log();
+}
+
+// 示例4：验证莫比乌斯函数的性质 Σ μ(d) = [n=1]
+console.log("\n=== 验证 Σ μ(d) = [n=1] ===");
+for (let n = 1; n <= 10; n++) {
+    let sum = 0;
+    const divisors = getDivisors(n);
+    for (const d of divisors) {
+        sum += mobius(d);
+    }
+    const expected = n === 1 ? 1 : 0;
+    console.log(`n=${n}: Σ μ(d)=${sum}, 期望=${expected}, ${sum === expected ? '✓' : '✗'}`);
+}</code>
+            </pre>
+            
+            <p style="margin-top: 15px; color: #f8f8f2;">
+                <strong>算法说明：</strong>
+                代码实现了莫比乌斯函数的计算（单个值和筛法）、莫比乌斯反演公式，
+                并验证了欧拉函数公式等经典例子。
+                线性筛法可以在 $O(n)$ 时间内计算 $1$ 到 $n$ 的所有莫比乌斯函数值。
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用领域：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>数论函数关系：</strong>
+                    建立不同数论函数之间的联系，如欧拉函数、约数函数等。
+                </li>
+                
+                <li>
+                    <strong>组合计数：</strong>
+                    解决包含互质条件的计数问题，是容斥原理在数论中的体现。
+                </li>
+                
+                <li>
+                    <strong>解析数论：</strong>
+                    研究素数分布和黎曼zeta函数的重要工具。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    在某些数论密码方案中有应用。
+                </li>
+                
+                <li>
+                    <strong>算法设计：</strong>
+                    解决某些数论问题的算法中会用到莫比乌斯反演。
+                </li>
+                
+                <li>
+                    <strong>级数求和：</strong>
+                    处理狄利克雷级数的系数关系。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>狄利克雷卷积：</strong><br>
+                莫比乌斯反演可以用狄利克雷卷积简洁表达：
+                设 $f = g * 1$，其中 $*$ 表示狄利克雷卷积，$1$ 是常数函数 $1(n)=1$。
+                则 $g = f * \mu$，其中 $\mu$ 是莫比乌斯函数。
+            </p>
+        </section>
+
+        <section class="related-functions" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关数论函数：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">函数</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">定义</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">与莫比乌斯函数的关系</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">单位函数 $\varepsilon$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon(1)=1$, $\varepsilon(n)=0$ ($n>1$)</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon = \mu * 1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">常数函数 $1$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$1(n)=1$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$1 * \mu = \varepsilon$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">恒等函数 $\text{id}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\text{id}(n)=n$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\text{id} = \varphi * 1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">欧拉函数 $\varphi$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">小于 $n$ 且与 $n$ 互质的数的个数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varphi = \text{id} * \mu$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">约数个数 $d$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$d(n)=\sum_{d|n}1$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$d = 1 * 1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">约数和 $\sigma$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\sigma(n)=\sum_{d|n}d$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\sigma = \text{id} * 1$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="history" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                莫比乌斯函数由德国数学家<strong>奥古斯特·费迪南德·莫比乌斯</strong>（August Ferdinand Möbius）在1832年引入，
+                但当时并未引起广泛关注。
+            </p>
+            
+            <p>
+                莫比乌斯反演公式的现代形式由<strong>理查德·戴德金</strong>（Richard Dedekind）和<strong>约瑟夫·利乌维尔</strong>（Joseph Liouville）
+                在1857年独立发现。
+            </p>
+            
+            <p>
+                在20世纪，随着解析数论和组合数学的发展，莫比乌斯反演成为研究数论函数的重要工具。
+                它与狄利克雷卷积的结合使得表述更加简洁优美。
+            </p>
+        </section>
+
+        <section class="extensions" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推广：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>狄利克雷卷积：</strong>
+                    定义数论函数的狄利克雷卷积 $(f * g)(n) = \sum_{d \mid n} f(d) g(n/d)$，
+                    则莫比乌斯反演可写作：$f = g * 1 \iff g = f * \mu$。
+                </li>
+                
+                <li>
+                    <strong>偏序集上的莫比乌斯反演：</strong>
+                    将莫比乌斯反演推广到一般的偏序集上，是组合数学中的强大工具。
+                </li>
+                
+                <li>
+                    <strong>积性函数：</strong>
+                    莫比乌斯函数是积性函数（$\gcd(m,n)=1$ 时 $\mu(mn)=\mu(m)\mu(n)$），
+                    这使得许多计算可以分解为素因子幂的形式。
+                </li>
+                
+                <li>
+                    <strong>生成函数：</strong>
+                    狄利克雷级数 $\sum_{n=1}^\infty \frac{f(n)}{n^s}$ 的乘法对应狄利克雷卷积，
+                    莫比乌斯反演对应于 $\frac{1}{\zeta(s)} = \sum_{n=1}^\infty \frac{\mu(n)}{n^s}$。
+                </li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>

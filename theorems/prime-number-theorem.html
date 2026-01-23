@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>素数定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>素数定理 (Prime Number Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $\pi(x)$ 表示不超过 $x$ 的素数的个数，即：
+                $$\pi(x) = \#\{p \leq x : p \text{ 是素数}\}$$
+            </p>
+            
+            <p>
+                当 $x$ 趋近于无穷大时，$\pi(x)$ 的渐近行为为：
+                $$\pi(x) \sim \frac{x}{\ln x}$$
+            </p>
+            
+            <p>
+                其中符号"$\sim$"表示渐近等价，即：
+                $$\lim_{x \to \infty} \frac{\pi(x)}{x / \ln x} = 1$$
+            </p>
+            
+            <p>
+                更精确的形式（由高斯提出）：
+                $$\pi(x) \sim \operatorname{Li}(x) = \int_2^x \frac{dt}{\ln t}$$
+                其中 $\operatorname{Li}(x)$ 是对数积分函数。
+            </p>
+        </section>
+
+        <section class="interpretation" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>定理的直观解释：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>概率解释：</strong>
+                    在 $1, 2, \dots, n$ 中随机选择一个数，它是素数的概率约为 $\frac{1}{\ln n}$。
+                </li>
+                
+                <li>
+                    <strong>素数间隔：</strong>
+                    在 $n$ 附近的素数平均间隔约为 $\ln n$。
+                </li>
+                
+                <li>
+                    <strong>素数密度：</strong>
+                    素数的"密度"在 $x$ 处约为 $\frac{1}{\ln x}$，随着 $x$ 增大而减小。
+                </li>
+                
+                <li>
+                    <strong>渐近意义：</strong>
+                    当 $x$ 非常大时，$\pi(x)$ 与 $x/\ln x$ 的比值趋近于 1，但两者的差可能很大。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>更精确的估计：</strong>
+                $$\pi(x) = \frac{x}{\ln x} + \frac{x}{(\ln x)^2} + \frac{2!x}{(\ln x)^3} + \cdots + \frac{(k-1)!x}{(\ln x)^k} + O\left(\frac{x}{(\ln x)^{k+1}}\right)$$
+                这是一个渐近级数，对固定的 $k$，当 $x$ 足够大时误差项趋于0。
+            </p>
+        </section>
+
+        <section class="historical-data" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>数据对比：$\pi(x)$ 的实际值与近似值</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">$x$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$\pi(x)$ (实际)</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$x / \ln x$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$\operatorname{Li}(x)$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$\pi(x) / (x/\ln x)$</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$10^3$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">168</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">145</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">177</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1.159</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$10^6$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">78,498</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">72,382</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">78,628</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1.084</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$10^9$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">50,847,534</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">48,254,942</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">50,849,235</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1.054</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$10^{12}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">37,607,912,018</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">36,191,206,825</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">37,607,950,281</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1.039</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$10^{15}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">29,844,570,422,669</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">28,952,965,460,217</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">29,844,571,475,288</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1.031</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>
+                从表中可以看出：
+                <ul>
+                    <li>随着 $x$ 增大，比值 $\pi(x) / (x/\ln x)$ 逐渐趋近于 1</li>
+                    <li>$\operatorname{Li}(x)$ 比 $x/\ln x$ 更接近 $\pi(x)$ 的实际值</li>
+                    <li>即使对于 $10^{15}$ 这样大的数，近似仍有约 3% 的误差</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 计算不超过n的素数个数（埃氏筛法）
+function primePi(n) {
+    if (n < 2) return 0;
+    
+    const limit = Math.floor(Math.sqrt(n));
+    const isPrime = new Array(n + 1).fill(true);
+    isPrime[0] = false;
+    isPrime[1] = false;
+    
+    // 埃氏筛法
+    for (let p = 2; p <= limit; p++) {
+        if (isPrime[p]) {
+            for (let multiple = p * p; multiple <= n; multiple += p) {
+                isPrime[multiple] = false;
+            }
+        }
+    }
+    
+    // 计数
+    let count = 0;
+    for (let i = 2; i <= n; i++) {
+        if (isPrime[i]) count++;
+    }
+    
+    return count;
+}
+
+// 计算x/ln(x)
+function xOverLnX(x) {
+    return x / Math.log(x);
+}
+
+// 计算对数积分Li(x)的近似值（数值积分）
+function logarithmicIntegral(x) {
+    // 使用梯形法则进行数值积分
+    const n = 10000; // 分割数
+    const step = (x - 2) / n;
+    let sum = 0;
+    
+    // 梯形法则：∫f(x)dx ≈ (h/2)[f(x0)+2f(x1)+...+2f(x_{n-1})+f(xn)]
+    for (let i = 0; i <= n; i++) {
+        const t = 2 + i * step;
+        const weight = (i === 0 || i === n) ? 1 : 2;
+        sum += weight * (1 / Math.log(t));
+    }
+    
+    return (step / 2) * sum;
+}
+
+// 验证素数定理的近似程度
+function verifyPrimeNumberTheorem(limit) {
+    console.log("验证素数定理：");
+    console.log("x\tπ(x)\tx/ln(x)\tLi(x)\tπ(x)/(x/ln(x))");
+    console.log("-".repeat(60));
+    
+    const testPoints = [100, 1000, 10000, 100000, 1000000];
+    
+    for (const x of testPoints) {
+        if (x > limit) break;
+        
+        const piX = primePi(x);
+        const xOverLnXVal = xOverLnX(x);
+        const liX = logarithmicIntegral(x);
+        const ratio = piX / xOverLnXVal;
+        
+        console.log(`${x}\t${piX}\t${xOverLnXVal.toFixed(2)}\t${liX.toFixed(2)}\t${ratio.toFixed(4)}`);
+    }
+}
+
+// 示例使用
+console.log("=== 素数定理验证 ===");
+verifyPrimeNumberTheorem(1000000);
+
+// 计算误差
+console.log("\n=== 计算不同近似公式的绝对误差 ===");
+const x = 1000000;
+const piX = primePi(x);
+const approx1 = xOverLnX(x);
+const approx2 = logarithmicIntegral(x);
+
+console.log(`π(${x}) = ${piX}`);
+console.log(`x/ln(x) = ${approx1.toFixed(2)}, 绝对误差 = ${Math.abs(piX - approx1).toFixed(2)}`);
+console.log(`Li(x) = ${approx2.toFixed(2)}, 绝对误差 = ${Math.abs(piX - approx2).toFixed(2)}`);
+console.log(`x/ln(x)的相对误差: ${(Math.abs(piX - approx1) / piX * 100).toFixed(2)}%`);
+console.log(`Li(x)的相对误差: ${(Math.abs(piX - approx2) / piX * 100).toFixed(2)}%`);
+
+// 素数定理的一个推论：第n个素数的渐近公式
+console.log("\n=== 第n个素数的渐近公式 ===");
+console.log("素数定理的一个推论：第n个素数p_n ~ n ln n");
+console.log("验证：");
+
+const testNs = [1, 10, 100, 1000, 10000];
+console.log("n\tp_n(实际)\tn ln n\t\tp_n/(n ln n)");
+
+// 为了获取实际第n个素数，我们需要一个函数来生成素数
+function nthPrime(n) {
+    if (n < 1) return null;
+    
+    let count = 0;
+    let num = 2;
+    
+    while (true) {
+        if (isPrime(num)) {
+            count++;
+            if (count === n) return num;
+        }
+        num++;
+    }
+}
+
+function isPrime(num) {
+    if (num < 2) return false;
+    if (num % 2 === 0) return num === 2;
+    const limit = Math.sqrt(num);
+    for (let i = 3; i <= limit; i += 2) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
+
+for (const n of testNs) {
+    const pn = nthPrime(n);
+    const approx = n * Math.log(n);
+    console.log(`${n}\t${pn}\t\t${approx.toFixed(2)}\t${(pn / approx).toFixed(4)}`);
+}</code>
+            </pre>
+            
+            <p style="margin-top: 15px; color: #f8f8f2;">
+                <strong>注意：</strong>
+                计算 $\pi(x)$ 的确切值对于大 $x$ 计算量很大，上述代码的筛法只能处理中等大小的 $x$。
+                实际应用中，对于非常大的 $x$，有专门的算法（如Meissel-Lehmer算法）可以高效计算 $\pi(x)$。
+            </p>
+        </section>
+
+        <section class="history" 
+                 style="background: #fffde7; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                <strong>猜想阶段：</strong>
+                1792年，15岁的高斯在研究素数表时，猜测素数定理的形式。
+                勒让德在1798年也独立提出了类似的猜想。
+            </p>
+            
+            <p>
+                <strong>初步进展：</strong>
+                切比雪夫在1852年证明了存在常数 $c_1, c_2$ 使得对于充分大的 $x$：
+                $$c_1 \frac{x}{\ln x} < \pi(x) < c_2 \frac{x}{\ln x}$$
+                他取 $c_1 = 0.92129, c_2 = 1.10555$。
+            </p>
+            
+            <p>
+                <strong>证明：</strong>
+                1896年，<strong>阿达马</strong>（Jacques Hadamard）和<strong>瓦莱·普桑</strong>（Charles de la Vallée Poussin）分别独立证明了素数定理。
+                他们的证明都使用了黎曼zeta函数的性质，属于解析数论的方法。
+            </p>
+            
+            <p>
+                <strong>初等证明：</strong>
+                1949年，<strong>塞尔伯格</strong>（Atle Selberg）和<strong>爱尔特希</strong>（Paul Erdős）分别给出了不依赖复分析的"初等证明"，
+                虽然证明仍然相当复杂。
+            </p>
+        </section>
+
+        <section class="corollaries" 
+                 style="background: #f8f0ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推论：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>第 $n$ 个素数：</strong>
+                    设 $p_n$ 表示第 $n$ 个素数，则：
+                    $$p_n \sim n \ln n$$
+                    更精确地：$p_n = n \ln n + n \ln \ln n + O(n)$。
+                </li>
+                
+                <li>
+                    <strong>素数间隔：</strong>
+                    存在任意长的连续合数段，即对于任意 $k$，存在 $n$ 使得 $n+1, n+2, \dots, n+k$ 都是合数。
+                </li>
+                
+                <li>
+                    <strong>伯特兰公设：</strong>
+                    对于任意 $n > 1$，存在素数 $p$ 满足 $n < p < 2n$。
+                    这是切比雪夫证明的，比素数定理弱但不需要解析方法。
+                </li>
+                
+                <li>
+                    <strong>平均间隔：</strong>
+                    在 $x$ 附近的素数平均间隔约为 $\ln x$。
+                </li>
+            </ol>
+        </section>
+
+        <section class="riemann-hypothesis" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>与黎曼猜想的关系：</h3>
+            
+            <p>
+                黎曼猜想是数论中最著名的未解决问题。如果黎曼猜想成立，那么素数定理的误差项可以大幅改进：
+                $$\pi(x) = \operatorname{Li}(x) + O(\sqrt{x} \ln x)$$
+            </p>
+            
+            <p>
+                目前无条件的最佳误差界（Vinogradov-Korobov，1958）：
+                $$\pi(x) = \operatorname{Li}(x) + O\left(x \exp(-c(\ln x)^{3/5}(\ln \ln x)^{-1/5})\right)$$
+            </p>
+            
+            <p>
+                如果黎曼猜想成立，我们就能更精确地了解素数的分布规律。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

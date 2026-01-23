@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>大步小步算法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>大步小步算法 (Baby-step Giant-step Algorithm)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法目的：</strong>
+            <p>
+                求解离散对数问题：给定素数 $p$，生成元 $g$（或一般的循环群元素），和目标值 $h$，求整数 $x$ 使得：
+                $$g^x \equiv h \pmod{p}$$
+                其中 $0 \leq x < p-1$。
+            </p>
+            
+            <p>
+                算法由肖尼斯（Daniel Shanks）于1971年提出，是时间-空间权衡的经典例子，
+                时间复杂度 $O(\sqrt{p})$，空间复杂度 $O(\sqrt{p})$。
+            </p>
+        </section>
+
+        <section class="algorithm">
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>预处理（小步）：</strong>
+                    令 $m = \lceil \sqrt{p-1} \rceil$。
+                    计算并存储所有"小步"：
+                    $$g^0, g^1, g^2, \dots, g^{m-1} \pmod{p}$$
+                    将值-索引对 $(g^j, j)$ 存入哈希表，以便快速查找。
+                </li>
+                
+                <li>
+                    <strong>计算逆元（大步因子）：</strong>
+                    计算 $g^{-m} \pmod{p}$，即 $g^m$ 的模 $p$ 逆元。
+                </li>
+                
+                <li>
+                    <strong>搜索（大步）：</strong>
+                    对于 $i = 0, 1, 2, \dots, m-1$，计算：
+                    $$h \cdot (g^{-m})^i \pmod{p}$$
+                    在哈希表中查找该值。如果找到某个 $j$ 使得：
+                    $$h \cdot (g^{-m})^i \equiv g^j \pmod{p}$$
+                    则解为 $x = i \cdot m + j$。
+                </li>
+                
+                <li>
+                    <strong>验证：</strong>
+                    检查 $g^x \equiv h \pmod{p}$ 是否成立。
+                </li>
+            </ol>
+            
+            <div style="background: #f0f8ff; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>算法原理：</strong>
+                设 $x = im + j$，其中 $0 \leq j < m$，$i$ 和 $j$ 是待求整数。
+                则原方程变为：
+                $$g^{im+j} \equiv h \pmod{p}$$
+                两边乘以 $g^{-im}$ 得：
+                $$g^j \equiv h \cdot g^{-im} \pmod{p}$$
+                算法通过预计算所有可能的 $g^j$（小步），然后枚举 $i$（大步）来寻找匹配。
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>问题：</strong> 求解 $2^x \equiv 9 \pmod{11}$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$p=11$，$p-1=10$，取 $m = \lceil \sqrt{10} \rceil = 4$。</li>
+                    <li>
+                        小步：计算 $g^j \bmod 11$ 对于 $j=0,1,2,3$：
+                        <ul>
+                            <li>$2^0 = 1$</li>
+                            <li>$2^1 = 2$</li>
+                            <li>$2^2 = 4$</li>
+                            <li>$2^3 = 8$</li>
+                        </ul>
+                        存入哈希表：{1:0, 2:1, 4:2, 8:3}。
+                    </li>
+                    <li>
+                        计算大步因子：$g^m = 2^4 = 16 \equiv 5 \pmod{11}$，
+                        求逆元：$5 \times 9 \equiv 45 \equiv 1 \pmod{11}$，所以 $5^{-1} \equiv 9 \pmod{11}$。
+                        即 $g^{-m} \equiv 9 \pmod{11}$。
+                    </li>
+                    <li>
+                        大步搜索：
+                        <ul>
+                            <li>$i=0$：$h \cdot (g^{-m})^0 = 9$，不在哈希表中。</li>
+                            <li>$i=1$：$9 \times 9 = 81 \equiv 4 \pmod{11}$，在哈希表中，$j=2$。</li>
+                        </ul>
+                    </li>
+                    <li>得到解：$x = i \cdot m + j = 1 \times 4 + 2 = 6$。</li>
+                    <li>验证：$2^6 = 64 \equiv 9 \pmod{11}$，正确。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 大步小步算法求解离散对数
+function babyStepGiantStep(g, h, p) {
+    // 辅助函数：快速幂
+    function modPow(base, exp, mod) {
+        if (mod === 1) return 0;
+        let result = 1n;
+        base = BigInt(base) % BigInt(mod);
+        let e = BigInt(exp);
+        while (e > 0n) {
+            if (e % 2n === 1n) {
+                result = (result * base) % BigInt(mod);
+            }
+            e >>= 1n;
+            base = (base * base) % BigInt(mod);
+        }
+        return Number(result);
+    }
+    
+    // 辅助函数：扩展欧几里得求逆元
+    function modInverse(a, mod) {
+        a = ((a % mod) + mod) % mod;
+        let [old_r, r] = [a, mod];
+        let [old_s, s] = [1, 0];
+        
+        while (r !== 0) {
+            const quotient = Math.floor(old_r / r);
+            [old_r, r] = [r, old_r - quotient * r];
+            [old_s, s] = [s, old_s - quotient * s];
+        }
+        
+        if (old_r !== 1) {
+            throw new Error("逆元不存在");
+        }
+        
+        return ((old_s % mod) + mod) % mod;
+    }
+    
+    // 边界情况处理
+    if (h === 1) return 0;
+    if (g === 0) {
+        if (h === 0) return 1;
+        throw new Error("无解");
+    }
+    
+    const m = Math.ceil(Math.sqrt(p - 1));
+    
+    // 小步：预计算 g^j mod p
+    const babySteps = new Map();
+    let current = 1;
+    for (let j = 0; j < m; j++) {
+        if (!babySteps.has(current)) {
+            babySteps.set(current, j);
+        }
+        current = (current * g) % p;
+    }
+    
+    // 计算大步因子 g^{-m} mod p
+    const gm = modPow(g, m, p);
+    const gmInv = modInverse(gm, p);
+    
+    // 大步：枚举 i
+    let gamma = h % p;
+    for (let i = 0; i < m; i++) {
+        if (babySteps.has(gamma)) {
+            const j = babySteps.get(gamma);
+            const x = i * m + j;
+            // 验证解
+            if (modPow(g, x, p) === h % p) {
+                return x;
+            }
+        }
+        gamma = (gamma * gmInv) % p;
+    }
+    
+    throw new Error("离散对数无解");
+}
+
+// 示例使用
+console.log("=== 大步小步算法示例 ===");
+
+// 示例1：2^x ≡ 9 mod 11
+try {
+    const solution1 = babyStepGiantStep(2, 9, 11);
+    console.log(`方程 2^x ≡ 9 mod 11 的解: x = ${solution1}`);
+    console.log(`验证: 2^${solution1} mod 11 = ${Math.pow(2, solution1) % 11}`);
+} catch (e) {
+    console.log(`错误: ${e.message}`);
+}
+
+// 示例2：3^x ≡ 7 mod 13
+try {
+    const solution2 = babyStepGiantStep(3, 7, 13);
+    console.log(`\n方程 3^x ≡ 7 mod 13 的解: x = ${solution2}`);
+    console.log(`验证: 3^${solution2} mod 13 = ${Math.pow(3, solution2) % 13}`);
+} catch (e) {
+    console.log(`错误: ${e.message}`);
+}
+
+// 性能测试
+console.log("\n=== 性能测试 ===");
+console.time("BSGS计算");
+const bigSolution = babyStepGiantStep(5, 123456, 1000003);
+console.timeEnd("BSGS计算");
+console.log(`方程 5^x ≡ 123456 mod 1000003 的解: x = ${bigSolution}`);
+
+// 验证随机测试
+console.log("\n=== 随机测试验证 ===");
+const testCount = 10;
+let passed = 0;
+for (let i = 0; i < testCount; i++) {
+    const p = 10007; // 素数
+    const g = 5; // 原根
+    const x = Math.floor(Math.random() * (p-2)) + 1; // 随机指数
+    const h = Math.pow(g, x) % p;
+    
+    try {
+        const calculatedX = babyStepGiantStep(g, h, p);
+        if (Math.pow(g, calculatedX) % p === h) {
+            passed++;
+        } else {
+            console.log(`测试 ${i+1} 失败: 计算值不正确`);
+        }
+    } catch (e) {
+        console.log(`测试 ${i+1} 失败: ${e.message}`);
+    }
+}
+console.log(`随机测试通过: ${passed}/${testCount}`);
+
+// 处理无解情况
+console.log("\n=== 无解情况测试 ===");
+try {
+    // 3不是模11的原根，但这里测试无解情况
+    babyStepGiantStep(3, 2, 7); // 3^x ≡ 2 mod 7 可能有解
+    console.log("有解");
+} catch (e) {
+    console.log(`无解: ${e.message}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="variants" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>变体与扩展：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>Pollard Rho算法：</strong>
+                    另一种求解离散对数的算法，时间复杂度相同但空间复杂度为 $O(1)$。
+                </li>
+                
+                <li>
+                    <strong>Pohlig-Hellman算法：</strong>
+                    当群阶有小的素因子时，可大幅加速离散对数计算。
+                </li>
+                
+                <li>
+                    <strong>推广到任意循环群：</strong>
+                    算法适用于任何有限循环群，只需群运算和比较操作。
+                </li>
+                
+                <li>
+                    <strong>空间优化：</strong>
+                    使用哈希表存储部分值，或使用时间-空间权衡的不同参数。
+                </li>
+            </ol>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用领域：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>密码分析：</strong>
+                    攻击基于离散对数问题的密码系统，如Diffie-Hellman密钥交换。
+                </li>
+                
+                <li>
+                    <strong>密码学协议：</strong>
+                    某些协议需要计算离散对数。
+                </li>
+                
+                <li>
+                    <strong>计算数论：</strong>
+                    研究离散对数的分布和性质。
+                </li>
+                
+                <li>
+                    <strong>椭圆曲线密码学：</strong>
+                    类似算法可用于椭圆曲线上的离散对数问题。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 注意：</h4>
+            <p>
+                1. 大步小步算法要求群运算是有效的，并且可以比较元素是否相等。<br>
+                2. 当群的阶不是素数时，离散对数可能不唯一，算法返回最小非负解。<br>
+                3. 对于大素数 $p$（如2048位），$\sqrt{p}$ 仍然太大，算法不实用，
+                   因此实际密码系统选择足够大的 $p$ 使得 $\sqrt{p}$ 的计算不可行。<br>
+                4. 在实际实现中，通常使用更高效的算法如指数演算或数域筛法来攻击实际的离散对数问题。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

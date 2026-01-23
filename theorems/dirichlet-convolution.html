@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>狄利克雷卷积 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>狄利克雷卷积 (Dirichlet Convolution)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定义：</strong>
+            <p>
+                设 $f$ 和 $g$ 是两个数论函数（定义在正整数集上的函数）。
+                它们的<strong>狄利克雷卷积</strong> $f * g$ 定义为：
+                $$(f * g)(n) = \sum_{d \mid n} f(d) g\left(\frac{n}{d}\right)$$
+                其中求和遍历 $n$ 的所有正因子 $d$。
+            </p>
+            
+            <p>
+                等价形式：
+                $$(f * g)(n) = \sum_{ab = n} f(a) g(b)$$
+                其中 $a, b$ 取遍满足 $ab = n$ 的正整数对。
+            </p>
+        </section>
+
+        <section class="properties" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>代数性质：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>交换律：</strong> $f * g = g * f$
+                </li>
+                
+                <li>
+                    <strong>结合律：</strong> $(f * g) * h = f * (g * h)$
+                </li>
+                
+                <li>
+                    <strong>分配律：</strong> $f * (g + h) = f * g + f * h$
+                </li>
+                
+                <li>
+                    <strong>单位元：</strong> 定义数论函数 $\varepsilon$：
+                    $$\varepsilon(n) = 
+                    \begin{cases}
+                    1 & \text{如果 } n = 1 \\
+                    0 & \text{如果 } n > 1
+                    \end{cases}$$
+                    则对于任意数论函数 $f$，有 $f * \varepsilon = \varepsilon * f = f$。
+                </li>
+                
+                <li>
+                    <strong>逆元：</strong> 如果 $f(1) \neq 0$，则存在唯一的数论函数 $f^{-1}$（称为狄利克雷逆）使得：
+                    $$f * f^{-1} = f^{-1} * f = \varepsilon$$
+                </li>
+            </ol>
+            
+            <p>
+                这些性质表明，所有数论函数在狄利克雷卷积下构成一个<strong>交换环</strong>，
+                其中加法是函数的逐点加法，乘法是狄利克雷卷积。
+            </p>
+        </section>
+
+        <section class="common-functions" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>常见数论函数的卷积：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">函数</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">符号</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">定义</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">重要卷积关系</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">常数函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$1$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$1(n) = 1$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$(1 * \mu) = \varepsilon$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">恒等函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\text{id}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\text{id}(n) = n$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\text{id} = \varphi * 1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">欧拉函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varphi$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">欧拉函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varphi = \text{id} * \mu$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">约数个数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$d$ 或 $\tau$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$d(n) = \sum_{d|n} 1$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$d = 1 * 1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">约数和</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\sigma$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\sigma(n) = \sum_{d|n} d$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\sigma = \text{id} * 1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">莫比乌斯函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\mu$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">莫比乌斯函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\mu = 1^{-1}$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">单位函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon(1)=1$, $\varepsilon(n)=0$ ($n>1$)</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$f * \varepsilon = f$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="mobius-inversion" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>莫比乌斯反演的卷积形式：</h3>
+            
+            <p>
+                莫比乌斯反演公式可以用狄利克雷卷积简洁表达：
+            </p>
+            
+            <p>
+                <strong>定理：</strong>
+                设 $f$ 和 $g$ 是数论函数，则：
+                $$f = g * 1 \quad \text{当且仅当} \quad g = f * \mu$$
+            </p>
+            
+            <p>
+                <strong>证明：</strong>
+                因为 $\mu$ 是 $1$ 的狄利克雷逆，即 $1 * \mu = \mu * 1 = \varepsilon$。
+                如果 $f = g * 1$，则两边同时卷积 $\mu$：
+                $$f * \mu = (g * 1) * \mu = g * (1 * \mu) = g * \varepsilon = g$$
+                反之亦然。
+            </p>
+            
+            <p>
+                这个形式比原始的求和形式更加简洁优美，并且容易推广。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 验证 $\varphi = \text{id} * \mu$。
+            </p>
+            
+            <p>
+                <strong>计算：</strong>
+                对于 $n=6$：
+                <ul>
+                    <li>$(\text{id} * \mu)(6) = \sum_{d|6} \text{id}(d) \mu(6/d)$</li>
+                    <li>$6$ 的因子：$1, 2, 3, 6$</li>
+                    <li>计算：
+                        <ul>
+                            <li>$d=1$: $\text{id}(1) \mu(6) = 1 \times \mu(6) = 1 \times 1 = 1$（因为 $6=2\times3$，$\mu(6)=1$）</li>
+                            <li>$d=2$: $\text{id}(2) \mu(3) = 2 \times (-1) = -2$</li>
+                            <li>$d=3$: $\text{id}(3) \mu(2) = 3 \times (-1) = -3$</li>
+                            <li>$d=6$: $\text{id}(6) \mu(1) = 6 \times 1 = 6$</li>
+                        </ul>
+                    </li>
+                    <li>总和：$1 + (-2) + (-3) + 6 = 2$</li>
+                    <li>$\varphi(6) = 2$，确实相等。</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 计算 $(1 * \varphi)(8)$。
+            </p>
+            
+            <p>
+                <strong>计算：</strong>
+                $$(1 * \varphi)(8) = \sum_{d|8} \varphi(d)$$
+                $8$ 的因子：$1, 2, 4, 8$
+                <ul>
+                    <li>$\varphi(1) = 1$</li>
+                    <li>$\varphi(2) = 1$</li>
+                    <li>$\varphi(4) = 2$</li>
+                    <li>$\varphi(8) = 4$</li>
+                </ul>
+                总和：$1+1+2+4=8$。
+                注意：$(1 * \varphi)(n) = n$ 是一个恒等式，因为 $\varphi = \text{id} * \mu$，
+                所以 $1 * \varphi = 1 * (\text{id} * \mu) = (1 * \mu) * \text{id} = \varepsilon * \text{id} = \text{id}$。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 获取一个数的所有因子
+function getDivisors(n) {
+    const divisors = [];
+    const sqrt = Math.sqrt(n);
+    
+    for (let i = 1; i <= sqrt; i++) {
+        if (n % i === 0) {
+            divisors.push(i);
+            if (i !== n / i) {
+                divisors.push(n / i);
+            }
+        }
+    }
+    
+    return divisors.sort((a, b) => a - b);
+}
+
+// 狄利克雷卷积实现
+function dirichletConvolution(f, g, n) {
+    const divisors = getDivisors(n);
+    let result = 0;
+    
+    for (const d of divisors) {
+        result += f(d) * g(n / d);
+    }
+    
+    return result;
+}
+
+// 常见数论函数的实现
+
+// 常数函数 1
+function constantOne(n) {
+    return 1;
+}
+
+// 恒等函数 id(n) = n
+function identity(n) {
+    return n;
+}
+
+// 欧拉函数 φ(n)
+function eulerPhi(n) {
+    let result = n;
+    let temp = n;
+    
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            while (temp % p === 0) {
+                temp /= p;
+            }
+            result -= result / p;
+        }
+    }
+    
+    if (temp > 1) {
+        result -= result / temp;
+    }
+    
+    return result;
+}
+
+// 约数个数 d(n)
+function divisorCount(n) {
+    let count = 0;
+    const sqrt = Math.sqrt(n);
+    
+    for (let i = 1; i <= sqrt; i++) {
+        if (n % i === 0) {
+            count++;
+            if (i !== n / i) {
+                count++;
+            }
+        }
+    }
+    
+    return count;
+}
+
+// 约数和 σ(n)
+function divisorSum(n) {
+    let sum = 0;
+    const sqrt = Math.sqrt(n);
+    
+    for (let i = 1; i <= sqrt; i++) {
+        if (n % i === 0) {
+            sum += i;
+            if (i !== n / i) {
+                sum += n / i;
+            }
+        }
+    }
+    
+    return sum;
+}
+
+// 莫比乌斯函数 μ(n)
+function mobius(n) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    let primeCount = 0;
+    let temp = n;
+    
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            primeCount++;
+            temp /= p;
+            
+            if (temp % p === 0) {
+                return 0; // 有平方因子
+            }
+        }
+    }
+    
+    if (temp > 1) {
+        primeCount++;
+    }
+    
+    return primeCount % 2 === 0 ? 1 : -1;
+}
+
+// 单位函数 ε(n)
+function unitEpsilon(n) {
+    return n === 1 ? 1 : 0;
+}
+
+// 示例使用
+console.log("=== 狄利克雷卷积示例 ===");
+
+// 示例1：验证 φ = id * μ
+console.log("\n1. 验证 φ = id * μ (n=1..10):");
+for (let n = 1; n <= 10; n++) {
+    const phiDirect = eulerPhi(n);
+    const phiConv = dirichletConvolution(identity, mobius, n);
+    console.log(`n=${n}: φ(${n})=${phiDirect}, (id*μ)(${n})=${phiConv}, ${phiDirect === phiConv ? '✓' : '✗'}`);
+}
+
+// 示例2：验证 1 * φ = id
+console.log("\n2. 验证 1 * φ = id (n=1..10):");
+for (let n = 1; n <= 10; n++) {
+    const idDirect = n;
+    const conv = dirichletConvolution(constantOne, eulerPhi, n);
+    console.log(`n=${n}: id(${n})=${idDirect}, (1*φ)(${n})=${conv}, ${idDirect === conv ? '✓' : '✗'}`);
+}
+
+// 示例3：计算 d = 1 * 1
+console.log("\n3. 验证 d = 1 * 1 (n=1..10):");
+for (let n = 1; n <= 10; n++) {
+    const dDirect = divisorCount(n);
+    const conv = dirichletConvolution(constantOne, constantOne, n);
+    console.log(`n=${n}: d(${n})=${dDirect}, (1*1)(${n})=${conv}, ${dDirect === conv ? '✓' : '✗'}`);
+}
+
+// 示例4：计算 σ = id * 1
+console.log("\n4. 验证 σ = id * 1 (n=1..10):");
+for (let n = 1; n <= 10; n++) {
+    const sigmaDirect = divisorSum(n);
+    const conv = dirichletConvolution(identity, constantOne, n);
+    console.log(`n=${n}: σ(${n})=${sigmaDirect}, (id*1)(${n})=${conv}, ${sigmaDirect === conv ? '✓' : '✗'}`);
+}
+
+// 示例5：狄利克雷逆的计算
+console.log("\n5. 计算常数函数1的狄利克雷逆（应该是μ）:");
+function dirichletInverse(f, n) {
+    // 递归计算 f^{-1}(n)
+    // 公式：f^{-1}(1) = 1/f(1), 对于 n>1: f^{-1}(n) = -1/f(1) * Σ_{d|n, d<n} f(n/d) * f^{-1}(d)
+    const inv = new Array(n + 1).fill(0);
+    
+    if (f(1) === 0) {
+        throw new Error("f(1)=0，逆不存在");
+    }
+    
+    inv[1] = 1 / f(1);
+    
+    for (let i = 2; i <= n; i++) {
+        let sum = 0;
+        const divisors = getDivisors(i);
+        
+        for (const d of divisors) {
+            if (d < i) {
+                sum += f(i / d) * inv[d];
+            }
+        }
+        
+        inv[i] = -sum / f(1);
+    }
+    
+    return inv;
+}
+
+// 计算1的逆，应该是μ
+const inv1 = dirichletInverse(constantOne, 20);
+console.log("n\t计算逆\tμ(n)");
+for (let i = 1; i <= 20; i++) {
+    console.log(`${i}\t${inv1[i].toFixed(0)}\t${mobius(i)}`);
+}
+
+// 验证卷积 f * f^{-1} = ε
+console.log("\n6. 验证常数函数1与其逆的卷积是ε:");
+for (let n = 1; n <= 10; n++) {
+    const conv = dirichletConvolution(constantOne, (x) => inv1[x], n);
+    const expected = unitEpsilon(n);
+    console.log(`n=${n}: (1*1^{-1})(${n})=${conv}, ε(${n})=${expected}, ${Math.abs(conv - expected) < 0.001 ? '✓' : '✗'}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>数论函数研究：</strong>
+                    狄利克雷卷积为数论函数提供了代数结构，便于研究函数之间的关系。
+                </li>
+                
+                <li>
+                    <strong>莫比乌斯反演：</strong>
+                    用卷积形式表达更加简洁，便于推广和应用。
+                </li>
+                
+                <li>
+                    <strong>解析数论：</strong>
+                    狄利克雷级数的乘法对应狄利克雷卷积。
+                </li>
+                
+                <li>
+                    <strong>组合数学：</strong>
+                    某些计数问题可以转化为数论函数和狄利克雷卷积。
+                </li>
+                
+                <li>
+                    <strong>算法设计：</strong>
+                    利用卷积性质可以设计更高效的算法计算数论函数。
+                </li>
+            </ol>
+        </section>
+
+        <section class="dirichlet-series" 
+                 style="background: #fffde7; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 狄利克雷级数：</h4>
+            <p>
+                狄利克雷卷积与狄利克雷级数有密切关系。数论函数 $f$ 的狄利克雷级数定义为：
+                $$F(s) = \sum_{n=1}^\infty \frac{f(n)}{n^s}$$
+                其中 $s$ 是复数。
+            </p>
+            
+            <p>
+                两个数论函数的狄利克雷卷积对应于它们狄利克雷级数的普通乘积：
+                $$(f * g)(n) \quad \text{对应} \quad F(s) \cdot G(s)$$
+                这使得我们可以用解析方法研究数论函数。
+            </p>
+            
+            <p>
+                例如，黎曼zeta函数 $\zeta(s) = \sum_{n=1}^\infty \frac{1}{n^s}$ 对应常数函数 $1$，
+                而 $\frac{1}{\zeta(s)} = \sum_{n=1}^\infty \frac{\mu(n)}{n^s}$ 对应莫比乌斯函数 $\mu$。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

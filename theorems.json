@@ -118,6 +118,18 @@
     "description": "当整数$n>2$时，关于$x,y,z$的不定方程$x^n+y^n=z^n$没有正整数解。这一定理由皮埃尔·德·费马于1637年提出，但直到1995年才被安德鲁·怀尔斯证明。",
     "link": "theorems/fermat-last-theorem.html",
     "tags": ["费马大定理", "不定方程", "怀尔斯证明", "数论难题"]
+  },
+  {
+    "title": "大步小步算法",
+    "description": "用于求解离散对数问题$g^x \\equiv h \\pmod{p}$的算法，时间复杂度$O(\\sqrt{p})$，是时间-空间权衡的经典例子。",
+    "link": "algorithms/baby-step-giant-step.html",
+    "tags": ["离散对数", "密码学", "算法", "时间-空间权衡"]
+  },
+  {
+    "title": "狄利克雷卷积",
+    "description": "数论函数的一种二元运算，定义为$(f*g)(n)=\\sum_{d|n} f(d)g(n/d)$。该运算满足交换律、结合律，且有单位元$\\varepsilon$，使数论函数构成一个交换环。",
+    "link": "theorems/dirichlet-convolution.html",
+    "tags": ["数论函数", "卷积", "莫比乌斯反演", "代数结构"]
   }
 ]
 

@@ -192,8 +192,7 @@ function renderTheorems(theorems, highlightTokens = []) {
             // 阻止冒泡，避免 document 级点击处理器把卡片标记为选中
             e.stopPropagation();
             if (card.dataset.link) {
-                const w = window.open(card.dataset.link, '_blank');
-                try { if (w) w.opener = null; } catch (err) { /* ignore */ }
+                window.location.href = card.dataset.link;
             }
             // 立即失去焦点，避免保留浏览器的焦点样式或被其他处理器识别为选中
             try { card.blur(); } catch (err) { /* ignore */ }
@@ -285,8 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentSelected >= 0 && currentSelected < cards.length) {
                 const link = cards[currentSelected].dataset && cards[currentSelected].dataset.link;
                 if (link) {
-                    const w = window.open(link, '_blank');
-                    try { if (w) w.opener = null; } catch (e) { /* ignore */ }
+                    window.location.href = link;
                 }
             }
         }

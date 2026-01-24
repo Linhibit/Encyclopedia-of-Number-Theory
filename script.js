@@ -9,37 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error('加载定理库失败:', err));
 });
 
-function renderTheorems(theorems) {
-    const grid = document.getElementById('theoremGrid');
-    grid.innerHTML = ''; // 清空加载提示
 
-    theorems.forEach(t => {
-        const card = document.createElement('div');
-        card.className = 'theorem-card';
-        card.innerHTML = `
-            <h3>${t.title}</h3>
-            <p>${t.description}</p>
-            <div class="tags">${t.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
-            <a href="${t.link}" class="read-more">查看证明 →</a>
-        `;
-        grid.appendChild(card);
-    });
-
-    // 关键：告诉 MathJax 渲染新生成的动态内容
-    if (window.MathJax && window.MathJax.typeset) {
-        window.MathJax.typeset();
-    }
-}
-
-function searchTheorems() {
-    let input = document.getElementById('searchInput').value.toLowerCase();
-    let filtered = window.allTheorems.filter(t => 
-        t.title.toLowerCase().includes(input) || 
-        t.description.toLowerCase().includes(input) ||
-        t.tags.some(tag => tag.toLowerCase().includes(input))
-    );
-    renderTheorems(filtered);
-}
 
 function debounce(fn, wait) {
     let t;
@@ -83,7 +53,9 @@ function scoreMatch(text, tokens) {
         } else {
             // fuzzy fallback by levenshtein
             const dist = levenshtein(token, text.slice(0, Math.max(text.length, token.length)));
-            if (dist <= 2) score += 3;
+            // Threshold scales with token length to avoid short queries matching unrelated short tags.
+            const threshold = Math.max(1, Math.floor(token.length / 3));
+            if (dist <= threshold) score += 3;
         }
     });
     return score;

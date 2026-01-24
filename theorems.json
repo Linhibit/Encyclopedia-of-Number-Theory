@@ -1,9 +1,9 @@
 [
   {
     "title": "费马小定理",
-    "description": "若 $p$ 为质数，且 $a$ 不被 $p$ 整除，则 $a^{p-1} \\equiv 1 \\pmod{p}$。",
+    "description": "如果 $p$ 是素数，且 $a$ 不是 $p$ 的倍数，则 $a^{p-1} \\equiv 1 \\pmod{p}$。这是数论中的一个基本定理，在密码学中有重要应用。",
     "link": "theorems/fermat-little-theorem.html",
-    "tags": ["同余", "质数"]
+    "tags": ["模运算", "素数", "同余", "数论基础", "密码学"]
   },
   {
     "title": "欧几里得算法",
@@ -166,6 +166,18 @@
     "description": "一种高效的概率素数测试算法。对于奇整数$n>1$，将$n-1$分解为$2^s \\cdot d$，通过检验$a^d \\pmod{n}$和$a^{2^r d} \\pmod{n}$来判断$n$是否为素数。",
     "link": "algorithms/miller-rabin-primality-test.html",
     "tags": ["素性测试", "概率算法", "密码学", "数论算法"]
+  },
+  {
+    "title": "狄利克雷定理",
+    "description": "关于等差数列中素数分布的定理：对于任意互质的正整数$a$和$d$，等差数列$a, a+d, a+2d, \\dots$中包含无穷多个素数。",
+    "link": "theorems/dirichlet-theorem.html",
+    "tags": ["素数分布", "等差数列", "解析数论", "算术级数"]
+  },
+  {
+    "title": "黎曼ζ函数",
+    "description": "黎曼ζ函数定义为 $\\zeta(s) = \\sum_{n=1}^\\infty \\frac{1}{n^s}$，最初在 $\\operatorname{Re}(s)>1$ 上定义，后通过解析延拓成为整个复平面上的亚纯函数。它在数论和解析数论中具有核心地位，与素数分布密切相关。",
+    "link": "theorems/riemann-zeta-function.html",
+    "tags": ["解析数论", "复变函数", "素数分布", "特殊函数"]
   }
 ]
 

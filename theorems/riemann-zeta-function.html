@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>黎曼ζ函数 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>黎曼ζ函数 (Riemann Zeta Function)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定义：</strong>
+            <p>
+                对于复数 $s$，满足 $\operatorname{Re}(s) > 1$ 时，黎曼 $\zeta$ 函数定义为：
+                $$\zeta(s) = \sum_{n=1}^\infty \frac{1}{n^s}$$
+                通过解析延拓，$\zeta(s)$ 可以延拓为整个复平面上的亚纯函数，仅在 $s = 1$ 处有一个单极点，留数为 $1$。
+            </p>
+            
+            <p>
+                <strong>重要性质：</strong>
+            </p>
+            <ol style="line-height: 1.6;">
+                <li><strong>欧拉乘积公式</strong>（当 $\operatorname{Re}(s) > 1$ 时）：
+                    $$\zeta(s) = \prod_{p \text{ prime}} \frac{1}{1 - p^{-s}}$$
+                    这一公式揭示了 $\zeta$ 函数与素数分布的深刻联系。
+                </li>
+                <li><strong>函数方程</strong>：
+                    $$\zeta(s) = 2^s \pi^{s-1} \sin\left(\frac{\pi s}{2}\right) \Gamma(1-s) \zeta(1-s)$$
+                    其中 $\Gamma$ 是伽马函数。函数方程建立了 $\zeta(s)$ 与 $\zeta(1-s)$ 之间的关系。
+                </li>
+                <li><strong>平凡零点</strong>：$\zeta(s)$ 在负偶数 $s = -2, -4, -6, \dots$ 处有零点，称为平凡零点。</li>
+                <li><strong>非平凡零点</strong>：除了平凡零点外，其余零点称为非平凡零点。黎曼猜想断言所有非平凡零点都位于直线 $\operatorname{Re}(s) = \frac{1}{2}$ 上。</li>
+            </ol>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>解析延拓的简要思路：</h3>
+            
+            <p>
+                <strong>方法一（黎曼本人给出的）：</strong>
+            </p>
+            <ol style="line-height: 1.6;">
+                <li>考虑 $\Gamma$ 函数：$\Gamma(s) = \int_0^\infty x^{s-1} e^{-x} dx$，当 $\operatorname{Re}(s) > 0$ 时收敛。</li>
+                <li>将 $\zeta(s)$ 写成积分形式：
+                    $$\zeta(s) = \frac{1}{\Gamma(s)} \int_0^\infty \frac{x^{s-1}}{e^x - 1} dx \quad (\operatorname{Re}(s) > 1)$$
+                </li>
+                <li>将积分路径分成 $[0, \infty)$ 和围道积分，利用复变函数理论得到延拓。</li>
+            </ol>
+            
+            <p>
+                <strong>方法二（更初等的）：</strong>
+            </p>
+            <ol style="line-height: 1.6;">
+                <li>定义 Dirichlet $\eta$ 函数（交替级数）：
+                    $$\eta(s) = \sum_{n=1}^\infty \frac{(-1)^{n-1}}{n^s} \quad (\operatorname{Re}(s) > 0)$$
+                </li>
+                <li>利用关系 $\eta(s) = (1 - 2^{1-s}) \zeta(s)$，得到
+                    $$\zeta(s) = \frac{1}{1 - 2^{1-s}} \eta(s)$$
+                </li>
+                <li>由于 $\eta(s)$ 在 $\operatorname{Re}(s) > 0$ 时收敛，且 $1 - 2^{1-s}$ 在 $s=1$ 处有一阶零点，而 $\eta(1) = \log 2$，因此 $\zeta(s)$ 在 $s=1$ 处有单极点。</li>
+            </ol>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>特殊值：</h3>
+            
+            <p>
+                <strong>正整数点：</strong>
+            </p>
+            <ul>
+                <li>$\zeta(2) = \frac{\pi^2}{6}$（巴塞尔问题）</li>
+                <li>$\zeta(4) = \frac{\pi^4}{90}$</li>
+                <li>$\zeta(6) = \frac{\pi^6}{945}$</li>
+                <li>一般地，对于正整数 $2n$，$\zeta(2n) = (-1)^{n+1} \frac{B_{2n} (2\pi)^{2n}}{2(2n)!}$，其中 $B_{2n}$ 是伯努利数。</li>
+                <li>$\zeta(3)$ 是阿培里常数，是无理数（已被证明）。</li>
+            </ul>
+            
+            <p>
+                <strong>负整数点（由函数方程得到）：</strong>
+            </p>
+            <ul>
+                <li>$\zeta(0) = -\frac{1}{2}$</li>
+                <li>$\zeta(-1) = -\frac{1}{12}$（在弦理论中有时会用到）</li>
+                <li>$\zeta(-2) = 0$（平凡零点）</li>
+                <li>$\zeta(-3) = \frac{1}{120}$</li>
+            </ul>
+            
+            <p>
+                <strong>其他重要值：</strong>
+            </p>
+            <ul>
+                <li>$\zeta(1)$ 发散（调和级数），但 $\zeta(s)$ 在 $s=1$ 处的洛朗展开为：
+                    $$\zeta(s) = \frac{1}{s-1} + \gamma + O(s-1)$$
+                    其中 $\gamma$ 是欧拉常数。
+                </li>
+                <li>$\zeta\left(\frac{1}{2}\right) \approx -1.4603545088$（负值）</li>
+            </ul>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            <p style="color: #f8f8f2;">由于黎曼 $\zeta$ 函数是复变函数，这里我们仅计算实数部分 $s$ 的近似值（使用级数求和和加速技巧）。</p>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 计算黎曼ζ函数在实数 s 上的近似值（s ≠ 1）
+function riemannZeta(s, maxTerms = 1000000) {
+    // 处理负整数（平凡零点）
+    if (s % 2 === 0 && s <= 0) {
+        return 0;
+    }
+    
+    // 对于 s > 1，直接求和
+    if (s > 1) {
+        let sum = 0;
+        for (let n = 1; n <= maxTerms; n++) {
+            sum += Math.pow(n, -s);
+        }
+        return sum;
+    }
+    
+    // 对于 s < 1，使用狄利克雷η函数变换：ζ(s) = η(s) / (1 - 2^(1-s))
+    // η(s) = Σ_{n=1}^∞ (-1)^(n-1) / n^s
+    if (s < 1) {
+        let eta = 0;
+        // 使用交替级数，但收敛速度可能很慢，这里使用一种简单的加速：计算足够多的项
+        for (let n = 1; n <= maxTerms; n++) {
+            let term = Math.pow(n, -s);
+            if (n % 2 === 0) {
+                eta -= term;
+            } else {
+                eta += term;
+            }
+        }
+        return eta / (1 - Math.pow(2, 1 - s));
+    }
+    
+    // 对于 s=1，返回Infinity（实际上调和级数发散）
+    if (s === 1) {
+        return Infinity;
+    }
+    
+    // 其他情况（0 < s < 1）也可以使用η函数
+    let eta = 0;
+    for (let n = 1; n <= maxTerms; n++) {
+        let term = Math.pow(n, -s);
+        if (n % 2 === 0) {
+            eta -= term;
+        } else {
+            eta += term;
+        }
+    }
+    return eta / (1 - Math.pow(2, 1 - s));
+}
+
+// 使用函数方程计算任意实数s的ζ函数值（近似）
+function zeta(s) {
+    // 处理特殊情况
+    if (s === 1) return Infinity;
+    if (s === 0) return -0.5;
+    if (s < 0 && s % 2 === 0) return 0;
+    
+    // 对于s > 1，直接求和
+    if (s > 1) {
+        return riemannZeta(s);
+    }
+    
+    // 对于s < 0，使用函数方程：ζ(s) = 2^s * π^(s-1) * sin(πs/2) * Γ(1-s) * ζ(1-s)
+    // 注意：这里我们使用近似的Γ函数和ζ函数，实际上对于负的s，我们通过转换到1-s来计算
+    // 由于Γ函数计算复杂，这里我们使用一种近似：当s为负整数时已经处理，其他情况我们使用递归关系将s转换到大于1的区间
+    
+    // 如果s < 0，我们可以使用函数方程，但需要计算Γ函数，这里我们使用一种简化方法：
+    // 利用ζ(s) = 2^s * π^(s-1) * sin(πs/2) * Γ(1-s) * ζ(1-s)
+    // 由于JavaScript没有内置Γ函数，我们使用一个近似Γ函数的库或简单近似
+    // 这里我们使用 Lanczos 近似来计算Γ函数（简化版）
+    
+    // 对于非整数负值，我们使用递归关系将s转换到大于1的区间：
+    // 利用 ζ(s) = 2^s * π^(s-1) * sin(πs/2) * Γ(1-s) * ζ(1-s)
+    // 由于计算复杂，我们这里仅实现一个简单的递归：将s不断加1直到大于1
+    // 但注意：每次加1需要使用函数方程，所以我们只对s在(0,1)区间内计算，然后对于s<0的情况，使用函数方程递归
+    
+    // 实际上，我们只实现了s>1和s在(0,1)的情况，对于s<0的情况，我们使用函数方程转换到s>1
+    // 但为了简化，我们这里只处理s>0的情况，对于s<0的情况，我们使用函数方程一次转换到1-s>1
+    if (s < 0) {
+        // 使用函数方程，需要计算Γ(1-s)和ζ(1-s)
+        // 由于1-s > 1，我们可以计算ζ(1-s)
+        // 但是Γ(1-s)需要近似，这里我们使用一个简单的Γ函数近似（Lanczos近似）
+        // 由于实现较复杂，我们这里只给出一个框架
+        // 实际上，对于负的s，我们通常使用已有的数学库
+        // 这里我们返回一个近似值，通过调用自身计算ζ(1-s)再乘以其他因子
+        // 注意：这个实现并不精确，仅用于演示
+        
+        // 计算 ζ(1-s)
+        let zeta1minusS = zeta(1 - s); // 递归调用，此时1-s>1
+        // 计算 sin(πs/2)
+        let sinFactor = Math.sin(Math.PI * s / 2);
+        // 计算 2^s * π^(s-1)
+        let factor = Math.pow(2, s) * Math.pow(Math.PI, s - 1);
+        // 计算 Γ(1-s) 使用 Lanczos 近似
+        let gamma = gammaLanczos(1 - s);
+        
+        return factor * sinFactor * gamma * zeta1minusS;
+    }
+    
+    // 对于0 < s < 1，使用η函数变换
+    return riemannZeta(s);
+}
+
+// Lanczos 近似计算 Γ 函数（简化版）
+function gammaLanczos(z) {
+    // 系数
+    const g = 7;
+    const p = [
+        0.99999999999980993,
+        676.5203681218851,
+        -1259.1392167224028,
+        771.32342877765313,
+        -176.61502916214059,
+        12.507343278686905,
+        -0.13857109526572012,
+        9.9843695780195716e-6,
+        1.5056327351493116e-7
+    ];
+    
+    // 反射公式：对于z<0.5，使用 Γ(z) = π / (sin(πz) * Γ(1-z))
+    if (z < 0.5) {
+        return Math.PI / (Math.sin(Math.PI * z) * gammaLanczos(1 - z));
+    }
+    
+    z -= 1;
+    let x = p[0];
+    for (let i = 1; i < p.length; i++) {
+        x += p[i] / (z + i);
+    }
+    let t = z + g + 0.5;
+    return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+}
+
+// 示例使用
+console.log("=== 黎曼ζ函数近似计算 ===");
+
+// 计算一些特殊值
+console.log("ζ(2) = " + zeta(2) + "，理论值 π²/6 ≈ " + (Math.PI * Math.PI / 6));
+console.log("ζ(4) = " + zeta(4) + "，理论值 π⁴/90 ≈ " + (Math.pow(Math.PI, 4) / 90));
+console.log("ζ(0) = " + zeta(0) + "，理论值 -1/2 = -0.5");
+console.log("ζ(-1) = " + zeta(-1) + "，理论值 -1/12 ≈ -0.0833333");
+console.log("ζ(-2) = " + zeta(-2) + "，理论值 0");
+
+// 计算非整数点
+console.log("ζ(0.5) = " + zeta(0.5) + "，近似值 -1.4603545");
+console.log("ζ(3) = " + zeta(3) + "，阿培里常数 ≈ 1.2020569");
+
+// 注意：由于级数收敛速度问题，对于s<1的近似可能不准确，需要更多项或加速技巧。
+// 上述代码仅为演示，实际应用中应使用更专业的数学库。</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>素数定理：</strong>
+                    黎曼 $\zeta$ 函数的非平凡零点分布与素数分布密切相关。素数定理 $\pi(x) \sim \frac{x}{\log x}$ 的证明依赖于 $\zeta$ 函数的非零区域。
+                </li>
+                
+                <li>
+                    <strong>解析数论：</strong>
+                    许多数论问题（如哥德巴赫猜想、孪生素数猜想）的研究中，$\zeta$ 函数是重要工具。
+                </li>
+                
+                <li>
+                    <strong>物理学：</strong>
+                    在量子场论、弦理论、统计力学中，$\zeta$ 函数正则化被用于处理发散级数。
+                </li>
+                
+                <li>
+                    <strong>概率论：</strong>
+                    在某些随机过程的研究中也会出现 $\zeta$ 函数。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 黎曼猜想：</h4>
+            <p>
+                黎曼猜想是数学中最重要的未解决问题之一。它断言 $\zeta$ 函数的所有非平凡零点都位于复平面上的直线 $\Re(s) = \frac{1}{2}$ 上。
+            </p>
+            <p>
+                黎曼猜想如果成立，将极大地改进素数分布的误差估计，并对数论和许多数学分支产生深远影响。
+            </p>
+            <p>
+                <strong>注意：</strong>
+                黎曼 $\zeta$ 函数是解析数论的核心对象，其研究涉及复分析、调和分析、代数几何等多个领域。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

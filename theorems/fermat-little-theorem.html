@@ -4,45 +4,361 @@
     <meta charset="UTF-8">
     <title>费马小定理 - 数论百科</title>
     <link rel="stylesheet" href="../style.css">
+    
     <script>
-    window.MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
-        }
-    };
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
 </head>
-<body>
-    <div class="article-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
-            <nav>
-                <a href="../index.html" class="back-home" aria-label="返回首页">
-                    <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                    </svg>
-                    返回首页
-                </a>
-            </nav>
-        <header><h1>费马小定理 (Fermat's Little Theorem)</h1></header>
 
-        <section class="theorem-box" style="border-left: 5px solid #d32f2f; background: #fff8f8; padding: 20px; margin: 20px 0;">
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>费马小定理 (Fermat's Little Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
             <strong>定理内容：</strong>
-            <p>设 $p$ 为质数， $a$ 为任意整数。若 $p \nmid a$（即 $a$ 不是 $p$ 的倍数），则：</p>
-            $$a^{p-1} \equiv 1 \pmod{p}$$
-            <p>另一个更一般的形式是：对于任意整数 $a$，有 $a^p \equiv a \pmod{p}$。</p>
+            <p>
+                如果 $p$ 是一个素数，$a$ 是一个整数，且 $p$ 不整除 $a$（即 $\gcd(a, p) = 1$），那么：
+                $$a^{p-1} \equiv 1 \pmod{p}$$
+            </p>
+            
+            <p>
+                等价地，对于任意整数 $a$ 和素数 $p$，有：
+                $$a^p \equiv a \pmod{p}$$
+            </p>
+            
+            <p>
+                <strong>另一种表述：</strong>
+                在模 $p$ 的乘法群 $\mathbb{Z}_p^*$（即 $\{1, 2, \dots, p-1\}$）中，每个元素的 $(p-1)$ 次幂都等于 $1$。
+            </p>
         </section>
-        <section class="proof">
-            <h3>证明简述：</h3>
-            <p>考虑集合 $S = \{1, 2, 3, \dots, p-1\}$。将集合中每个元素都乘以 $a$，得到：</p>
-            $$S' = \{a, 2a, 3a, \dots, (p-1)a\} \pmod{p}$$
-            <p>由于 $\gcd(a, p) = 1$，这些元素在模 $p$ 意义下两两不同，且都不为 0。因此 $S'$ 实际上是 $S$ 的一个排列。</p>
-            <p>将两个集合的元素分别相乘：</p>
-            $$a \cdot 2a \cdot 3a \dots (p-1)a \equiv 1 \cdot 2 \cdot 3 \dots (p-1) \pmod{p}$$
-            $$a^{p-1} \cdot (p-1)! \equiv (p-1)! \pmod{p}$$
-            <p>由于 $(p-1)!$ 与 $p$ 互质，约去后得：$a^{p-1} \equiv 1 \pmod{p}$。</p>
-            <span style="float:right">$\square$</span>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明：</h3>
+            
+            <p>
+                <strong>证明一（利用群论）：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    考虑模 $p$ 的乘法群 $\mathbb{Z}_p^* = \{1, 2, \dots, p-1\}$，这个群的阶为 $p-1$。
+                </li>
+                <li>
+                    由拉格朗日定理，有限群的每个元素的阶都整除群的阶。所以对于任意 $a \in \mathbb{Z}_p^*$，$a$ 的阶 $d$ 整除 $p-1$。
+                </li>
+                <li>
+                    因此，$a^{p-1} = (a^d)^{(p-1)/d} \equiv 1^{(p-1)/d} = 1 \pmod{p}$。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>证明二（初等证明）：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    考虑数列 $a, 2a, 3a, \dots, (p-1)a$。
+                </li>
+                <li>
+                    这些数模 $p$ 两两不同余：如果 $ia \equiv ja \pmod{p}$，则 $p \mid (i-j)a$。由于 $\gcd(a,p)=1$，所以 $p \mid (i-j)$，但 $0 < |i-j| < p$，矛盾。
+                </li>
+                <li>
+                    因此，$\{a, 2a, \dots, (p-1)a\}$ 模 $p$ 是 $\{1, 2, \dots, p-1\}$ 的一个排列。
+                </li>
+                <li>
+                    将所有这些数相乘：
+                    $$a \cdot 2a \cdot 3a \cdots (p-1)a \equiv 1 \cdot 2 \cdot 3 \cdots (p-1) \pmod{p}$$
+                    即
+                    $$a^{p-1} (p-1)! \equiv (p-1)! \pmod{p}$$
+                </li>
+                <li>
+                    由于 $(p-1)!$ 与 $p$ 互素（因为 $p$ 是素数，$(p-1)!$ 不包含因子 $p$），可以两边约去 $(p-1)!$，得到：
+                    $$a^{p-1} \equiv 1 \pmod{p}$$
+                </li>
+            </ol>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 验证 $p=5$ 时的费马小定理。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>对于 $a=2$：$2^{5-1} = 2^4 = 16 \equiv 1 \pmod{5}$ ✓</li>
+                    <li>对于 $a=3$：$3^{4} = 81 \equiv 1 \pmod{5}$ ✓</li>
+                    <li>对于 $a=4$：$4^{4} = 256 \equiv 1 \pmod{5}$ ✓</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 计算 $7^{222} \bmod 11$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>由于 $11$ 是素数且 $\gcd(7, 11) = 1$，根据费马小定理：$7^{10} \equiv 1 \pmod{11}$。</li>
+                    <li>将指数分解：$222 = 10 \times 22 + 2$。</li>
+                    <li>所以 $7^{222} = (7^{10})^{22} \cdot 7^2 \equiv 1^{22} \cdot 49 \pmod{11}$。</li>
+                    <li>$49 \equiv 5 \pmod{11}$，所以 $7^{222} \bmod 11 = 5$。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 判断 $341$ 是否是素数（费马伪素数测试）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>取 $a=2$，计算 $2^{340} \bmod 341$。</li>
+                    <li>如果 $341$ 是素数，那么 $2^{340} \equiv 1 \pmod{341}$。</li>
+                    <li>实际上，$2^{340} \equiv 1 \pmod{341}$，但 $341 = 11 \times 31$ 是合数。</li>
+                    <li>这说明费马小定理的逆命题不成立：满足 $a^{n-1} \equiv 1 \pmod{n}$ 的 $n$ 不一定是素数。这样的 $n$ 称为以 $a$ 为底的费马伪素数。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 快速幂算法（模幂运算）
+function modPow(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    
+    let result = 1n;
+    base = BigInt(base) % BigInt(modulus);
+    let exp = BigInt(exponent);
+    
+    while (exp > 0n) {
+        if (exp % 2n === 1n) {
+            result = (result * base) % BigInt(modulus);
+        }
+        exp >>= 1n;
+        base = (base * base) % BigInt(modulus);
+    }
+    
+    return Number(result);
+}
+
+// 使用费马小定理计算 a^(p-1) mod p，验证定理
+function verifyFermatLittleTheorem(a, p) {
+    if (p <= 1) {
+        throw new Error("p 必须是大于1的整数");
+    }
+    
+    // 检查 p 是否为素数（简单检查，不适用于大数）
+    function isPrime(n) {
+        if (n <= 1) return false;
+        if (n <= 3) return true;
+        if (n % 2 === 0 || n % 3 === 0) return false;
+        for (let i = 5; i * i <= n; i += 6) {
+            if (n % i === 0 || n % (i + 2) === 0) return false;
+        }
+        return true;
+    }
+    
+    if (!isPrime(p)) {
+        console.log(`警告：${p} 不是素数，费马小定理不保证成立`);
+    }
+    
+    // 计算 a^(p-1) mod p
+    const result = modPow(a, p - 1, p);
+    const expected = (a % p === 0) ? 0 : 1;
+    
+    return {
+        a,
+        p,
+        computed: result,
+        expected: expected,
+        valid: result === expected
+    };
+}
+
+// 使用费马小定理简化指数计算
+function modularExponentiationFermat(a, exponent, p) {
+    // 前提：p 是素数，且 a 不是 p 的倍数
+    if (a % p === 0) {
+        return 0;
+    }
+    
+    // 根据费马小定理：a^(p-1) ≡ 1 mod p
+    // 所以我们可以将指数模 (p-1)
+    const reducedExponent = exponent % (p - 1);
+    
+    // 计算 a^reducedExponent mod p
+    return modPow(a, reducedExponent, p);
+}
+
+// 示例使用
+console.log("=== 费马小定理验证 ===");
+
+// 验证几个例子
+const tests = [
+    { a: 2, p: 5 },
+    { a: 3, p: 7 },
+    { a: 5, p: 11 },
+    { a: 2, p: 341 }, // 341是伪素数
+    { a: 3, p: 341 }  // 3^340 mod 341 ≠ 1，所以能检测出341是合数
+];
+
+for (const test of tests) {
+    try {
+        const result = verifyFermatLittleTheorem(test.a, test.p);
+        console.log(`${test.a}^(${test.p}-1) mod ${test.p} = ${result.computed}, 预期: ${result.expected}, 验证: ${result.valid ? '通过' : '失败'}`);
+    } catch (error) {
+        console.log(`错误：${error.message}`);
+    }
+}
+
+console.log("\n=== 使用费马小定理简化指数计算 ===");
+
+// 计算 7^222 mod 11
+const a = 7, exponent = 222, p = 11;
+const result = modularExponentiationFermat(a, exponent, p);
+console.log(`${a}^${exponent} mod ${p} = ${result}`); // 应该为5
+
+// 计算大指数的例子
+const bigResult = modularExponentiationFermat(123, 456789, 17);
+console.log(`123^456789 mod 17 = ${bigResult}`);
+
+// 费马素性测试（概率性）
+function fermatPrimalityTest(n, iterations = 10) {
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 === 0) return false;
+    
+    for (let i = 0; i < iterations; i++) {
+        // 随机选择 a，2 ≤ a ≤ n-2
+        const a = 2 + Math.floor(Math.random() * (n - 3));
+        
+        // 如果 a^(n-1) mod n ≠ 1，则 n 一定是合数
+        if (modPow(a, n - 1, n) !== 1) {
+            return false;
+        }
+    }
+    
+    // 通过所有测试，可能是素数
+    return true;
+}
+
+console.log("\n=== 费马素性测试 ===");
+const testNumbers = [5, 7, 11, 13, 17, 341, 561, 1009, 1013, 1729];
+for (const n of testNumbers) {
+    const isPrime = fermatPrimalityTest(n, 5);
+    console.log(`${n}: ${isPrime ? '可能是素数' : '合数'}`);
+}
+
+// 注意：费马测试有伪素数问题，如341、561等能通过以某些数为底的测试
+// 实际中应使用更可靠的测试（如米勒-拉宾测试）</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>模幂运算简化：</strong>
+                    计算 $a^b \bmod p$ 时，如果 $p$ 是素数，可以利用费马小定理将指数 $b$ 对 $p-1$ 取模，从而简化计算。
+                </li>
+                
+                <li>
+                    <strong>素性测试：</strong>
+                    费马测试（概率性素性测试）的基础。虽然存在伪素数，但在某些情况下仍然有用。
+                </li>
+                
+                <li>
+                    <strong>RSA密码系统：</strong>
+                    在RSA的解密过程中，需要使用费马小定理的一个推广形式（欧拉定理）。
+                </li>
+                
+                <li>
+                    <strong>数论证明：</strong>
+                    许多数论定理和结论的证明中会用到费马小定理。
+                </li>
+                
+                <li>
+                    <strong>密码学协议：</strong>
+                    在一些密钥交换协议和数字签名算法中，费马小定理是理论基础之一。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 注意：</h4>
+            <p>
+                1. 费马小定理的逆命题不成立：即存在合数 $n$，对于某些 $a$ 满足 $a^{n-1} \equiv 1 \pmod{n}$，这样的 $n$ 称为费马伪素数。<br>
+                2. 对于所有 $a$ 都与 $n$ 互素且满足 $a^{n-1} \equiv 1 \pmod{n}$ 的合数 $n$，称为卡迈克尔数（如561，1105等）。<br>
+                3. 费马小定理是欧拉定理的特殊情况：若 $\gcd(a, n) = 1$，则 $a^{\varphi(n)} \equiv 1 \pmod{n}$，其中 $\varphi(n)$ 是欧拉函数。当 $n$ 为素数 $p$ 时，$\varphi(p) = p-1$，即得到费马小定理。<br>
+                4. 费马小定理是初等数论中的基本定理之一，由皮埃尔·德·费马在1640年提出。
+            </p>
         </section>
     </div>
 </body>

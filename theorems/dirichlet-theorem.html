@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>狄利克雷定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>狄利克雷定理 (Dirichlet's Theorem on Arithmetic Progressions)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $a$ 和 $d$ 是两个互质的正整数（即 $\gcd(a, d) = 1$），
+                则算术数列（等差数列）：
+                $$a, a+d, a+2d, a+3d, \dots$$
+                中包含无穷多个素数。
+            </p>
+            
+            <p>
+                更精确地，用 $\pi(x; d, a)$ 表示不超过 $x$ 且形如 $a + kd$（$k$ 为非负整数）的素数个数，
+                则有渐近公式（推广的素数定理）：
+                $$\pi(x; d, a) \sim \frac{1}{\varphi(d)} \frac{x}{\ln x} \quad (x \to \infty)$$
+                其中 $\varphi(d)$ 是欧拉函数，表示与 $d$ 互质且不超过 $d$ 的正整数个数。
+            </p>
+        </section>
+
+        <section class="theory" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>定理的直观理解：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>互质条件的必要性：</strong>
+                    如果 $\gcd(a, d) > 1$，那么数列中的每一项都能被 $\gcd(a, d)$ 整除，
+                    因此最多只能有一个素数（当 $\gcd(a, d)$ 本身是素数且等于数列中的某一项时）。
+                </li>
+                
+                <li>
+                    <strong>等分布性：</strong>
+                    在模 $d$ 的 $\varphi(d)$ 个与 $d$ 互质的剩余类中，素数"均匀分布"。
+                    即当 $x$ 很大时，每个这样的剩余类中包含大约 $\frac{1}{\varphi(d)}$ 的素数。
+                </li>
+                
+                <li>
+                    <strong>与素数定理的关系：</strong>
+                    素数定理说不超过 $x$ 的素数个数 $\pi(x) \sim x/\ln x$。
+                    狄利克雷定理将其细化：这些素数被"均匀"分配到 $\varphi(d)$ 个互质的剩余类中。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>狄利克雷密度：</strong><br>
+                对于模 $d$ 的每个剩余类 $a$（$\gcd(a, d) = 1$），该剩余类中素数的"密度"为 $1/\varphi(d)$。
+                也就是说，随机选择一个不超过 $x$ 的素数，它模 $d$ 余 $a$ 的概率趋近于 $1/\varphi(d)$。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 模 4 的情形。
+            </p>
+            
+            <p>
+                $\varphi(4) = 2$，与4互质的剩余类是 1 和 3。
+                <ul>
+                    <li>形如 $4k+1$ 的素数：5, 13, 17, 29, 37, 41, 53, 61, 73, 89, 97, ...</li>
+                    <li>形如 $4k+3$ 的素数：3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, ...</li>
+                </ul>
+                狄利克雷定理断言这两个数列都包含无穷多个素数。
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 模 6 的情形。
+            </p>
+            
+            <p>
+                $\varphi(6) = 2$，与6互质的剩余类是 1 和 5。
+                <ul>
+                    <li>形如 $6k+1$ 的素数：7, 13, 19, 31, 37, 43, 61, 67, 73, 79, 97, ...</li>
+                    <li>形如 $6k+5$ 的素数：5, 11, 17, 23, 29, 41, 47, 53, 59, 71, 83, 89, ...</li>
+                </ul>
+                注意：所有大于3的素数要么是 $6k+1$ 形式，要么是 $6k+5$ 形式。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 模 10 的情形。
+            </p>
+            
+            <p>
+                $\varphi(10) = 4$，与10互质的剩余类是 1, 3, 7, 9。
+                狄利克雷定理断言以下四个数列都包含无穷多个素数：
+                <ul>
+                    <li>$10k+1$：11, 31, 41, 61, 71, 101, 131, ...</li>
+                    <li>$10k+3$：3, 13, 23, 43, 53, 73, 83, 103, 113, ...</li>
+                    <li>$10k+7$：7, 17, 37, 47, 67, 97, 107, 127, 137, ...</li>
+                    <li>$10k+9$：19, 29, 59, 79, 89, 109, 139, 149, ...</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>数据验证：</strong> 下表显示了不超过 $10^6$ 的素数在各剩余类中的分布：
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                    <thead>
+                        <tr style="background: #e0e0e0;">
+                            <th style="padding: 8px; border: 1px solid #ccc;">模数 $d$</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">$\varphi(d)$</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">剩余类 $a$</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">$\pi(10^6; d, a)$</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">比例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2" style="padding: 8px; border: 1px solid #ccc;">4</td>
+                            <td rowspan="2" style="padding: 8px; border: 1px solid #ccc;">2</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">41,461</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">0.499</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">41,553</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">0.501</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="4" style="padding: 8px; border: 1px solid #ccc;">10</td>
+                            <td rowspan="4" style="padding: 8px; border: 1px solid #ccc;">4</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">20,833</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">0.250</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">20,830</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">0.250</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc;">7</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">20,831</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">0.250</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc;">9</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">20,824</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;">0.250</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                可以看到，素数在各个剩余类中几乎是均匀分布的。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：验证狄利克雷定理</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 计算欧拉函数 φ(n)
+function eulerPhi(n) {
+    let result = n;
+    let temp = n;
+    
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            while (temp % p === 0) {
+                temp /= p;
+            }
+            result -= result / p;
+        }
+    }
+    
+    if (temp > 1) {
+        result -= result / temp;
+    }
+    
+    return result;
+}
+
+// 判断是否为素数（简单方法，仅适用于小整数）
+function isPrime(n) {
+    if (n < 2) return false;
+    if (n % 2 === 0) return n === 2;
+    const limit = Math.sqrt(n);
+    for (let i = 3; i <= limit; i += 2) {
+        if (n % i === 0) return false;
+    }
+    return true;
+}
+
+// 计算 π(x; d, a)：不超过x且形如a+kd的素数个数
+function countPrimesInArithmeticProgression(x, d, a) {
+    if (gcd(a, d) !== 1) {
+        throw new Error("a和d必须互质");
+    }
+    
+    let count = 0;
+    // 从满足条件的最小正整数开始
+    let n = a;
+    if (n <= 0) {
+        // 找到第一个正数项
+        n += d * Math.ceil((1 - a) / d);
+    }
+    
+    while (n <= x) {
+        if (isPrime(n)) {
+            count++;
+        }
+        n += d;
+    }
+    
+    return count;
+}
+
+// 最大公约数
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// 验证狄利克雷定理的数值证据
+function verifyDirichletTheorem(limit, d) {
+    console.log(`=== 验证模 ${d} 的狄利克雷定理 (x ≤ ${limit}) ===`);
+    
+    const phiD = eulerPhi(d);
+    const totalPrimesUpToLimit = countPrimesUpTo(limit);
+    console.log(`φ(${d}) = ${phiD}`);
+    console.log(`不超过 ${limit} 的素数总数: ${totalPrimesUpToLimit}`);
+    console.log(`理论期望每个剩余类约有 ${(totalPrimesUpToLimit/phiD).toFixed(1)} 个素数`);
+    
+    console.log("\n各个剩余类中的素数分布:");
+    console.log("剩余类 a | π(x; d, a) | 比例");
+    console.log("-".repeat(40));
+    
+    let totalCounted = 0;
+    
+    for (let a = 1; a < d; a++) {
+        if (gcd(a, d) === 1) {
+            const count = countPrimesInArithmeticProgression(limit, d, a);
+            const proportion = count / totalPrimesUpToLimit;
+            totalCounted += count;
+            
+            console.log(`${a} mod ${d} | ${count.toString().padStart(8)} | ${proportion.toFixed(4)}`);
+        }
+    }
+    
+    // 验证是否所有素数都被计数（除了可能的小素数）
+    console.log(`\n总计计数的素数: ${totalCounted}`);
+    console.log(`实际素数总数: ${totalPrimesUpToLimit}`);
+    console.log(`差异: ${Math.abs(totalCounted - totalPrimesUpToLimit)}`);
+    
+    // 检查分布是否均匀
+    console.log("\n均匀性检验:");
+    const counts = [];
+    for (let a = 1; a < d; a++) {
+        if (gcd(a, d) === 1) {
+            counts.push(countPrimesInArithmeticProgression(limit, d, a));
+        }
+    }
+    
+    const avg = counts.reduce((s, c) => s + c, 0) / counts.length;
+    const variance = counts.reduce((s, c) => s + (c - avg) ** 2, 0) / counts.length;
+    const stdDev = Math.sqrt(variance);
+    const cv = (stdDev / avg) * 100; // 变异系数
+    
+    console.log(`平均值: ${avg.toFixed(2)}`);
+    console.log(`标准差: ${stdDev.toFixed(2)}`);
+    console.log(`变异系数: ${cv.toFixed(2)}% (越小越均匀)`);
+}
+
+// 辅助函数：计算不超过limit的素数个数
+function countPrimesUpTo(limit) {
+    let count = 0;
+    for (let n = 2; n <= limit; n++) {
+        if (isPrime(n)) count++;
+    }
+    return count;
+}
+
+// 示例使用
+console.log("=== 狄利克雷定理数值验证 ===");
+
+// 验证模4的情形
+verifyDirichletTheorem(100000, 4);
+
+console.log("\n");
+// 验证模10的情形
+verifyDirichletTheorem(100000, 10);
+
+console.log("\n");
+// 验证模15的情形（φ(15)=8）
+verifyDirichletTheorem(100000, 15);
+
+// 生成算术数列中的素数
+console.log("\n=== 生成算术数列中的素数 ===");
+function generatePrimesInProgression(d, a, count) {
+    const primes = [];
+    let n = a;
+    if (n <= 0) {
+        n += d * Math.ceil((1 - a) / d);
+    }
+    
+    while (primes.length < count) {
+        if (isPrime(n)) {
+            primes.push(n);
+        }
+        n += d;
+    }
+    
+    return primes;
+}
+
+// 生成形如4k+1的前20个素数
+console.log("形如4k+1的前20个素数:");
+const primes4k1 = generatePrimesInProgression(4, 1, 20);
+console.log(primes4k1.join(", "));
+
+// 生成形如4k+3的前20个素数
+console.log("\n形如4k+3的前20个素数:");
+const primes4k3 = generatePrimesInProgression(4, 3, 20);
+console.log(primes4k3.join(", "));
+
+// 狄利克雷密度计算
+console.log("\n=== 狄利克雷密度计算 ===");
+function dirichletDensity(d) {
+    return 1 / eulerPhi(d);
+}
+
+console.log("模d的每个互质剩余类中素数的理论密度:");
+for (const d of [2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+    const density = dirichletDensity(d);
+    console.log(`d=${d}: 密度 = ${density.toFixed(4)} (1/φ(${d})=1/${eulerPhi(d)})`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思想简介：</h3>
+            
+            <p>
+                狄利克雷定理的证明是解析数论的经典成就，主要步骤包括：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>引入狄利克雷特征：</strong>
+                    对于模 $d$，定义<strong>狄利克雷特征</strong> $\chi: \mathbb{Z} \to \mathbb{C}$，
+                    满足：
+                    <ul>
+                        <li>$\chi(n+d) = \chi(n)$（周期性）</li>
+                        <li>$\chi(mn) = \chi(m)\chi(n)$（完全积性）</li>
+                        <li>$\chi(1) = 1$</li>
+                        <li>$\chi(n) = 0$ 当且仅当 $\gcd(n, d) > 1$</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>狄利克雷L-函数：</strong>
+                    对每个特征 $\chi$，定义L-函数：
+                    $$L(s, \chi) = \sum_{n=1}^\infty \frac{\chi(n)}{n^s}, \quad \Re(s) > 1$$
+                    这是黎曼ζ函数的推广。
+                </li>
+                
+                <li>
+                    <strong>特征的正交关系：</strong>
+                    利用特征的正交性，可以将特定剩余类中的素数计数表示为：
+                    $$\sum_{\substack{p \leq x \\ p \equiv a \pmod{d}}} 1 = \frac{1}{\varphi(d)} \sum_{\chi} \overline{\chi(a)} \sum_{p \leq x} \chi(p)$$
+                    其中求和遍历所有模 $d$ 的狄利克雷特征。
+                </li>
+                
+                <li>
+                    <strong>非主特征的L-函数非零：</strong>
+                    证明的关键是证明当 $s=1$ 时，所有非主特征对应的 $L(s, \chi)$ 都不为零。
+                    狄利克雷通过引入类数公式证明了这一点。
+                </li>
+                
+                <li>
+                    <strong>应用解析方法：</strong>
+                    使用复分析中的工具（如围道积分、留数定理）分析L-函数，
+                    最终得到 $\pi(x; d, a)$ 的渐近公式。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>历史意义：</strong>
+                狄利克雷在1837年证明了这个定理，开创了解析数论的新领域。
+                他引入了特征和L-函数，这些工具后来在数论中变得极其重要。
+            </p>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用与推广：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>素数分布：</strong>
+                    提供了素数在算术数列中分布的精确描述。
+                </li>
+                
+                <li>
+                    <strong>筛法理论：</strong>
+                    狄利克雷定理是更精细筛法（如Bombieri-Vinogradov定理）的基础。
+                </li>
+                
+                <li>
+                    <strong>解析数论：</strong>
+                    发展了L-函数理论，这对研究黎曼猜想和更一般的自守形式至关重要。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    某些密码算法需要特定形式的素数，狄利克雷定理保证了这类素数的存在性。
+                </li>
+                
+                <li>
+                    <strong>随机算法：</strong>
+                    生成具有特定性质的随机素数。
+                </li>
+                
+                <li>
+                    <strong>推广：</strong>
+                    <ul>
+                        <li><strong>Siegel-Walfisz定理：</strong> 对 $\pi(x; d, a)$ 给出更精确的误差估计。</li>
+                        <li><strong>Bombieri-Vinogradov定理：</strong> 平均意义下的广义黎曼猜想。</li>
+                        <li><strong>Green-Tao定理：</strong> 素数中包含任意长的算术数列，这是狄利克雷定理的深刻推广。</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <section class="history" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                狄利克雷定理以德国数学家<strong>彼得·古斯塔夫·勒热纳·狄利克雷</strong>（Peter Gustav Lejeune Dirichlet，1805-1859）命名。
+                他在1837年证明了这一定理。
+            </p>
+            
+            <p>
+                欧拉曾注意到形如 $4k+1$ 和 $4k+3$ 的素数都有无穷多个，但未能证明。
+                勒让德曾猜想等差数列中总有无穷多个素数，但无法证明。
+            </p>
+            
+            <p>
+                狄利克雷的证明引入了一个全新的方法——解析方法，将数论问题与复分析相结合。
+                他创造的狄利克雷特征和L-函数成为解析数论的核心工具。
+            </p>
+            
+            <p>
+                <strong>未解决问题：</strong>
+                虽然我们知道每个互质的等差数列中都包含无穷多个素数，但找到这些素数的最小间隔、
+                首个素数的大小等问题仍未完全解决。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

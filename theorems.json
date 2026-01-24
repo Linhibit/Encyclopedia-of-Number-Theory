@@ -136,6 +136,24 @@
     "description": "计算组合数模素数的定理：$C(n,m) \\equiv \\prod_{i=0}^{k} C(n_i, m_i) \\pmod{p}$，其中$n_i, m_i$是$n, m$的$p$进制表示的数字。",
     "link": "theorems/lucas-theorem.html",
     "tags": ["组合数", "模运算", "素数模", "二项式系数"]
-  } 
+  },
+  {
+    "title": "佩尔方程",
+    "description": "形如$x^2 - dy^2 = 1$的二次丢番图方程，其中$d$是非平方正整数。该方程有无穷多组正整数解，基本解可以通过连分数法求得。",
+    "link": "theorems/pell-equation.html",
+    "tags": ["不定方程", "二次方程", "连分数", "丢番图方程"]
+  },
+  {
+    "title": "卡迈克尔定理",
+    "description": "定义了卡迈克尔函数$\\lambda(n)$，它是使得$a^{\\lambda(n)} \\equiv 1 \\pmod{n}$对所有与$n$互质的$a$成立的最小正整数。$\\lambda(n)$是$n$的简化剩余系的指数。",
+    "link": "theorems/carmichael-theorem.html",
+    "tags": ["卡迈克尔函数", "指数", "原根", "数论函数"]
+  },
+  {
+    "title": "阶的性质定理",
+    "description": "关于模$n$的整数$a$的阶的基本性质：设$\\gcd(a,n)=1$，$a$模$n$的阶$\\operatorname{ord}_n(a)$是满足$a^k \\equiv 1 \\pmod{n}$的最小正整数$k$，则$\\operatorname{ord}_n(a)$整除任意满足$a^m \\equiv 1 \\pmod{n}$的整数$m$。",
+    "link": "theorems/order-properties.html",
+    "tags": ["阶", "原根", "模运算", "数论性质"]
+  }
 ]
 

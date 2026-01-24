@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>卡迈克尔定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>卡迈克尔定理 (Carmichael's Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>卡迈克尔函数 $\lambda(n)$ 的定义：</strong>
+            <p>
+                对于正整数 $n$，<strong>卡迈克尔函数</strong> $\lambda(n)$ 定义为最小的正整数 $m$，使得对于所有与 $n$ 互质的整数 $a$，都有：
+                $$a^m \equiv 1 \pmod{n}$$
+            </p>
+            
+            <p>
+                等价地，$\lambda(n)$ 是模 $n$ 的简化剩余系（即与 $n$ 互质的剩余类构成的乘法群）的<strong>指数</strong>，
+                即使得 $a^m \equiv 1 \pmod{n}$ 对所有 $\gcd(a, n) = 1$ 成立的最小正整数 $m$。
+            </p>
+        </section>
+
+        <section class="properties" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>$\lambda(n)$ 的计算公式：</h3>
+            
+            <p>
+                卡迈克尔函数可以通过 $n$ 的素因子分解计算：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    对于奇素数幂 $p^k$（$k \geq 1$）：
+                    $$\lambda(p^k) = 
+                    \begin{cases}
+                    \varphi(p^k) = p^{k-1}(p-1) & \text{如果 } p \geq 3 \text{ 或 } k \leq 2 \\
+                    2^{k-2} & \text{如果 } p = 2 \text{ 且 } k \geq 3
+                    \end{cases}$$
+                    其中 $\varphi$ 是欧拉函数。
+                </li>
+                
+                <li>
+                    对于 $n = 2^k$：
+                    $$\lambda(2^k) = 
+                    \begin{cases}
+                    1 & \text{如果 } k = 1 \\
+                    2 & \text{如果 } k = 2 \\
+                    2^{k-2} & \text{如果 } k \geq 3
+                    \end{cases}$$
+                </li>
+                
+                <li>
+                    对于一般的 $n = 2^{k_0} p_1^{k_1} p_2^{k_2} \cdots p_r^{k_r}$（$p_i$ 为奇素数）：
+                    $$\lambda(n) = \operatorname{lcm}\big(\lambda(2^{k_0}), \lambda(p_1^{k_1}), \lambda(p_2^{k_2}), \dots, \lambda(p_r^{k_r})\big)$$
+                </li>
+            </ol>
+            
+            <p>
+                <strong>重要性质：</strong>
+                <ul>
+                    <li>$\lambda(n) \mid \varphi(n)$，且当且仅当 $n$ 有原根时等号成立。</li>
+                    <li>$\lambda(n)$ 是使得 $a^m \equiv 1 \pmod{n}$ 对所有 $\gcd(a,n)=1$ 成立的 $m$ 的最小值。</li>
+                    <li>对于任意与 $n$ 互质的 $a$，$a^{\lambda(n)} \equiv 1 \pmod{n}$。</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>卡迈克尔函数 $\lambda(n)$ vs 欧拉函数 $\varphi(n)$：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">$n$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$\varphi(n)$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">$\lambda(n)$</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">定义</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varphi(2)=1$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">3</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">有原根，$\lambda=\varphi$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">有原根3</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">5</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">有原根</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">8</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">无原根，$\lambda=2$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">15</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">8</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">4</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">无原根</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">24</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">8</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">2</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\lambda(8)=2, \lambda(3)=2$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 计算 $\lambda(15)$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$15 = 3 \times 5$</li>
+                    <li>$\lambda(3) = \varphi(3) = 2$</li>
+                    <li>$\lambda(5) = \varphi(5) = 4$</li>
+                    <li>$\lambda(15) = \operatorname{lcm}(2, 4) = 4$</li>
+                </ol>
+                验证：对于所有与15互质的 $a$（即 $a=1,2,4,7,8,11,13,14$），有 $a^4 \equiv 1 \pmod{15}$。
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 计算 $\lambda(24)$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$24 = 2^3 \times 3$</li>
+                    <li>$\lambda(2^3) = 2^{3-2} = 2$（因为 $2^3$ 且 $k=3 \geq 3$）</li>
+                    <li>$\lambda(3) = 2$</li>
+                    <li>$\lambda(24) = \operatorname{lcm}(2, 2) = 2$</li>
+                </ol>
+                验证：与24互质的数有 $\varphi(24)=8$ 个：$1,5,7,11,13,17,19,23$，确实 $a^2 \equiv 1 \pmod{24}$ 对这些 $a$ 成立。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 计算 $\lambda(100)$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$100 = 2^2 \times 5^2$</li>
+                    <li>$\lambda(2^2) = 2$（因为 $k=2$）</li>
+                    <li>$\lambda(5^2) = \varphi(5^2) = 5^{2-1}(5-1) = 5 \times 4 = 20$</li>
+                    <li>$\lambda(100) = \operatorname{lcm}(2, 20) = 20$</li>
+                </ol>
+                注意：$\varphi(100) = 40$，$\lambda(100) = 20$，$\lambda(100)$ 是 $\varphi(100)$ 的真因子。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 计算欧拉函数 φ(n)
+function eulerPhi(n) {
+    let result = n;
+    let temp = n;
+    
+    for (let p = 2; p * p <= temp; p++) {
+        if (temp % p === 0) {
+            while (temp % p === 0) {
+                temp /= p;
+            }
+            result -= result / p;
+        }
+    }
+    
+    if (temp > 1) {
+        result -= result / temp;
+    }
+    
+    return result;
+}
+
+// 计算卡迈克尔函数 λ(n)
+function carmichaelLambda(n) {
+    if (n <= 0) return 0;
+    if (n === 1) return 1;
+    
+    // 分解质因数
+    const factors = {};
+    let temp = n;
+    
+    // 处理因子2
+    let count2 = 0;
+    while (temp % 2 === 0) {
+        temp /= 2;
+        count2++;
+    }
+    if (count2 > 0) {
+        factors[2] = count2;
+    }
+    
+    // 处理奇数因子
+    for (let p = 3; p * p <= temp; p += 2) {
+        let count = 0;
+        while (temp % p === 0) {
+            temp /= p;
+            count++;
+        }
+        if (count > 0) {
+            factors[p] = count;
+        }
+    }
+    
+    if (temp > 1) {
+        factors[temp] = 1;
+    }
+    
+    // 计算各个素因子幂的λ值
+    const lambdaValues = [];
+    
+    for (const [p, k] of Object.entries(factors)) {
+        const prime = Number(p);
+        const exponent = k;
+        
+        if (prime === 2) {
+            if (exponent === 1) {
+                lambdaValues.push(1);
+            } else if (exponent === 2) {
+                lambdaValues.push(2);
+            } else { // exponent >= 3
+                lambdaValues.push(Math.pow(2, exponent - 2));
+            }
+        } else { // 奇素数
+            if (exponent === 1) {
+                lambdaValues.push(prime - 1);
+            } else {
+                lambdaValues.push(Math.pow(prime, exponent - 1) * (prime - 1));
+            }
+        }
+    }
+    
+    // 计算最小公倍数
+    function lcm(a, b) {
+        return (a * b) / gcd(a, b);
+    }
+    
+    function gcd(a, b) {
+        return b === 0 ? a : gcd(b, a % b);
+    }
+    
+    let result = 1;
+    for (const val of lambdaValues) {
+        result = lcm(result, val);
+    }
+    
+    return result;
+}
+
+// 验证卡迈克尔函数的性质
+function verifyCarmichael(n) {
+    const lambdaN = carmichaelLambda(n);
+    const phiN = eulerPhi(n);
+    
+    console.log(`n = ${n}:`);
+    console.log(`  φ(n) = ${phiN}`);
+    console.log(`  λ(n) = ${lambdaN}`);
+    console.log(`  λ(n) 整除 φ(n)? ${phiN % lambdaN === 0 ? '是' : '否'}`);
+    
+    // 验证对于所有与n互质的a，a^λ(n) ≡ 1 mod n
+    let allPass = true;
+    const coprimeNumbers = [];
+    
+    for (let a = 1; a < n; a++) {
+        if (gcd(a, n) === 1) {
+            coprimeNumbers.push(a);
+            const modPowResult = modPow(a, lambdaN, n);
+            if (modPowResult !== 1) {
+                console.log(`  错误: ${a}^${lambdaN} mod ${n} = ${modPowResult} ≠ 1`);
+                allPass = false;
+            }
+        }
+    }
+    
+    if (allPass) {
+        console.log(`  验证通过: 所有${coprimeNumbers.length}个与${n}互质的数都满足a^λ(n) ≡ 1 mod n`);
+    }
+    
+    return allPass;
+}
+
+// 快速幂算法
+function modPow(base, exp, mod) {
+    if (mod === 1) return 0;
+    let result = 1n;
+    base = BigInt(base) % BigInt(mod);
+    let e = BigInt(exp);
+    while (e > 0n) {
+        if (e % 2n === 1n) {
+            result = (result * base) % BigInt(mod);
+        }
+        e >>= 1n;
+        base = (base * base) % BigInt(mod);
+    }
+    return Number(result);
+}
+
+// 辅助函数：最大公约数
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// 示例使用
+console.log("=== 卡迈克尔函数计算 ===");
+
+const testNumbers = [1, 2, 3, 4, 5, 8, 15, 24, 100, 561];
+for (const n of testNumbers) {
+    console.log(`\nn = ${n}:`);
+    const lambda = carmichaelLambda(n);
+    const phi = eulerPhi(n);
+    console.log(`λ(${n}) = ${lambda}, φ(${n}) = ${phi}`);
+    console.log(`λ(${n}) / φ(${n}) = ${(lambda/phi).toFixed(3)}`);
+}
+
+console.log("\n=== 验证卡迈克尔函数的性质 ===");
+verifyCarmichael(15);
+verifyCarmichael(24);
+verifyCarmichael(100);
+
+// 卡迈克尔数：合数n满足对任意与n互质的a，有a^{n-1} ≡ 1 mod n
+console.log("\n=== 卡迈克尔数检测 ===");
+function isCarmichaelNumber(n) {
+    if (n < 2 || isPrime(n)) return false;
+    
+    // 检查是否对所有与n互质的a，a^{n-1} ≡ 1 mod n
+    // 实际上只需要检查a=2,3,5,...到一定范围
+    for (let a = 2; a < n; a++) {
+        if (gcd(a, n) === 1) {
+            if (modPow(a, n - 1, n) !== 1) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
+function isPrime(num) {
+    if (num < 2) return false;
+    if (num % 2 === 0) return num === 2;
+    const limit = Math.sqrt(num);
+    for (let i = 3; i <= limit; i += 2) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
+
+// 已知的卡迈克尔数
+const knownCarmichael = [561, 1105, 1729, 2465, 2821, 6601, 8911];
+console.log("已知卡迈克尔数检测:");
+for (const n of knownCarmichael) {
+    const isCarmichael = isCarmichaelNumber(n);
+    console.log(`${n}: ${isCarmichael ? '是卡迈克尔数' : '不是卡迈克尔数'}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用与意义：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>RSA加密：</strong>
+                    在RSA加密中，卡迈克尔函数 $\lambda(n)$ 有时被用来代替欧拉函数 $\varphi(n)$ 计算私钥，
+                    因为 $\lambda(n)$ 通常比 $\varphi(n)$ 小，可以加速解密运算。
+                </li>
+                
+                <li>
+                    <strong>原根存在性：</strong>
+                    模 $n$ 有原根当且仅当 $n$ 为 $1,2,4,p^k,2p^k$（$p$ 为奇素数），
+                    这等价于 $\lambda(n) = \varphi(n)$。
+                </li>
+                
+                <li>
+                    <strong>卡迈克尔数：</strong>
+                    卡迈克尔数是满足 $a^{n-1} \equiv 1 \pmod{n}$ 对所有 $\gcd(a,n)=1$ 成立的合数 $n$。
+                    这是费马素性测试的伪素数来源。最小的卡迈克尔数是 $561$。
+                </li>
+                
+                <li>
+                    <strong>群论：</strong>
+                    $\lambda(n)$ 是乘法群 $(\mathbb{Z}/n\mathbb{Z})^\times$ 的指数。
+                </li>
+            </ol>
+        </section>
+
+        <section class="history" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                卡迈克尔函数以美国数学家罗伯特·卡迈克尔（Robert D. Carmichael，1879-1967）命名。
+                他在1910年引入了这个函数。
+            </p>
+            
+            <p>
+                卡迈克尔数也以他命名，他在1912年发现了第一个卡迈克尔数 $561$，
+                并证明了对于每个卡迈克尔数 $n$，$n-1$ 能被 $\lambda(n)$ 整除。
+            </p>
+            
+            <p>
+                卡迈克尔函数在密码学中的应用是近几十年才被广泛认识到的，
+                特别是在RSA加密系统的优化中。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

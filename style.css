@@ -4,9 +4,11 @@ body {
     line-height: 1.6;
     color: #333;
     max-width: 1000px;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
     background-color: #fcfcfc;
+    box-sizing: border-box;
 }
 
 header {
@@ -18,32 +20,40 @@ header {
 h1 { font-size: 2.5rem; margin-bottom: 10px; color: #1a1a1a; }
 
 /* 搜索框 */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+/* 全局 box-sizing，防止宽度/内边距导致的溢出 */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
 .search-container { margin-top: 30px; }
 #searchInput {
     width: 80%;
+    max-width: 720px;
     padding: 12px 20px;
     font-size: 1rem;
     border: 1px solid #ddd;
     border-radius: 25px;
-    outline: none;
     transition: 0.3s;
+    box-sizing: border-box;
 }
 #searchInput:focus { border-color: #007bff; box-shadow: 0 0 8px rgba(0,123,255,0.2); }
 
 /* 定理卡片网格 */
 .theorem-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
     margin-top: 40px;
 }
 
 .theorem-card {
     background: white;
-    padding: 25px;
+    padding: 24px;
     border: 1px solid #eee;
-    border-radius: 8px;
+    border-radius: 10px;
     transition: transform 0.2s;
+    box-sizing: border-box;
 }
 
 /* 移除鼠标点击产生的默认蓝色轮廓，但保留键盘导航时的可见聚焦 */
@@ -55,7 +65,7 @@ h1 { font-size: 2.5rem; margin-bottom: 10px; color: #1a1a1a; }
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
-.theorem-card h3 { margin-top: 0; color: #d32f2f; } /* 学术红 */
+.theorem-card h3 { margin-top: 0; color: #d32f2f; font-size: 1.1rem; }
 
 .read-more {
     display: inline-block;
@@ -77,6 +87,58 @@ h1 { font-size: 2.5rem; margin-bottom: 10px; color: #1a1a1a; }
     font-size: 0.95rem;
     color: #555;
     margin: 10px 0;
+}
+
+/* 使图片、嵌入式内容自适应 */
+img, iframe, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 代码字体：针对代码块与内联代码（优先 JetBrains Mono） */
+code, pre, pre code, .code-example pre, .code-example code,
+.language-javascript, .language-js, .lang-js {
+    font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    hyphens: none;
+    tab-size: 4;
+}
+
+/* 针对深色代码区（若页面内使用内联样式）确保文本可读 */
+.code-example pre, pre {
+    background-color: inherit;
+    color: inherit;
+}
+
+/* 修复卡片内长单词或长行导致的出框；pre 保持横向滚动 */
+.theorem-card, .theorem-box, .code-example {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* 已移除横向滚动规则，改为允许换行以防出框 */
+code, pre { overflow-wrap: anywhere; }
+
+/* 响应式断点 */
+@media (max-width: 900px) {
+    body { padding: 18px; }
+    h1 { font-size: 2.2rem; }
+    .theorem-grid { gap: 18px; }
+    .theorem-card { padding: 22px; }
+    #searchInput { width: 100%; }
+}
+
+@media (max-width: 600px) {
+    header { padding: 28px 0; }
+    h1 { font-size: 1.6rem; }
+    body { padding: 12px; }
+    .entry-count { font-size: 0.85rem; }
+    .theorem-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+    .theorem-card { padding: 16px; }
+    #searchInput { width: 100%; padding: 10px 14px; font-size: 0.95rem; }
+    .back-home { padding: 6px 10px; border-radius: 6px; }
 }
 
 footer { text-align: center; margin-top: 80px; color: #888; font-size: 0.9rem; }
@@ -113,3 +175,24 @@ footer { text-align: center; margin-top: 80px; color: #888; font-size: 0.9rem; }
     box-shadow: 0 8px 20px rgba(33,150,243,0.06);
     transform: translateY(-3px);
 } */
+
+/* 防止 MathJax 或其他内嵌渲染内容撑出卡片 */
+.theorem-card, .theorem-card * {
+    max-width: 100%;
+}
+
+/* MathJax v3 常见渲染类：限制宽度以避免溢出 */
+.MathJax, .mjx-chtml, .mjx-svg, .mjx-container, .mjx-math {
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 确保内联公式可以换行（如果渲染为文本）并避免外溢 */
+.MathJax span, .mjx-chtml * {
+    white-space: normal !important;
+    word-break: break-word;
+}
+
+/* 标记高亮元素内也允许换行 */
+mark { white-space: normal; }

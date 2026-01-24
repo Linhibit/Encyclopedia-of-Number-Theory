@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Pollard Rho算法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>Pollard Rho 算法</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                Pollard Rho算法是John Pollard在1975年提出的一种用于分解大整数的概率算法。算法的核心思想基于生日悖论：
+                随机选取两个数，它们模某个非平凡因数的余数相等的概率比我们直觉认为的要大得多。
+            </p>
+            
+            <p>
+                <strong>核心观察：</strong>
+            </p>
+            <ol style="line-height: 1.6;">
+                <li>假设 $n$ 有一个非平凡因子 $d$（$1 < d < n$）。</li>
+                <li>我们随机生成一个序列 $x_0, x_1, x_2, \dots$，其中 $x_{i+1} = f(x_i) \bmod n$，$f$ 是一个伪随机函数（通常 $f(x) = x^2 + c$）。</li>
+                <li>考虑序列模 $d$ 的值：$y_i = x_i \bmod d$。由于 $d$ 远小于 $n$，序列 $\{y_i\}$ 会更快地出现重复（周期）。</li>
+                <li>根据生日悖论，我们可以在大约 $O(\sqrt{d})$ 步内找到一对 $i \neq j$ 使得 $y_i = y_j$，即 $d \mid (x_i - x_j)$。</li>
+                <li>那么 $\gcd(|x_i - x_j|, n)$ 很可能就是 $n$ 的一个非平凡因子（可能等于 $n$ 本身，这时算法失败）。</li>
+            </ol>
+            
+            <p>
+                <strong>弗洛伊德判圈算法：</strong>
+                为了高效地检测循环，我们使用弗洛伊德判圈算法：维护两个指针 $x$ 和 $y$，其中 $y$ 以两倍于 $x$ 的速度前进。
+                当 $x$ 和 $y$ 在模 $d$ 意义下相等时（即 $d \mid |x-y|$），我们就找到了一个可能的因子。
+            </p>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>输入：</strong>
+                    待分解的合数 $n$（假设 $n$ 不是素数且不是素数幂）。
+                </li>
+                
+                <li>
+                    <strong>基本流程：</strong>
+                    <ol>
+                        <li>如果 $n$ 是偶数，返回因子 2。</li>
+                        <li>随机选择常数 $c$（通常 $c \neq 0, -2$）和起始值 $x_0$（通常 $x_0=2$）。</li>
+                        <li>定义函数 $f(x) = (x^2 + c) \bmod n$。</li>
+                        <li>初始化 $x = y = x_0$，$d = 1$。</li>
+                        <li>当 $d = 1$ 时：
+                            <ol type="a">
+                                <li>$x = f(x)$（乌龟走一步）</li>
+                                <li>$y = f(f(y))$（兔子走两步）</li>
+                                <li>计算 $d = \gcd(|x-y|, n)$</li>
+                            </ol>
+                        </li>
+                        <li>如果 $d = n$，算法失败（重新选择 $c$ 和 $x_0$）。否则，返回 $d$。</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>完整因数分解：</strong>
+                    为了完全分解 $n$，递归地对找到的因子 $d$ 和 $n/d$ 应用 Pollard Rho 算法，直到所有因子都是素数。
+                </li>
+                
+                <li>
+                    <strong>优化：</strong>
+                    在实践中，我们不会每一步都计算 $\gcd$，而是累积多个 $|x-y|$ 的乘积，每 $k$ 步计算一次 $\gcd$ 以减少计算量。
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>复杂度分析：</strong>
+                <ul>
+                    <li>期望时间复杂度：$O(n^{1/4} \log n)$，其中 $n^{1/4}$ 来源于生日悖论，$\log n$ 来源于 $\gcd$ 计算。</li>
+                    <li>空间复杂度：$O(1)$，只需要常数空间。</li>
+                    <li>这是一个概率算法，可能失败，但可以通过调整参数（如 $c$ 和 $x_0$）重新运行。</li>
+                    <li>对于某些特殊的数（如素数幂），算法可能表现不佳，需要特殊处理。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 分解 $n = 8051$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>选择 $c = 1$，$x_0 = 2$，$f(x) = x^2 + 1 \bmod 8051$。</li>
+                    <li>初始化 $x = y = 2$。</li>
+                    <li>迭代过程：
+                        <ul>
+                            <li>$x = f(2) = 5$, $y = f(f(2)) = f(5) = 26$，$\gcd(|5-26|, 8051) = \gcd(21, 8051) = 1$</li>
+                            <li>$x = f(5) = 26$, $y = f(f(26)) = f(677) = 7474$，$\gcd(|26-7474|, 8051) = \gcd(7448, 8051) = 1$</li>
+                            <li>$x = f(26) = 677$, $y = f(f(677)) = f(7474) = 2839$，$\gcd(|677-2839|, 8051) = \gcd(2162, 8051) = 1$</li>
+                            <li>$x = f(677) = 7474$, $y = f(f(7474)) = f(2839) = 871$，$\gcd(|7474-871|, 8051) = \gcd(6603, 8051) = 97$</li>
+                        </ul>
+                    </li>
+                    <li>找到因子 $d = 97$，$8051 = 97 \times 83$。</li>
+                    <li>验证：$97$ 和 $83$ 都是素数，分解完成。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 分解 $n = 10403$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>选择 $c = 1$，$x_0 = 2$。</li>
+                    <li>迭代：
+                        <ul>
+                            <li>$x = 5$, $y = 26$, $\gcd = 1$</li>
+                            <li>$x = 26$, $y = 7474$, $\gcd = 1$</li>
+                            <li>继续迭代...</li>
+                            <li>最终找到 $x$ 和 $y$ 使得 $\gcd(|x-y|, 10403) = 101$。</li>
+                        </ul>
+                    </li>
+                    <li>$10403 = 101 \times 103$。</li>
+                </ol>
+                注意：$101$ 和 $103$ 是一对孪生素数，Pollard Rho 算法仍然有效。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 当 $d = n$ 时算法失败的情况。
+            </p>
+            
+            <p>
+                考虑 $n = 4$（虽然很小但说明问题）：
+                <ol>
+                    <li>选择 $c = 1$，$x_0 = 2$。</li>
+                    <li>$f(x) = x^2 + 1 \bmod 4$，序列为：2, 1, 2, 1, 2, ...</li>
+                    <li>经过迭代，$x$ 和 $y$ 在模 4 下相等时，$|x-y|$ 是 4 的倍数，所以 $\gcd(|x-y|, 4) = 4$，返回 $d = 4 = n$，算法失败。</li>
+                    <li>这时需要改变 $c$ 或 $x_0$，比如选择 $c = 2$，序列会不同，可能成功找到因子 2。</li>
+                </ol>
+                在实践中，对于 $n=4$ 我们会直接返回因子 2，但这里展示了算法可能失败的情况。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 辅助函数：计算最大公约数（欧几里得算法）
+function gcd(a, b) {
+    a = BigInt(a);
+    b = BigInt(b);
+    while (b !== 0n) {
+        [a, b] = [b, a % b];
+    }
+    return Number(a);
+}
+
+// 快速乘法（防止溢出）：计算 (a * b) % mod
+function mulMod(a, b, mod) {
+    a = BigInt(a);
+    b = BigInt(b);
+    mod = BigInt(mod);
+    return Number((a * b) % mod);
+}
+
+// 快速幂算法：计算 (base^exp) % mod
+function powMod(base, exp, mod) {
+    base = BigInt(base) % BigInt(mod);
+    let result = 1n;
+    let e = BigInt(exp);
+    while (e > 0n) {
+        if (e % 2n === 1n) {
+            result = (result * base) % BigInt(mod);
+        }
+        base = (base * base) % BigInt(mod);
+        e >>= 1n;
+    }
+    return Number(result);
+}
+
+// 米勒-拉宾素性测试（辅助函数，用于判断素数）
+function millerRabin(n, k = 5) {
+    if (n < 2n) return false;
+    if (n === 2n || n === 3n) return true;
+    if (n % 2n === 0n) return false;
+    
+    // 将 n-1 写成 2^s * d
+    let s = 0;
+    let d = n - 1n;
+    while (d % 2n === 0n) {
+        d /= 2n;
+        s++;
+    }
+    
+    // 测试 k 次
+    for (let i = 0; i < k; i++) {
+        // 随机选择 a，2 ≤ a ≤ n-2
+        const a = 2n + BigInt(Math.floor(Math.random() * (Number(n) - 3)));
+        let x = powMod(Number(a), Number(d), Number(n));
+        
+        if (x === 1 || x === Number(n) - 1) {
+            continue;
+        }
+        
+        let found = false;
+        for (let r = 1; r < s; r++) {
+            x = mulMod(x, x, Number(n));
+            if (x === Number(n) - 1) {
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Pollard Rho 算法的单次尝试
+function pollardRhoSingle(n, c = 1) {
+    if (n % 2n === 0n) return 2n;
+    
+    // 定义伪随机函数 f(x) = (x^2 + c) mod n
+    function f(x) {
+        const xBig = BigInt(x);
+        const nBig = BigInt(n);
+        return Number((xBig * xBig + BigInt(c)) % nBig);
+    }
+    
+    // 初始化
+    let x = 2;
+    let y = 2;
+    let d = 1;
+    
+    // 使用弗洛伊德判圈算法
+    while (d === 1) {
+        x = f(x);
+        y = f(f(y));
+        d = gcd(Math.abs(x - y), Number(n));
+    }
+    
+    // 如果 d == n，算法失败（需要改变 c）
+    return BigInt(d);
+}
+
+// 完整的 Pollard Rho 因数分解（递归）
+function pollardRhoFactorization(n, factors = []) {
+    let nBig = BigInt(n);
+    
+    // 如果 n 已经是 1，直接返回
+    if (nBig === 1n) {
+        return factors;
+    }
+    
+    // 如果 n 是素数，加入因子列表
+    if (millerRabin(nBig)) {
+        factors.push(nBig);
+        return factors;
+    }
+    
+    // 尝试不同的 c 值直到成功
+    for (let c = 1; c <= 10; c++) {
+        const d = pollardRhoSingle(nBig, c);
+        
+        // 如果 d 是 n 的非平凡因子
+        if (d !== nBig && d !== 1n) {
+            // 递归分解 d 和 n/d
+            factors = pollardRhoFactorization(d, factors);
+            factors = pollardRhoFactorization(nBig / d, factors);
+            return factors;
+        }
+    }
+    
+    // 如果所有 c 都失败，将 n 作为不可分解的因子加入（可能是素数幂）
+    factors.push(nBig);
+    return factors;
+}
+
+// 优化的 Pollard Rho 版本（累积乘积减少 gcd 计算）
+function pollardRhoOptimized(n, c = 1) {
+    if (n % 2n === 0n) return 2n;
+    
+    // 定义伪随机函数
+    function f(x) {
+        const xBig = BigInt(x);
+        const nBig = BigInt(n);
+        return Number((xBig * xBig + BigInt(c)) % nBig);
+    }
+    
+    let x = 2;
+    let y = 2;
+    let d = 1;
+    let product = 1;
+    let count = 0;
+    const batchSize = 100; // 每 batchSize 步计算一次 gcd
+    
+    while (d === 1) {
+        x = f(x);
+        y = f(f(y));
+        product = mulMod(product, Math.abs(x - y), Number(n));
+        count++;
+        
+        if (count === batchSize) {
+            d = gcd(product, Number(n));
+            product = 1;
+            count = 0;
+        }
+    }
+    
+    // 如果最后一批没有触发，计算最终的 gcd
+    if (d === 1) {
+        d = gcd(product, Number(n));
+    }
+    
+    return BigInt(d);
+}
+
+// 示例使用
+console.log("=== Pollard Rho 因数分解算法 ===");
+
+// 测试一些数字
+const testNumbers = [
+    8051n,
+    10403n,
+    1522605027922533360535618378132637429718068114961380688657908494580122963258952897654000350692006139n, // RSA-100 的一个因子
+    1234567890123456789012345678901n,
+    999999999999999999999999999999n
+];
+
+for (const n of testNumbers) {
+    console.log(`\n分解 ${n}:`);
+    console.time("分解时间");
+    try {
+        const factors = pollardRhoFactorization(n);
+        console.timeEnd("分解时间");
+        console.log(`因子: ${factors.map(f => f.toString()).join(' × ')}`);
+        
+        // 验证乘积
+        const product = factors.reduce((a, b) => a * b, 1n);
+        console.log(`验证: ${product === n ? '正确' : '错误'}`);
+    } catch (error) {
+        console.timeEnd("分解时间");
+        console.log(`分解失败: ${error.message}`);
+    }
+}
+
+// 性能对比：优化版 vs 基础版
+console.log("\n=== 性能对比 ===");
+const testNum = 1234567890123456789012345678901n;
+console.time("基础版 Pollard Rho");
+const factor1 = pollardRhoSingle(testNum);
+console.timeEnd("基础版 Pollard Rho");
+console.log(`找到因子: ${factor1}`);
+
+console.time("优化版 Pollard Rho");
+const factor2 = pollardRhoOptimized(testNum);
+console.timeEnd("优化版 Pollard Rho");
+console.log(`找到因子: ${factor2}`);
+
+// 完全分解一个中等大小的数
+console.log("\n=== 完全分解示例 ===");
+const toFactor = 1234567891n * 9876543211n; // 两个素数的乘积
+console.log(`要分解的数: ${toFactor}`);
+console.time("完全分解");
+const allFactors = pollardRhoFactorization(toFactor);
+console.timeEnd("完全分解");
+console.log(`所有素因子: ${allFactors.map(f => f.toString()).join(' × ')}`);
+
+// 检查是否为素数
+console.log("\n=== 素数检查 ===");
+for (const factor of allFactors) {
+    const isPrime = millerRabin(factor);
+    console.log(`${factor} ${isPrime ? '是' : '不是'}素数`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>RSA密码分析：</strong>
+                    破解RSA密钥需要分解大整数，Pollard Rho算法是常用的分解算法之一，特别适用于中等大小的因子。
+                </li>
+                
+                <li>
+                    <strong>数论研究：</strong>
+                    在研究数的因子分布、寻找特殊数的因子时使用。
+                </li>
+                
+                <li>
+                    <strong>密码学生成：</strong>
+                    在生成密码学参数时，需要确保某些数没有小因子，可以用Pollard Rho算法检查。
+                </li>
+                
+                <li>
+                    <strong>竞赛编程：</strong>
+                    在算法竞赛中，需要快速分解整数的问题。
+                </li>
+                
+                <li>
+                    <strong>数学软件：</strong>
+                    在Mathematica、Maple等数学软件中，Pollard Rho算法被用于整数分解。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>与其他因数分解算法的比较：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">算法</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">类型</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">时间复杂度</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">优点</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">缺点</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">试除法</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">确定性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\sqrt{n})$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">简单，保证找到最小因子</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">对大数效率极低</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">Pollard Rho</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">概率性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n^{1/4} \log n)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">空间复杂度低，实际速度快</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">概率性，可能失败</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">Pollard p-1</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">概率性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">取决于 p-1 的因子大小</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">对特殊数非常快</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">只对 p-1 光滑的数有效</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">二次筛法</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">确定性/概率性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(e^{(1+o(1))\sqrt{\log n \log\log n}})$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">适用于更大整数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">实现复杂，需要大量内存</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">数域筛法</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">确定性/概率性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(e^{(1.92+o(1))(\log n)^{1/3}(\log\log n)^{2/3}})$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">已知最快的通用分解算法</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">极其复杂，只用于极大整数</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景与优化：</h4>
+            <p>
+                Pollard Rho算法由John Pollard于1975年提出，是第一个亚指数时间的通用整数分解算法。
+            </p>
+            
+            <p>
+                <strong>优化技巧：</strong> <br>
+                1. <strong>累积乘积</strong>：计算多个 $|x-y|$ 的乘积模 $n$，每 $k$ 步计算一次 $\gcd$，减少昂贵的 $\gcd$ 计算次数。<br>
+                2. <strong>改变随机函数</strong>：如果 $f(x) = x^2 + c$ 失败，可以尝试 $f(x) = x^2 + 1$、$x^2 - 1$ 或其他常数。<br>
+                3. <strong>并行化</strong>：可以同时运行多个不同起始值的实例，提高找到因子的概率。<br>
+                4. <strong>提前检测小因子</strong>：先用试除法排除小因子，再使用 Pollard Rho 算法。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                Pollard Rho算法最擅长找到中等大小的因子（约10-20位十进制数字）。对于非常大的整数（如RSA-1024），需要更高级的算法如数域筛法。
+            </p>
+            
+            <p>
+                <strong>扩展：</strong>
+                Pollard Rho算法也可以用于离散对数问题，通过类似的思想在群中寻找碰撞。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

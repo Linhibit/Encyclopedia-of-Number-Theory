@@ -178,6 +178,18 @@
     "description": "黎曼ζ函数定义为 $\\zeta(s) = \\sum_{n=1}^\\infty \\frac{1}{n^s}$，最初在 $\\operatorname{Re}(s)>1$ 上定义，后通过解析延拓成为整个复平面上的亚纯函数。它在数论和解析数论中具有核心地位，与素数分布密切相关。",
     "link": "theorems/riemann-zeta-function.html",
     "tags": ["解析数论", "复变函数", "素数分布", "特殊函数"]
+  },
+  {
+    "title": "Pollard Rho 算法",
+    "description": "Pollard Rho算法是一种用于分解大整数的概率算法，基于弗洛伊德判圈算法，通过生成伪随机序列寻找模n下的碰撞来实现因数分解。",
+    "link": "algorithms/pollard-rho-algorithm.html",
+    "tags": ["因数分解", "随机算法", "数论算法", "密码学"]
+  },
+  {
+    "title": "数论变换 (NTT)",
+    "description": "数论变换是离散傅里叶变换在有限域上的类比，用于模素数环上的快速多项式乘法，时间复杂度为 $O(n \\log n)$，是许多密码学和编码理论算法的基础。",
+    "link": "algorithms/number-theoretic-transform.html",
+    "tags": ["快速傅里叶变换", "多项式乘法", "模运算", "密码学", "编码理论"]
   }
 ]
 

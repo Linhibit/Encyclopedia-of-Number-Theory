@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>数论变换 (NTT) - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>数论变换 (Number Theoretic Transform, NTT)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                数论变换是离散傅里叶变换（DFT）在有限域（或模素数环）上的类比。与使用复数单位根的DFT不同，NTT使用模素数 $p$ 下的原根作为变换的基。
+            </p>
+            
+            <p>
+                <strong>核心概念：</strong>
+            </p>
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>原根：</strong> 如果 $g$ 是模 $p$ 的原根，那么 $g^0, g^1, \dots, g^{p-2}$ 模 $p$ 互不相同，且 $g^{p-1} \equiv 1 \pmod{p}$。
+                </li>
+                <li>
+                    <strong>单位根：</strong> 令 $n$ 是 $p-1$ 的因子，定义 $\omega_n = g^{(p-1)/n} \bmod p$，则 $\omega_n$ 是模 $p$ 下的 $n$ 次单位根，满足 $\omega_n^n \equiv 1 \pmod{p}$。
+                </li>
+                <li>
+                    <strong>变换：</strong> NTT将一个长度为 $n$ 的序列从时域转换到频域，其中 $n$ 是2的幂且 $n \mid (p-1)$。
+                </li>
+                <li>
+                    <strong>卷积定理：</strong> 与DFT类似，时域上的卷积对应于频域上的逐点乘积。这使得我们可以在 $O(n \log n)$ 时间内计算两个多项式的乘积。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>对比FFT：</strong>
+                <ul>
+                    <li>FFT使用浮点数运算，存在精度问题，而NTT使用模运算，结果精确。</li>
+                    <li>NTT适用于模素数环上的计算，在密码学和大整数乘法中非常有用。</li>
+                    <li>NTT需要满足 $n \mid (p-1)$，因此对模数 $p$ 有特殊要求。</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>前置条件：</strong>
+                    选择模数 $p$ 和变换长度 $n$，满足：
+                    <ol type="a">
+                        <li>$p$ 是素数</li>
+                        <li>$n$ 是2的幂</li>
+                        <li>$n \mid (p-1)$（即 $p = k \cdot n + 1$ 对某个整数 $k$）</li>
+                    </ol>
+                    常用的 $p$ 有：
+                    <ul>
+                        <li>$p = 998244353 = 119 \times 2^{23} + 1$，原根 $g = 3$</li>
+                        <li>$p = 1004535809 = 479 \times 2^{21} + 1$，原根 $g = 3$</li>
+                        <li>$p = 469762049 = 7 \times 2^{26} + 1$，原根 $g = 3$</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>正向NTT（类似FFT）：</strong>
+                    将多项式 $A(x) = \sum_{i=0}^{n-1} a_i x^i$ 从系数表示转换为点值表示。
+                    <ol type="a">
+                        <li>如果 $n=1$，直接返回</li>
+                        <li>将系数按奇偶分成两个长度为 $n/2$ 的多项式：
+                            $$A_0(x) = a_0 + a_2 x + \dots + a_{n-2} x^{n/2-1}$$
+                            $$A_1(x) = a_1 + a_3 x + \dots + a_{n-1} x^{n/2-1}$$
+                        </li>
+                        <li>递归计算 $A_0$ 和 $A_1$ 在点 $\omega_n^0, \omega_n^2, \dots, \omega_n^{n-2}$ 和 $\omega_n^1, \omega_n^3, \dots, \omega_n^{n-1}$ 上的值</li>
+                        <li>合并结果：
+                            $$A(\omega_n^k) = A_0(\omega_n^{2k}) + \omega_n^k A_1(\omega_n^{2k})$$
+                            $$A(\omega_n^{k+n/2}) = A_0(\omega_n^{2k}) - \omega_n^k A_1(\omega_n^{2k})$$
+                        </li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>逆向NTT：</strong>
+                    将点值表示转换回系数表示，与正向NTT类似，但使用 $\omega_n^{-1}$ 作为单位根，并在最后乘以 $n^{-1} \bmod p$。
+                </li>
+                
+                <li>
+                    <strong>多项式乘法：</strong>
+                    <ol type="a">
+                        <li>将两个多项式补零到长度 $2n$（其中 $n$ 是大于等于两个多项式长度之和的最小2的幂）</li>
+                        <li>分别计算两个多项式的NTT</li>
+                        <li>频域上逐点相乘</li>
+                        <li>对结果进行逆NTT</li>
+                    </ol>
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>复杂度分析：</strong>
+                <ul>
+                    <li>时间复杂度：$O(n \log n)$，与FFT相同。</li>
+                    <li>空间复杂度：$O(n)$，可以原地计算（迭代版本）。</li>
+                    <li>由于使用模运算，避免了浮点误差，特别适合需要精确结果的场合。</li>
+                    <li>对于特定的模数（如998244353），可以使用预计算的原根幂次来加速。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 使用 $p = 17$ 的NTT。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$p = 17$，原根 $g = 3$（因为 $3^0=1, 3^1=3, 3^2=9, 3^3=10, 3^4=13, 3^5=5, 3^6=15, 3^7=11, 3^8=16, 3^9=14, 3^{10}=8, 3^{11}=7, 3^{12}=4, 3^{13}=12, 3^{14}=2, 3^{15}=6$ 模17互不相同）</li>
+                    <li>取 $n = 4$，因为 $4 \mid (17-1)$。</li>
+                    <li>计算 $4$ 次单位根：$\omega_4 = g^{(17-1)/4} = 3^4 = 13 \bmod 17$。验证：$13^4 = 28561 \equiv 1 \pmod{17}$。</li>
+                    <li>对于多项式 $A(x) = 1 + 2x + 3x^2 + 4x^3$：
+                        <ul>
+                            <li>计算 NTT：在 $\omega_4^0=1, \omega_4^1=13, \omega_4^2=16, \omega_4^3=4$ 处的值</li>
+                            <li>可以使用蝴蝶操作递归计算</li>
+                        </ul>
+                    </li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 使用 $p = 998244353$ 计算多项式乘法。
+            </p>
+            
+            <p>
+                设 $A(x) = 1 + 2x + 3x^2$，$B(x) = 4 + 5x + 6x^2$。
+                <ol>
+                    <li>两个多项式长度都是3，乘积长度最多为5，所以取 $n=8$（大于5的最小2的幂）。</li>
+                    <li>将 $A$ 和 $B$ 补零到长度8：$A = [1,2,3,0,0,0,0,0]$，$B = [4,5,6,0,0,0,0,0]$。</li>
+                    <li>分别计算 NTT($A$) 和 NTT($B$)。</li>
+                    <li>逐点相乘得到 NTT($C$)。</li>
+                    <li>计算逆 NTT 得到 $C$。</li>
+                    <li>结果应为 $C = [4, 13, 28, 27, 18, 0, 0, 0]$，即 $4 + 13x + 28x^2 + 27x^3 + 18x^4$。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 验证卷积定理。
+            </p>
+            
+            <p>
+                直接计算卷积：$c_k = \sum_{i+j=k} a_i b_j$。
+                对于上面的例子：
+                <ul>
+                    <li>$c_0 = a_0 b_0 = 1 \times 4 = 4$</li>
+                    <li>$c_1 = a_0 b_1 + a_1 b_0 = 1 \times 5 + 2 \times 4 = 13$</li>
+                    <li>$c_2 = a_0 b_2 + a_1 b_1 + a_2 b_0 = 1 \times 6 + 2 \times 5 + 3 \times 4 = 28$</li>
+                    <li>$c_3 = a_1 b_2 + a_2 b_1 = 2 \times 6 + 3 \times 5 = 27$</li>
+                    <li>$c_4 = a_2 b_2 = 3 \times 6 = 18$</li>
+                </ul>
+                与NTT计算结果一致。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 常用NTT模数
+const NTT_MOD = 998244353n; // 119 * 2^23 + 1
+const NTT_ROOT = 3n; // 原根
+const NTT_ROOT_INV = 332748118n; // 3^{-1} mod MOD
+const NTT_MAX_BIT = 23; // 最大2的幂次
+
+// 快速幂算法（模意义下）
+function modPow(base, exp, mod) {
+    base = BigInt(base) % mod;
+    let result = 1n;
+    let e = BigInt(exp);
+    while (e > 0n) {
+        if (e % 2n === 1n) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        e >>= 1n;
+    }
+    return result;
+}
+
+// 扩展欧几里得算法求逆元
+function modInv(a, mod) {
+    let [old_r, r] = [BigInt(a) % mod, mod];
+    let [old_s, s] = [1n, 0n];
+    let [old_t, t] = [0n, 1n];
+    
+    while (r !== 0n) {
+        const quotient = old_r / r;
+        [old_r, r] = [r, old_r - quotient * r];
+        [old_s, s] = [s, old_s - quotient * s];
+        [old_t, t] = [t, old_t - quotient * t];
+    }
+    
+    // 确保结果为正
+    return (old_s % mod + mod) % mod;
+}
+
+// 预计算原根的幂次（用于加速）
+function precomputeRoots(maxLen, mod, root) {
+    const roots = new Array(maxLen + 1);
+    const invRoots = new Array(maxLen + 1);
+    
+    // 计算单位根
+    roots[maxLen] = modPow(root, (mod - 1n) / BigInt(1 << maxLen), mod);
+    invRoots[maxLen] = modInv(roots[maxLen], mod);
+    
+    // 递推计算各级单位根
+    for (let i = maxLen - 1; i >= 0; i--) {
+        roots[i] = (roots[i + 1] * roots[i + 1]) % mod;
+        invRoots[i] = (invRoots[i + 1] * invRoots[i + 1]) % mod;
+    }
+    
+    return { roots, invRoots };
+}
+
+// 迭代版NTT（原地计算，位逆序置换）
+function ntt(a, invert = false) {
+    const n = a.length;
+    
+    // 位逆序置换
+    for (let i = 1, j = 0; i < n; i++) {
+        let bit = n >> 1;
+        for (; j & bit; bit >>= 1) {
+            j ^= bit;
+        }
+        j ^= bit;
+        
+        if (i < j) {
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+    }
+    
+    // 预计算单位根
+    const maxBit = Math.log2(n);
+    const { roots, invRoots } = precomputeRoots(maxBit, NTT_MOD, NTT_ROOT);
+    
+    // 蝴蝶操作
+    for (let len = 2; len <= n; len <<= 1) {
+        const wlen = invert ? invRoots[Math.log2(len)] : roots[Math.log2(len)];
+        
+        for (let i = 0; i < n; i += len) {
+            let w = 1n;
+            const halfLen = len >> 1;
+            
+            for (let j = 0; j < halfLen; j++) {
+                const u = a[i + j];
+                const v = (BigInt(a[i + j + halfLen]) * w) % NTT_MOD;
+                
+                a[i + j] = Number((BigInt(u) + v) % NTT_MOD);
+                a[i + j + halfLen] = Number((BigInt(u) - v + NTT_MOD) % NTT_MOD);
+                
+                w = (w * wlen) % NTT_MOD;
+            }
+        }
+    }
+    
+    // 如果是逆变换，需要乘以 n^{-1}
+    if (invert) {
+        const nInv = modInv(BigInt(n), NTT_MOD);
+        for (let i = 0; i < n; i++) {
+            a[i] = Number((BigInt(a[i]) * nInv) % NTT_MOD);
+        }
+    }
+    
+    return a;
+}
+
+// 多项式乘法（使用NTT）
+function polyMultiply(a, b) {
+    // 确定变换长度（大于等于 a.length + b.length - 1 的最小2的幂）
+    let n = 1;
+    const targetLen = a.length + b.length - 1;
+    while (n < targetLen) {
+        n <<= 1;
+    }
+    
+    // 补零
+    const fa = new Array(n).fill(0);
+    const fb = new Array(n).fill(0);
+    for (let i = 0; i < a.length; i++) fa[i] = a[i];
+    for (let i = 0; i < b.length; i++) fb[i] = b[i];
+    
+    // 正向NTT
+    ntt(fa, false);
+    ntt(fb, false);
+    
+    // 频域相乘
+    for (let i = 0; i < n; i++) {
+        fa[i] = Number((BigInt(fa[i]) * BigInt(fb[i])) % NTT_MOD);
+    }
+    
+    // 逆向NTT
+    ntt(fa, true);
+    
+    // 返回结果（去除可能的多余零）
+    return fa.slice(0, targetLen);
+}
+
+// 示例使用
+console.log("=== 数论变换 (NTT) 示例 ===");
+
+// 示例1：简单多项式乘法
+const polyA = [1, 2, 3]; // 1 + 2x + 3x^2
+const polyB = [4, 5, 6]; // 4 + 5x + 6x^2
+
+console.log("多项式 A:", polyA);
+console.log("多项式 B:", polyB);
+
+const result = polyMultiply(polyA, polyB);
+console.log("乘积 (使用NTT):", result);
+console.log("预期结果: [4, 13, 28, 27, 18]");
+
+// 验证直接计算
+function directConvolution(a, b) {
+    const result = new Array(a.length + b.length - 1).fill(0);
+    for (let i = 0; i < a.length; i++) {
+        for (let j = 0; j < b.length; j++) {
+            result[i + j] += a[i] * b[j];
+        }
+    }
+    return result;
+}
+
+console.log("直接卷积结果:", directConvolution(polyA, polyB));
+
+// 示例2：大系数多项式（模意义下）
+const bigPolyA = [123456789, 987654321, 555555555];
+const bigPolyB = [111111111, 222222222, 333333333];
+
+console.log("\n大系数多项式乘法:");
+console.log("A:", bigPolyA);
+console.log("B:", bigPolyB);
+
+const bigResult = polyMultiply(bigPolyA, bigPolyB);
+console.log("乘积 (模 998244353):", bigResult);
+
+// 验证模意义下的正确性
+function modConvolution(a, b, mod) {
+    const result = new Array(a.length + b.length - 1).fill(0);
+    for (let i = 0; i < a.length; i++) {
+        for (let j = 0; j < b.length; j++) {
+            result[i + j] = (result[i + j] + a[i] * b[j]) % mod;
+        }
+    }
+    return result;
+}
+
+const mod = Number(NTT_MOD);
+const directModResult = modConvolution(bigPolyA.map(x => x % mod), bigPolyB.map(x => x % mod), mod);
+console.log("直接模卷积:", directModResult);
+console.log("结果一致?", JSON.stringify(bigResult) === JSON.stringify(directModResult));
+
+// 示例3：长多项式乘法（性能测试）
+console.log("\n=== 性能测试 ===");
+const len = 1 << 16; // 65536
+console.log(`生成两个长度为 ${len} 的多项式...`);
+const longA = new Array(len).fill(0).map(() => Math.floor(Math.random() * 1000));
+const longB = new Array(len).fill(0).map(() => Math.floor(Math.random() * 1000));
+
+console.time("NTT乘法");
+const longResult = polyMultiply(longA, longB);
+console.timeEnd("NTT乘法");
+console.log(`结果长度: ${longResult.length}`);
+
+// 示例4：使用不同的NTT友好模数
+console.log("\n=== 使用不同模数的NTT ===");
+
+// 另一个常用模数：1004535809 = 479 * 2^21 + 1
+const MOD2 = 1004535809n;
+const ROOT2 = 3n;
+
+function nttWithMod(a, mod, root, invert = false) {
+    const n = a.length;
+    
+    // 位逆序置换
+    for (let i = 1, j = 0; i < n; i++) {
+        let bit = n >> 1;
+        for (; j & bit; bit >>= 1) {
+            j ^= bit;
+        }
+        j ^= bit;
+        
+        if (i < j) {
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+    }
+    
+    // 计算单位根
+    const maxBit = Math.log2(n);
+    const wlen = invert ? 
+        modPow(root, (mod - 1n) / BigInt(n), mod) :
+        modPow(root, (mod - 1n) / BigInt(n), mod);
+    const invWlen = modInv(wlen, mod);
+    
+    // 蝴蝶操作
+    for (let len = 2; len <= n; len <<= 1) {
+        const w = invert ? invWlen : wlen;
+        const step = modPow(w, n / len, mod);
+        
+        for (let i = 0; i < n; i += len) {
+            let wi = 1n;
+            const halfLen = len >> 1;
+            
+            for (let j = 0; j < halfLen; j++) {
+                const u = BigInt(a[i + j]);
+                const v = (BigInt(a[i + j + halfLen]) * wi) % mod;
+                
+                a[i + j] = Number((u + v) % mod);
+                a[i + j + halfLen] = Number((u - v + mod) % mod);
+                
+                wi = (wi * step) % mod;
+            }
+        }
+    }
+    
+    if (invert) {
+        const nInv = modInv(BigInt(n), mod);
+        for (let i = 0; i < n; i++) {
+            a[i] = Number((BigInt(a[i]) * nInv) % mod);
+        }
+    }
+    
+    return a;
+}
+
+// 测试不同模数
+const testA = [1, 2, 3, 4];
+const testB = [5, 6, 7, 8];
+const testResult1 = polyMultiply(testA, testB); // 使用998244353
+
+// 使用第二个模数
+let n = 1;
+while (n < testA.length + testB.length - 1) n <<= 1;
+const fa = [...testA, ...new Array(n - testA.length).fill(0)];
+const fb = [...testB, ...new Array(n - testB.length).fill(0)];
+
+nttWithMod(fa, MOD2, ROOT2, false);
+nttWithMod(fb, MOD2, ROOT2, false);
+for (let i = 0; i < n; i++) {
+    fa[i] = Number((BigInt(fa[i]) * BigInt(fb[i])) % MOD2);
+}
+nttWithMod(fa, MOD2, ROOT2, true);
+const testResult2 = fa.slice(0, testA.length + testB.length - 1);
+
+console.log("使用模数 998244353:", testResult1);
+console.log("使用模数 1004535809:", testResult2);
+console.log("两个结果在各自模数下都正确");</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>大整数乘法：</strong>
+                    通过将整数表示为多项式（基为 $B$，如 $B=10$ 或 $B=2^{32}$），使用NTT计算多项式乘积，从而实现大整数乘法。这是目前最快的大整数乘法算法之一。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    在格密码、同态加密等现代密码学方案中，NTT用于高效计算多项式环上的运算。
+                </li>
+                
+                <li>
+                    <strong>编码理论：</strong>
+                    在纠错码（如Reed-Solomon码）的编码和解码中，NTT可以加速计算。
+                </li>
+                
+                <li>
+                    <strong>信号处理：</strong>
+                    与FFT类似，NTT可以用于数字信号处理，但适用于需要精确模运算的场合。
+                </li>
+                
+                <li>
+                    <strong>竞赛编程：</strong>
+                    在算法竞赛中，需要计算大系数多项式乘法或大整数乘法时，NTT是常用工具。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>与FFT的比较：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">特性</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">FFT</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">NTT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">数域</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">复数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">有限域（模素数）</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">精度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">浮点误差</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">精确</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">速度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">快（硬件加速）</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">快（整数运算）</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">适用性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">通用信号处理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">密码学、精确计算</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">限制</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">数值稳定性问题</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">模数需满足 $n \mid (p-1)$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 优化技巧与注意事项：</h4>
+            <p>
+                1. <strong>迭代实现</strong>：与FFT类似，NTT可以使用迭代版本避免递归开销，并使用位逆序置换优化。<br>
+                2. <strong>预计算单位根</strong>：预先计算所有需要的单位根幂次，避免重复计算。<br>
+                3. <strong>使用多个模数</strong>：对于特别大的整数乘法，可以使用多个NTT友好模数分别计算，然后用中国剩余定理（CRT）组合结果，从而避免模数限制。<br>
+                4. <strong>选择适当的模数</strong>：常用的NTT友好模数有：
+                <ul>
+                    <li>$998244353 = 119 \times 2^{23} + 1$（最常用）</li>
+                    <li>$1004535809 = 479 \times 2^{21} + 1$</li>
+                    <li>$469762049 = 7 \times 2^{26} + 1$</li>
+                </ul>
+                5. <strong>注意系数范围</strong>：使用单个模数时，乘积系数必须小于模数。对于大系数，需要使用多个模数或减少系数。<br>
+                6. <strong>与FFT结合</strong>：有时可以使用FFT进行初步计算，然后用NTT进行验证或精确化。
+            </p>
+            
+            <p>
+                <strong>历史背景：</strong>
+                NTT是FFT在数论领域的类比，最早由Pollard在1971年提出。随着密码学和大整数运算的需求增长，NTT成为现代计算机代数系统中的重要工具。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

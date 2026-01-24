@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>米勒-拉宾素性测试 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>米勒-拉宾素性测试 (Miller-Rabin Primality Test)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                米勒-拉宾素性测试是一种概率算法，用于判断一个奇数 $n > 1$ 是否为素数。
+                基于以下两个数论事实（对于奇素数 $p$）：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    费马小定理：对于任意 $a$ 满足 $1 < a < p$，有 $a^{p-1} \equiv 1 \pmod{p}$。
+                </li>
+                <li>
+                    模素数 $p$，方程 $x^2 \equiv 1 \pmod{p}$ 只有两个解：$x \equiv \pm 1 \pmod{p}$。
+                </li>
+            </ol>
+            
+            <p>
+                设 $n$ 为待测试的奇数，将 $n-1$ 分解为 $n-1 = 2^s \cdot d$，其中 $d$ 为奇数。
+                如果 $n$ 是素数，则对于任意 $a$（$1 < a < n$），以下两个条件之一成立：
+                <ol type="a">
+                    <li>$a^d \equiv 1 \pmod{n}$</li>
+                    <li>存在某个 $r$（$0 \leq r < s$）使得 $a^{2^r \cdot d} \equiv -1 \pmod{n}$</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>输入：</strong>
+                    待测试的奇数 $n > 2$，测试次数 $k$（决定准确率）。
+                </li>
+                
+                <li>
+                    <strong>特殊情况：</strong>
+                    如果 $n < 2$，返回"合数"；如果 $n = 2$ 或 $n = 3$，返回"素数"。
+                </li>
+                
+                <li>
+                    <strong>分解：</strong>
+                    将 $n-1$ 表示为 $n-1 = 2^s \cdot d$，其中 $d$ 为奇数。
+                </li>
+                
+                <li>
+                    <strong>循环测试 $k$ 次：</strong>
+                    对于 $i = 1$ 到 $k$：
+                    <ol type="a">
+                        <li>随机选择 $a$，$2 \leq a \leq n-2$</li>
+                        <li>计算 $x = a^d \bmod n$</li>
+                        <li>如果 $x = 1$ 或 $x = n-1$，则本轮测试通过，继续下一轮</li>
+                        <li>否则，重复 $s-1$ 次：
+                            <ul>
+                                <li>计算 $x = x^2 \bmod n$</li>
+                                <li>如果 $x = n-1$，则本轮测试通过，跳出循环</li>
+                                <li>如果 $x = 1$，则 $n$ 是合数，算法结束</li>
+                            </ul>
+                        </li>
+                        <li>如果循环结束仍未满足条件，则 $n$ 是合数，算法结束</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>输出：</strong>
+                    如果所有 $k$ 轮测试都通过，则 $n$ "很可能为素数"。
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>准确率分析：</strong>
+                <ul>
+                    <li>对于任意奇合数 $n$，通过单轮测试的概率小于 $1/4$。</li>
+                    <li>进行 $k$ 轮独立测试，误判概率小于 $4^{-k}$。</li>
+                    <li>通常取 $k = 20$ 即可达到非常高的准确率。</li>
+                    <li>对于小于 $2^{64}$ 的整数，使用特定的一组基底可以做到确定性测试。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 测试 $n = 221$（合数：$221 = 13 \times 17$）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$n-1 = 220 = 2^2 \times 55$，所以 $s = 2$，$d = 55$。</li>
+                    <li>选择 $a = 174$（随机选择）。</li>
+                    <li>计算 $x = 174^{55} \bmod 221$：
+                        <ul>
+                            <li>可用快速幂计算：$174^{55} \equiv 47 \pmod{221}$</li>
+                            <li>$x = 47$，既不是1也不是220</li>
+                        </ul>
+                    </li>
+                    <li>第一次平方：$x = 47^2 \bmod 221 = 2209 \bmod 221 = 220$（即 $-1 \bmod 221$）</li>
+                    <li>满足条件 $a^{2^1 \cdot d} \equiv -1 \pmod{221}$，所以本轮测试通过。</li>
+                    <li>但 $221$ 实际是合数，可能需要更多测试才能发现。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 用 $a = 2$ 测试 $n = 341$（伪素数：$341 = 11 \times 31$）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$341-1 = 340 = 2^2 \times 85$，所以 $s = 2$，$d = 85$。</li>
+                    <li>计算 $2^{85} \bmod 341$：
+                        <ul>
+                            <li>$2^{85} \equiv 32 \pmod{341}$</li>
+                            <li>$x = 32$，既不是1也不是340</li>
+                        </ul>
+                    </li>
+                    <li>第一次平方：$x = 32^2 \bmod 341 = 1024 \bmod 341 = 1$</li>
+                    <li>当 $x$ 平方后变为1，而之前不是 $\pm 1$，这违反了素数的性质，因此 $341$ 是合数。</li>
+                </ol>
+                这个例子说明米勒-拉宾测试比简单的费马测试更强大，因为费马测试中 $2^{340} \equiv 1 \pmod{341}$。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 测试 $n = 561$（卡迈克尔数，最小的卡迈克尔数）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$561-1 = 560 = 2^4 \times 35$，所以 $s = 4$，$d = 35$。</li>
+                    <li>选择 $a = 2$：
+                        <ul>
+                            <li>$2^{35} \bmod 561 = 263$</li>
+                            <li>平方：$263^2 \bmod 561 = 166$</li>
+                            <li>再平方：$166^2 \bmod 561 = 67$</li>
+                            <li>再平方：$67^2 \bmod 561 = 1$</li>
+                        </ul>
+                    </li>
+                    <li>当平方得到1，而前一步不是 $\pm 1$，所以 $561$ 是合数。</li>
+                </ol>
+                卡迈克尔数能通过所有费马测试，但会被米勒-拉宾测试检测为合数。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 快速幂算法（模幂运算）
+function modPow(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    
+    let result = 1n;
+    base = BigInt(base) % BigInt(modulus);
+    let exp = BigInt(exponent);
+    
+    while (exp > 0n) {
+        if (exp % 2n === 1n) {
+            result = (result * base) % BigInt(modulus);
+        }
+        exp >>= 1n;
+        base = (base * base) % BigInt(modulus);
+    }
+    
+    return Number(result);
+}
+
+// 分解 n-1 = 2^s * d，其中 d 是奇数
+function factorNMinus1(n) {
+    let s = 0;
+    let d = n - 1;
+    
+    while (d % 2 === 0) {
+        d /= 2;
+        s++;
+    }
+    
+    return { s, d };
+}
+
+// 单轮米勒-拉宾测试
+function millerRabinTest(n, a) {
+    // 特殊情况
+    if (n < 2) return false;
+    if (n === 2 || n === 3) return true;
+    if (n % 2 === 0) return false;
+    
+    // 分解 n-1
+    const { s, d } = factorNMinus1(n);
+    
+    // 计算 a^d mod n
+    let x = modPow(a, d, n);
+    
+    // 情况1：a^d ≡ 1 mod n
+    if (x === 1 || x === n - 1) {
+        return true;
+    }
+    
+    // 情况2：a^(2^r * d) ≡ -1 mod n 对于某个 0 ≤ r < s
+    for (let r = 1; r < s; r++) {
+        x = modPow(x, 2, n);
+        
+        if (x === n - 1) {
+            return true;
+        }
+        
+        if (x === 1) {
+            return false; // 发现非平凡平方根，n是合数
+        }
+    }
+    
+    return false;
+}
+
+// 完整的米勒-拉宾素性测试（k轮）
+function millerRabin(n, k = 20) {
+    // 处理小数字
+    if (n < 2) return false;
+    if (n === 2 || n === 3) return true;
+    if (n % 2 === 0) return false;
+    
+    // 对于小整数，使用确定性测试的基底
+    if (n < 341550071728321) {
+        const deterministicBases = [2, 3, 5, 7, 11, 13, 17];
+        for (const a of deterministicBases) {
+            if (a >= n) break;
+            if (!millerRabinTest(n, a)) return false;
+        }
+        return true;
+    }
+    
+    // 随机测试 k 轮
+    for (let i = 0; i < k; i++) {
+        // 随机选择 a，2 ≤ a ≤ n-2
+        const a = 2 + Math.floor(Math.random() * (n - 4));
+        
+        if (!millerRabinTest(n, a)) {
+            return false; // 确定是合数
+        }
+    }
+    
+    // 通过所有测试，很可能为素数
+    return true;
+}
+
+// 性能优化的确定性测试（适用于64位整数）
+function deterministicMillerRabin64(n) {
+    if (n < 2) return false;
+    if (n === 2 || n === 3) return true;
+    if (n % 2 === 0) return false;
+    
+    // 对于64位整数，以下基底足够
+    const bases = [2, 3, 5, 7, 11, 13];
+    
+    for (const a of bases) {
+        if (a >= n) break;
+        if (!millerRabinTest(n, a)) return false;
+    }
+    
+    return true;
+}
+
+// 示例使用
+console.log("=== 米勒-拉宾素性测试 ===");
+
+// 测试一些数字
+const testNumbers = [
+    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,      // 小素数
+    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,  // 更多素数
+    341, 561, 645, 1105, 1729, 2465,         // 伪素数和卡迈克尔数
+    1009, 1013, 1019, 1021,                  // 四位素数
+    10007, 10009, 10037, 10039,              // 五位素数
+    999983, 1000003, 1000033, 1000037        // 大素数
+];
+
+console.log("数字\t\t米勒-拉宾结果\t实际是否为素数");
+console.log("-".repeat(60));
+
+for (const n of testNumbers) {
+    const isPrime = millerRabin(n, 10);
+    const actual = isActuallyPrime(n);
+    console.log(`${n}\t\t${isPrime ? '可能是素数' : '合数'}\t\t${actual ? '是' : '否'}`);
+}
+
+// 辅助函数：简单判断是否为素数（仅用于验证，效率低）
+function isActuallyPrime(num) {
+    if (num < 2) return false;
+    if (num % 2 === 0) return num === 2;
+    const limit = Math.sqrt(num);
+    for (let i = 3; i <= limit; i += 2) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
+
+// 性能测试
+console.log("\n=== 性能测试 ===");
+const bigPrime = 9999991; // 一个已知的素数
+const bigComposite = 9999991 * 9999973; // 两个大素数的乘积
+
+console.time("大素数测试");
+const result1 = millerRabin(bigPrime, 20);
+console.timeEnd("大素数测试");
+console.log(`${bigPrime} 是素数? ${result1}`);
+
+console.time("大合数测试");
+const result2 = millerRabin(bigComposite, 20);
+console.timeEnd("大合数测试");
+console.log(`${bigComposite} 是素数? ${result2}`);
+
+// 错误率统计
+console.log("\n=== 错误率测试（测试伪素数） ===");
+const pseudoprimes = [341, 561, 645, 1105, 1387, 1729, 1905, 2047, 2465, 2701];
+let falsePositives = 0;
+
+for (const n of pseudoprimes) {
+    const result = millerRabin(n, 1); // 只测试一轮
+    if (result) falsePositives++;
+}
+
+console.log(`在 ${pseudoprimes.length} 个伪素数中，单轮测试误判为素数的个数: ${falsePositives}`);
+console.log(`单轮测试误判率: ${(falsePositives / pseudoprimes.length * 100).toFixed(1)}%`);
+
+// 测试确定性版本
+console.log("\n=== 确定性测试（64位）===");
+const numbersForDet = [1000000007, 1000000009, 1000000021, 1000000033];
+for (const n of numbersForDet) {
+    const result = deterministicMillerRabin64(n);
+    console.log(`${n}: ${result ? '素数' : '合数'}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>密码学：</strong>
+                    RSA、Diffie-Hellman等公钥密码系统需要生成大素数，米勒-拉宾测试是实际应用中最常用的素性测试。
+                </li>
+                
+                <li>
+                    <strong>随机数生成：</strong>
+                    生成密码学安全的随机素数。
+                </li>
+                
+                <li>
+                    <strong>数学研究：</strong>
+                    寻找大素数，验证数的素性。
+                </li>
+                
+                <li>
+                    <strong>计算机代数系统：</strong>
+                    Mathematica、Maple等数学软件中使用的素性测试。
+                </li>
+                
+                <li>
+                    <strong>编程竞赛：</strong>
+                    需要高效判断大数素性的场合。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>与其他素性测试的比较：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">测试方法</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">类型</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">时间复杂度</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">优点</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">缺点</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">试除法</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">确定性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\sqrt{n})$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">简单，确定性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">对大数效率极低</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">费马测试</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">概率性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(k \log^3 n)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">比试除法快</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">有卡迈克尔数问题</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">米勒-拉宾</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">概率性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(k \log^3 n)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">高效，误判率低</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">概率性，有极低误判可能</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">AKS测试</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">确定性</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\log^{12} n)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">第一个多项式时间确定性测试</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">常数大，实际不如米勒-拉宾快</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                米勒-拉宾测试由加里·米勒（Gary Miller）在1976年提出，最初是确定性算法，但依赖于尚未证明的广义黎曼猜想。
+            </p>
+            
+            <p>
+                迈克尔·拉宾（Michael Rabin）在1980年将其修改为无条件的概率算法。
+                尽管是概率性的，但通过足够多轮测试可将误判概率降到极低，在实际应用中完全可以接受。
+            </p>
+            
+            <p>
+                对于小于特定界限的整数（如 $2^{64}$），已经找到了一组基底，使得米勒-拉宾测试成为确定性测试。
+                这意味着对于大多数实际应用，米勒-拉宾测试可以视为确定性测试。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                在实际密码学应用中，通常进行40-50轮测试，误判概率小于 $2^{-80}$，这在密码学意义上可以视为"绝对安全"。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

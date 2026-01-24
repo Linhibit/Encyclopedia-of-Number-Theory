@@ -154,6 +154,18 @@
     "description": "关于模$n$的整数$a$的阶的基本性质：设$\\gcd(a,n)=1$，$a$模$n$的阶$\\operatorname{ord}_n(a)$是满足$a^k \\equiv 1 \\pmod{n}$的最小正整数$k$，则$\\operatorname{ord}_n(a)$整除任意满足$a^m \\equiv 1 \\pmod{n}$的整数$m$。",
     "link": "theorems/order-properties.html",
     "tags": ["阶", "原根", "模运算", "数论性质"]
+  },
+  {
+    "title": "线性丢番图方程",
+    "description": "形如$ax + by = c$的整数解的存在条件与求解方法。当$\\gcd(a,b)$整除$c$时方程有整数解，可通过扩展欧几里得算法构造特解。",
+    "link": "theorems/linear-diophantine-equation.html",
+    "tags": ["不定方程", "整数解", "扩展欧几里得", "贝祖等式"]
+  },
+  {
+    "title": "米勒-拉宾素性测试",
+    "description": "一种高效的概率素数测试算法。对于奇整数$n>1$，将$n-1$分解为$2^s \\cdot d$，通过检验$a^d \\pmod{n}$和$a^{2^r d} \\pmod{n}$来判断$n$是否为素数。",
+    "link": "algorithms/miller-rabin-primality-test.html",
+    "tags": ["素性测试", "概率算法", "密码学", "数论算法"]
   }
 ]
 

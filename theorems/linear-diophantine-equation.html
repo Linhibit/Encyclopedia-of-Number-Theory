@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>线性丢番图方程 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>线性丢番图方程 (Linear Diophantine Equation)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>方程形式：</strong>
+            <p>
+                二元一次线性丢番图方程的标准形式为：
+                $$ax + by = c$$
+                其中 $a, b, c$ 是给定的整数，$x$ 和 $y$ 是未知整数。
+            </p>
+            
+            <p>
+                <strong>解的存在性定理：</strong>
+                方程 $ax + by = c$ 有整数解当且仅当 $\gcd(a, b) \mid c$。
+            </p>
+            
+            <p>
+                <strong>通解公式：</strong>
+                若 $(x_0, y_0)$ 是一个特解，则所有整数解为：
+                $$
+                \begin{cases}
+                x = x_0 + \dfrac{b}{d} t \\[8pt]
+                y = y_0 - \dfrac{a}{d} t
+                \end{cases}
+                $$
+                其中 $d = \gcd(a, b)$，$t$ 为任意整数。
+            </p>
+        </section>
+
+        <section class="theory" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>理论基础：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>贝祖等式：</strong>
+                    对于任意整数 $a, b$，存在整数 $x, y$ 使得 $ax + by = \gcd(a, b)$。
+                    这是线性丢番图方程解存在性的基础。
+                </li>
+                
+                <li>
+                    <strong>必要性证明：</strong>
+                    如果 $ax + by = c$ 有整数解，设 $d = \gcd(a, b)$，则 $d \mid a$ 且 $d \mid b$，
+                    因此 $d \mid (ax + by) = c$。
+                </li>
+                
+                <li>
+                    <strong>充分性证明：</strong>
+                    如果 $d \mid c$，设 $c = kd$。由贝祖等式，存在 $x_1, y_1$ 使得 $ax_1 + by_1 = d$。
+                    两边乘以 $k$ 得 $a(kx_1) + b(ky_1) = kd = c$，因此 $(kx_1, ky_1)$ 是一个特解。
+                </li>
+                
+                <li>
+                    <strong>通解推导：</strong>
+                    设 $(x_0, y_0)$ 和 $(x, y)$ 都是解，则 $a(x - x_0) + b(y - y_0) = 0$，
+                    所以 $a(x - x_0) = -b(y - y_0)$。令 $d = \gcd(a, b)$，$a = da'$, $b = db'$，
+                    其中 $\gcd(a', b') = 1$。于是 $a'(x - x_0) = -b'(y - y_0)$，
+                    由于 $\gcd(a', b') = 1$，有 $a' \mid (y - y_0)$，设 $y - y_0 = a't$，
+                    则 $x - x_0 = -b't$，整理即得通解公式。
+                </li>
+            </ol>
+        </section>
+
+        <section class="method" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>求解方法：扩展欧几里得算法</h3>
+            
+            <p>
+                <strong>步骤：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>检查解的存在性：</strong>
+                    计算 $d = \gcd(a, b)$，如果 $d \nmid c$，则无整数解。
+                </li>
+                
+                <li>
+                    <strong>约化方程：</strong>
+                    如果 $d \mid c$，令 $a' = a/d$, $b' = b/d$, $c' = c/d$，
+                    则原方程等价于 $a'x + b'y = c'$，且 $\gcd(a', b') = 1$。
+                </li>
+                
+                <li>
+                    <strong>求特解：</strong>
+                    使用扩展欧几里得算法求 $a'x_1 + b'y_1 = 1$ 的解 $(x_1, y_1)$，
+                    则 $(c'x_1, c'y_1)$ 是 $a'x + b'y = c'$ 的一个特解。
+                </li>
+                
+                <li>
+                    <strong>写出通解：</strong>
+                    原方程的通解为：
+                    $$
+                    \begin{cases}
+                    x = c'x_1 + b't \\
+                    y = c'y_1 - a't
+                    \end{cases}
+                    \quad t \in \mathbb{Z}
+                    $$
+                </li>
+                
+                <li>
+                    <strong>非负解/正整数解：</strong>
+                    如果需要非负解或正整数解，可对 $t$ 的取值范围加以限制。
+                </li>
+            </ol>
+        </section>
+
+        <section class="example" 
+                 style="background: #f5f5f5; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 求解 $21x + 14y = 35$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>计算 $\gcd(21, 14) = 7$，$7 \mid 35$，所以有解。</li>
+                    <li>约化：$21/7 = 3$，$14/7 = 2$，$35/7 = 5$，得 $3x + 2y = 5$。</li>
+                    <li>求 $3x + 2y = 1$ 的特解：显然 $3 \times 1 + 2 \times (-1) = 1$，所以 $(1, -1)$ 是特解。</li>
+                    <li>$3x + 2y = 5$ 的特解：$(5 \times 1, 5 \times (-1)) = (5, -5)$。</li>
+                    <li>通解：
+                        $$
+                        \begin{cases}
+                        x = 5 + 2t \\
+                        y = -5 - 3t
+                        \end{cases}
+                        \quad t \in \mathbb{Z}
+                        $$
+                    </li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 求解 $6x + 9y = 20$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                计算 $\gcd(6, 9) = 3$，$3 \nmid 20$，所以方程无整数解。
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 求 $5x + 3y = 17$ 的所有正整数解。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$\gcd(5, 3) = 1$，$1 \mid 17$，有解。</li>
+                    <li>求 $5x + 3y = 1$ 的特解：$5 \times 2 + 3 \times (-3) = 1$，所以 $(2, -3)$ 是特解。</li>
+                    <li>$5x + 3y = 17$ 的特解：$(17 \times 2, 17 \times (-3)) = (34, -51)$。</li>
+                    <li>通解：
+                        $$
+                        \begin{cases}
+                        x = 34 + 3t \\
+                        y = -51 - 5t
+                        \end{cases}
+                        \quad t \in \mathbb{Z}
+                        $$
+                    </li>
+                    <li>要求 $x > 0$ 且 $y > 0$：
+                        <ul>
+                            <li>$34 + 3t > 0 \Rightarrow t > -34/3 \approx -11.33$，所以 $t \geq -11$</li>
+                            <li>$-51 - 5t > 0 \Rightarrow -5t > 51 \Rightarrow t < -51/5 = -10.2$，所以 $t \leq -11$</li>
+                        </ul>
+                    </li>
+                    <li>同时满足 $t \geq -11$ 且 $t \leq -11$，所以 $t = -11$。</li>
+                    <li>唯一正整数解：$x = 34 + 3 \times (-11) = 1$，$y = -51 - 5 \times (-11) = 4$。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 扩展欧几里得算法
+function extendedGcd(a, b) {
+    if (b === 0) {
+        return { gcd: a, x: 1, y: 0 };
+    }
+    
+    const result = extendedGcd(b, a % b);
+    const { gcd, x: x1, y: y1 } = result;
+    
+    const x = y1;
+    const y = x1 - Math.floor(a / b) * y1;
+    
+    return { gcd, x, y };
+}
+
+// 求解线性丢番图方程 ax + by = c
+function solveDiophantine(a, b, c) {
+    // 特殊情况处理
+    if (a === 0 && b === 0) {
+        return c === 0 ? 
+            { hasSolution: true, solution: "所有整数对都是解" } : 
+            { hasSolution: false, solution: "无解" };
+    }
+    
+    // 使用扩展欧几里得算法
+    const { gcd, x, y } = extendedGcd(Math.abs(a), Math.abs(b));
+    
+    // 检查解的存在性
+    if (c % gcd !== 0) {
+        return { hasSolution: false, solution: "无整数解" };
+    }
+    
+    // 计算特解
+    const factor = c / gcd;
+    let x0 = x * factor;
+    let y0 = y * factor;
+    
+    // 调整符号
+    if (a < 0) x0 = -x0;
+    if (b < 0) y0 = -y0;
+    
+    // 约化系数
+    const a1 = a / gcd;
+    const b1 = b / gcd;
+    
+    // 通解公式
+    const solutionFormula = `通解：<br>
+        x = ${x0} + ${b1}t<br>
+        y = ${y0} - ${a1}t<br>
+        其中 t 为任意整数`;
+    
+    // 返回特解和通解公式
+    return {
+        hasSolution: true,
+        particularSolution: { x: x0, y: y0 },
+        generalSolution: solutionFormula,
+        a1: a1,
+        b1: b1
+    };
+}
+
+// 寻找正整数解
+function findPositiveSolutions(a, b, c, maxT = 100) {
+    const solution = solveDiophantine(a, b, c);
+    
+    if (!solution.hasSolution) {
+        return [];
+    }
+    
+    const { particularSolution, a1, b1 } = solution;
+    const { x: x0, y: y0 } = particularSolution;
+    const positiveSolutions = [];
+    
+    // 通解：x = x0 + b1*t, y = y0 - a1*t
+    // 寻找使 x>0 且 y>0 的 t
+    for (let t = -maxT; t <= maxT; t++) {
+        const x = x0 + b1 * t;
+        const y = y0 - a1 * t;
+        
+        if (x > 0 && y > 0) {
+            positiveSolutions.push({ x, y, t });
+        }
+    }
+    
+    return positiveSolutions;
+}
+
+// 示例使用
+console.log("=== 线性丢番图方程求解 ===");
+
+// 示例1：21x + 14y = 35
+console.log("\n1. 方程：21x + 14y = 35");
+const sol1 = solveDiophantine(21, 14, 35);
+console.log(`解存在: ${sol1.hasSolution}`);
+if (sol1.hasSolution) {
+    console.log(`特解: (${sol1.particularSolution.x}, ${sol1.particularSolution.y})`);
+    console.log(sol1.generalSolution);
+}
+
+// 示例2：6x + 9y = 20
+console.log("\n2. 方程：6x + 9y = 20");
+const sol2 = solveDiophantine(6, 9, 20);
+console.log(`解存在: ${sol2.hasSolution}`);
+
+// 示例3：5x + 3y = 17 的正整数解
+console.log("\n3. 方程：5x + 3y = 17 的正整数解");
+const sol3 = solveDiophantine(5, 3, 17);
+console.log(`解存在: ${sol3.hasSolution}`);
+if (sol3.hasSolution) {
+    console.log(`特解: (${sol3.particularSolution.x}, ${sol3.particularSolution.y})`);
+    
+    const positiveSol = findPositiveSolutions(5, 3, 17, 20);
+    console.log(`正整数解（共${positiveSol.length}个）:`);
+    positiveSol.forEach(s => console.log(`  t=${s.t}: (${s.x}, ${s.y})`));
+}
+
+// 示例4：更复杂的方程
+console.log("\n4. 方程：107x + 37y = 25");
+const sol4 = solveDiophantine(107, 37, 25);
+console.log(`解存在: ${sol4.hasSolution}`);
+if (sol4.hasSolution) {
+    console.log(`特解: (${sol4.particularSolution.x}, ${sol4.particularSolution.y})`);
+    console.log(sol4.generalSolution);
+}
+
+// 验证解的正确性
+console.log("\n=== 验证解的正确性 ===");
+const testCases = [
+    { a: 21, b: 14, c: 35 },
+    { a: 5, b: 3, c: 17 },
+    { a: 107, b: 37, c: 25 }
+];
+
+for (const test of testCases) {
+    const sol = solveDiophantine(test.a, test.b, test.c);
+    if (sol.hasSolution) {
+        const { x, y } = sol.particularSolution;
+        const leftSide = test.a * x + test.b * y;
+        console.log(`验证：${test.a}×${x} + ${test.b}×${y} = ${leftSide}, 目标值=${test.c}, ${leftSide === test.c ? '✓' : '✗'}`);
+    }
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>分配问题：</strong>
+                    如"用5元和3元的邮票凑出17元"等问题。
+                </li>
+                
+                <li>
+                    <strong>同余方程求解：</strong>
+                    方程 $ax \equiv c \pmod{b}$ 可化为 $ax + by = c$。
+                </li>
+                
+                <li>
+                    <strong>中国剩余定理：</strong>
+                    构造解时需要求解线性丢番图方程。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    RSA算法中计算私钥需要求解 $ed \equiv 1 \pmod{\varphi(n)}$。
+                </li>
+                
+                <li>
+                    <strong>计算机科学：</strong>
+                    资源分配、调度等问题。
+                </li>
+            </ol>
+        </section>
+
+        <section class="extensions" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>推广：多元线性丢番图方程</h3>
+            
+            <p>
+                对于多元方程 $a_1x_1 + a_2x_2 + \cdots + a_nx_n = c$：
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>存在性条件：</strong>
+                    有整数解当且仅当 $\gcd(a_1, a_2, \dots, a_n) \mid c$。
+                </li>
+                
+                <li>
+                    <strong>求解方法：</strong>
+                    可化为多个二元方程求解，或使用矩阵方法（Smith标准形）。
+                </li>
+                
+                <li>
+                    <strong>通解结构：</strong>
+                    若 $(x_1^0, x_2^0, \dots, x_n^0)$ 是一个特解，则通解可表示为特解加上齐次方程的通解。
+                </li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>

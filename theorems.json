@@ -190,6 +190,30 @@
     "description": "数论变换是离散傅里叶变换在有限域上的类比，用于模素数环上的快速多项式乘法，时间复杂度为 $O(n \\log n)$，是许多密码学和编码理论算法的基础。",
     "link": "algorithms/number-theoretic-transform.html",
     "tags": ["快速傅里叶变换", "多项式乘法", "模运算", "密码学", "编码理论"]
+  },
+  {
+    "title": "拉格朗日四平方和定理",
+    "description": "每个正整数都可以表示为最多四个整数的平方和，即 $n = a^2 + b^2 + c^2 + d^2$，其中 $a,b,c,d$ 是非负整数。这是数论中的一个基本结果。",
+    "link": "theorems/lagrange-four-square-theorem.html",
+    "tags": ["平方和", "数论", "正整数", "华林问题"]
+  },
+  {
+    "title": "伯特兰公设",
+    "description": "对于任意大于1的整数 $n$，至少存在一个素数 $p$ 满足 $n < p < 2n$。这是数论中关于素数分布的重要定理，由切比雪夫首先证明。",
+    "link": "theorems/bertrand-postulate.html",
+    "tags": ["素数分布", "数论", "切比雪夫定理", "素数间隔"]
+  },
+  {
+    "title": "狄利克雷算术级数定理",
+    "description": "若正整数 $a$ 与 $d$ 互质（$\\gcd(a,d)=1$），则算术级数 $a, a+d, a+2d, \\dots$ 中包含无穷多个素数。",
+    "link": "theorems/dirichlet-arithmetic-progression.html",
+    "tags": ["素数分布", "算术级数", "解析数论", "狄利克雷L函数"]
+  },
+  {
+    "title": "算术级数中的素数定理",
+    "description": "狄利克雷定理：若 $a$ 和 $d$ 互质，则算术级数 $a + nd$（$n \\in \\mathbb{N}$）中包含无穷多个素数。",
+    "link": "theorems/arithmetic-progression-primes-theorem.html",
+    "tags": ["素数", "算术级数", "狄利克雷定理", "解析数论"]
   }
 ]
 

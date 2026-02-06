@@ -24,10 +24,9 @@
 
 <body>
     <div class="article-container" 
-         style="max-width: 900px; 
-                margin: 0 auto; 
-                padding: 40px 20px; 
-                box-sizing: border-box;">
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
         
         <nav>
             <a href="../index.html" class="back-home" aria-label="返回首页">
@@ -50,7 +49,7 @@
             
             <strong>算法原理：</strong>
             <p>
-                数论变换是离散傅里叶变换（DFT）在有限域（或模素数环）上的类比。与使用复数单位根的DFT不同，NTT使用模素数 $p$ 下的原根作为变换的基。
+                数论变换是离散傅里叶变换（DFT）在有限域（模素数环）上的类比。与使用复数单位根的DFT不同，NTT使用模素数 $p$ 下的原根作为变换基，实现了无浮点误差的多项式乘法。
             </p>
             
             <p>
@@ -58,25 +57,25 @@
             </p>
             <ol style="line-height: 1.6;">
                 <li>
-                    <strong>原根：</strong> 如果 $g$ 是模 $p$ 的原根，那么 $g^0, g^1, \dots, g^{p-2}$ 模 $p$ 互不相同，且 $g^{p-1} \equiv 1 \pmod{p}$。
+                    <strong>原根：</strong> 若 $g$ 是模 $p$ 的原根，则 $g^0, g^1, \dots, g^{p-2}$ 模 $p$ 互不相同，且 $g^{p-1} \equiv 1 \pmod{p}$。
                 </li>
                 <li>
-                    <strong>单位根：</strong> 令 $n$ 是 $p-1$ 的因子，定义 $\omega_n = g^{(p-1)/n} \bmod p$，则 $\omega_n$ 是模 $p$ 下的 $n$ 次单位根，满足 $\omega_n^n \equiv 1 \pmod{p}$。
+                    <strong>单位根：</strong> 设 $n$ 是 $p-1$ 的因子，定义 $\omega_n = g^{(p-1)/n} \bmod p$，则 $\omega_n$ 是模 $p$ 下的 $n$ 次单位根，满足 $\omega_n^n \equiv 1 \pmod{p}$。
                 </li>
                 <li>
-                    <strong>变换：</strong> NTT将一个长度为 $n$ 的序列从时域转换到频域，其中 $n$ 是2的幂且 $n \mid (p-1)$。
+                    <strong>变换条件：</strong> NTT要求 $n$ 是2的幂且 $n \mid (p-1)$，即 $p = k \cdot n + 1$。
                 </li>
                 <li>
-                    <strong>卷积定理：</strong> 与DFT类似，时域上的卷积对应于频域上的逐点乘积。这使得我们可以在 $O(n \log n)$ 时间内计算两个多项式的乘积。
+                    <strong>卷积定理：</strong> 时域卷积对应频域逐点乘积，实现 $O(n \log n)$ 多项式乘法。
                 </li>
             </ol>
             
             <p>
                 <strong>对比FFT：</strong>
                 <ul>
-                    <li>FFT使用浮点数运算，存在精度问题，而NTT使用模运算，结果精确。</li>
-                    <li>NTT适用于模素数环上的计算，在密码学和大整数乘法中非常有用。</li>
-                    <li>NTT需要满足 $n \mid (p-1)$，因此对模数 $p$ 有特殊要求。</li>
+                    <li><strong>精度：</strong> NTT使用整数模运算，无浮点误差；FFT存在精度问题。</li>
+                    <li><strong>适用性：</strong> NTT适用于模素数环计算，在密码学、大整数乘法中关键；FFT适用于一般信号处理。</li>
+                    <li><strong>限制：</strong> NTT对模数 $p$ 有特殊要求（需存在 $n$ 次单位根）。</li>
                 </ul>
             </p>
         </section>
@@ -91,32 +90,28 @@
             
             <ol style="line-height: 1.6;">
                 <li>
-                    <strong>前置条件：</strong>
+                    <strong>参数选择：</strong>
                     选择模数 $p$ 和变换长度 $n$，满足：
                     <ol type="a">
                         <li>$p$ 是素数</li>
                         <li>$n$ 是2的幂</li>
-                        <li>$n \mid (p-1)$（即 $p = k \cdot n + 1$ 对某个整数 $k$）</li>
+                        <li>$n \mid (p-1)$，即 $p = k \cdot n + 1$</li>
                     </ol>
-                    常用的 $p$ 有：
+                    <strong>常用NTT友好模数：</strong>
                     <ul>
-                        <li>$p = 998244353 = 119 \times 2^{23} + 1$，原根 $g = 3$</li>
+                        <li>$p = 998244353 = 119 \times 2^{23} + 1$，原根 $g = 3$（最常用）</li>
                         <li>$p = 1004535809 = 479 \times 2^{21} + 1$，原根 $g = 3$</li>
                         <li>$p = 469762049 = 7 \times 2^{26} + 1$，原根 $g = 3$</li>
                     </ul>
                 </li>
                 
                 <li>
-                    <strong>正向NTT（类似FFT）：</strong>
-                    将多项式 $A(x) = \sum_{i=0}^{n-1} a_i x^i$ 从系数表示转换为点值表示。
+                    <strong>正向NTT（系数表示 → 点值表示）：</strong>
                     <ol type="a">
-                        <li>如果 $n=1$，直接返回</li>
-                        <li>将系数按奇偶分成两个长度为 $n/2$ 的多项式：
-                            $$A_0(x) = a_0 + a_2 x + \dots + a_{n-2} x^{n/2-1}$$
-                            $$A_1(x) = a_1 + a_3 x + \dots + a_{n-1} x^{n/2-1}$$
-                        </li>
-                        <li>递归计算 $A_0$ 和 $A_1$ 在点 $\omega_n^0, \omega_n^2, \dots, \omega_n^{n-2}$ 和 $\omega_n^1, \omega_n^3, \dots, \omega_n^{n-1}$ 上的值</li>
-                        <li>合并结果：
+                        <li>若 $n=1$，直接返回</li>
+                        <li>将多项式按奇偶索引分成两个长度为 $n/2$ 的多项式：$A_0$（偶项）、$A_1$（奇项）</li>
+                        <li>递归计算 $A_0$ 和 $A_1$ 在 $\omega_n^{2k}$ 处的值</li>
+                        <li>合并结果（蝴蝶操作）：
                             $$A(\omega_n^k) = A_0(\omega_n^{2k}) + \omega_n^k A_1(\omega_n^{2k})$$
                             $$A(\omega_n^{k+n/2}) = A_0(\omega_n^{2k}) - \omega_n^k A_1(\omega_n^{2k})$$
                         </li>
@@ -124,17 +119,23 @@
                 </li>
                 
                 <li>
-                    <strong>逆向NTT：</strong>
-                    将点值表示转换回系数表示，与正向NTT类似，但使用 $\omega_n^{-1}$ 作为单位根，并在最后乘以 $n^{-1} \bmod p$。
+                    <strong>逆向NTT（点值表示 → 系数表示）：</strong>
+                    与正向NTT类似，但：
+                    <ol type="a">
+                        <li>使用 $\omega_n^{-1}$ 作为单位根</li>
+                        <li>最终结果乘以 $n^{-1} \bmod p$（模逆元）</li>
+                    </ol>
                 </li>
                 
                 <li>
                     <strong>多项式乘法：</strong>
                     <ol type="a">
-                        <li>将两个多项式补零到长度 $2n$（其中 $n$ 是大于等于两个多项式长度之和的最小2的幂）</li>
-                        <li>分别计算两个多项式的NTT</li>
-                        <li>频域上逐点相乘</li>
-                        <li>对结果进行逆NTT</li>
+                        <li>设两个多项式 $A(x)$、$B(x)$，长度分别为 $m_1$、$m_2$</li>
+                        <li>取 $n = 2^{\lceil \log_2(m_1 + m_2 - 1) \rceil}$（大于等于 $m_1+m_2-1$ 的最小2的幂）</li>
+                        <li>$A$、$B$ 补零至长度 $n$</li>
+                        <li>分别计算 NTT($A$)、NTT($B$)</li>
+                        <li>频域逐点相乘：$C[k] = A[k] \cdot B[k] \bmod p$</li>
+                        <li>计算逆NTT($C$)，得到乘积多项式系数</li>
                     </ol>
                 </li>
             </ol>
@@ -165,12 +166,12 @@
             <p>
                 <strong>解法：</strong>
                 <ol>
-                    <li>$p = 17$，原根 $g = 3$（因为 $3^0=1, 3^1=3, 3^2=9, 3^3=10, 3^4=13, 3^5=5, 3^6=15, 3^7=11, 3^8=16, 3^9=14, 3^{10}=8, 3^{11}=7, 3^{12}=4, 3^{13}=12, 3^{14}=2, 3^{15}=6$ 模17互不相同）</li>
-                    <li>取 $n = 4$，因为 $4 \mid (17-1)$。</li>
-                    <li>计算 $4$ 次单位根：$\omega_4 = g^{(17-1)/4} = 3^4 = 13 \bmod 17$。验证：$13^4 = 28561 \equiv 1 \pmod{17}$。</li>
+                    <li>$p = 17$，原根 $g = 3$（验证：$3^0,3^1,\dots,3^{15}$ 模17互不相同）</li>
+                    <li>取 $n = 4$（因为 $4 \mid 16$，且 $4$ 是2的幂）</li>
+                    <li>计算 $4$ 次单位根：$\omega_4 = g^{(17-1)/4} = 3^4 = 13 \bmod 17$</li>
                     <li>对于多项式 $A(x) = 1 + 2x + 3x^2 + 4x^3$：
                         <ul>
-                            <li>计算 NTT：在 $\omega_4^0=1, \omega_4^1=13, \omega_4^2=16, \omega_4^3=4$ 处的值</li>
+                            <li>计算在 $\omega_4^0=1, \omega_4^1=13, \omega_4^2=16, \omega_4^3=4$ 处的值</li>
                             <li>可以使用蝴蝶操作递归计算</li>
                         </ul>
                     </li>
@@ -178,11 +179,11 @@
             </p>
             
             <p>
-                <strong>示例2：</strong> 使用 $p = 998244353$ 计算多项式乘法。
+                <strong>示例2：</strong> 使用 $p = 998244353$ 计算多项式乘法 $A(x) = 1 + 2x + 3x^2$ 与 $B(x) = 4 + 5x + 6x^2$。
             </p>
             
             <p>
-                设 $A(x) = 1 + 2x + 3x^2$，$B(x) = 4 + 5x + 6x^2$。
+                <strong>解法：</strong>
                 <ol>
                     <li>两个多项式长度都是3，乘积长度最多为5，所以取 $n=8$（大于5的最小2的幂）。</li>
                     <li>将 $A$ 和 $B$ 补零到长度8：$A = [1,2,3,0,0,0,0,0]$，$B = [4,5,6,0,0,0,0,0]$。</li>
@@ -603,8 +604,13 @@ console.log("两个结果在各自模数下都正确");</code>
                         margin: 20px 0; 
                         border-left: 3px solid #ffd600;">
             
-            <h4>📝 优化技巧与注意事项：</h4>
+            <h4>📝 历史背景与扩展：</h4>
             <p>
+                数论变换是离散傅里叶变换在有限域上的推广，最早由Pollard在1971年提出。随着密码学和大整数运算需求的增长，NTT在现代密码学（特别是后量子密码学）和大数运算库中变得至关重要。
+            </p>
+            
+            <p>
+                <strong>优化技巧：</strong>
                 1. <strong>迭代实现</strong>：与FFT类似，NTT可以使用迭代版本避免递归开销，并使用位逆序置换优化。<br>
                 2. <strong>预计算单位根</strong>：预先计算所有需要的单位根幂次，避免重复计算。<br>
                 3. <strong>使用多个模数</strong>：对于特别大的整数乘法，可以使用多个NTT友好模数分别计算，然后用中国剩余定理（CRT）组合结果，从而避免模数限制。<br>
@@ -616,11 +622,6 @@ console.log("两个结果在各自模数下都正确");</code>
                 </ul>
                 5. <strong>注意系数范围</strong>：使用单个模数时，乘积系数必须小于模数。对于大系数，需要使用多个模数或减少系数。<br>
                 6. <strong>与FFT结合</strong>：有时可以使用FFT进行初步计算，然后用NTT进行验证或精确化。
-            </p>
-            
-            <p>
-                <strong>历史背景：</strong>
-                NTT是FFT在数论领域的类比，最早由Pollard在1971年提出。随着密码学和大整数运算的需求增长，NTT成为现代计算机代数系统中的重要工具。
             </p>
         </section>
     </div>

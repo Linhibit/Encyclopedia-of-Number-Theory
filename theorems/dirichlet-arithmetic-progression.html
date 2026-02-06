@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>狄利克雷算术级数定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>狄利克雷算术级数定理 (Dirichlet's Theorem on Arithmetic Progressions)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $a$ 和 $d$ 为正整数，且满足 $\gcd(a, d) = 1$（即 $a$ 与 $d$ 互质）。则算术级数：
+                $$a,\ a+d,\ a+2d,\ a+3d,\ \dots,\ a+nd,\ \dots$$
+                中包含无穷多个素数。
+            </p>
+            
+            <p>
+                <strong>关键条件：</strong> 互质性 $\gcd(a,d)=1$ 是必要条件。若 $\gcd(a,d)>1$，则级数中至多包含一个素数（当 $a$ 本身为素数时）。
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思路（解析数论方法）：</h3>
+            
+            <p>
+                <strong>狄利克雷（1837）的开创性证明：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    引入<strong>狄利克雷特征（Dirichlet characters）</strong> $\chi$ 模 $d$，将算术级数中的素数计数转化为特征和：
+                    $$\sum_{\substack{p \leq x \\ p \equiv a \pmod{d}}} \frac{1}{p} = \frac{1}{\phi(d)} \sum_{\chi \pmod{d}} \overline{\chi}(a) \sum_{p \leq x} \frac{\chi(p)}{p} + o(1)$$
+                    其中 $\phi$ 是欧拉函数。
+                </li>
+                <li>
+                    定义<strong>狄利克雷L函数</strong>：
+                    $$L(s, \chi) = \sum_{n=1}^{\infty} \frac{\chi(n)}{n^s} = \prod_{p} \left(1 - \frac{\chi(p)}{p^s}\right)^{-1} \quad (\operatorname{Re}(s) > 1)$$
+                </li>
+                <li>
+                    证明关键引理：<strong>$L(1, \chi) \neq 0$</strong> 对所有非主特征 $\chi$ 成立（特别是实特征时 $L(1, \chi) > 0$）。
+                </li>
+                <li>
+                    分析 $L(s, \chi)$ 在 $s=1$ 附近的渐近行为：
+                    $$\sum_{p \leq x} \frac{\chi(p)}{p} = \begin{cases} 
+                    \log \log x + O(1) & \text{若 } \chi \text{ 是主特征} \\
+                    O(1) & \text{若 } \chi \text{ 是非主特征}
+                    \end{cases}$$
+                </li>
+                <li>
+                    代入特征和公式，得到：
+                    $$\sum_{\substack{p \leq x \\ p \equiv a \pmod{d}}} \frac{1}{p} \sim \frac{1}{\phi(d)} \log \log x \to \infty \quad (x \to \infty)$$
+                    从而证明该级数中存在无穷多个素数。
+                </li>
+            </ol>
+            
+            <p style="margin-top: 15px; font-style: italic; color: #555;">
+                注：完整证明需复分析工具（如解析延拓、留数定理），此处仅概述核心思想。该证明开创了解析数论领域。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> $a=1,\ d=4$（级数：$1,5,9,13,17,21,25,\dots$）
+            </p>
+            <ul style="padding-left: 20px; line-height: 1.6;">
+                <li>互质性：$\gcd(1,4)=1$ ✓</li>
+                <li>级数中的素数：$5,\ 13,\ 17,\ 29,\ 37,\ 41,\ 53,\ 61,\ 73,\ 89,\ 97,\ \dots$</li>
+                <li>定理保证：存在无穷多个形如 $4k+1$ 的素数</li>
+            </ul>
+            
+            <p>
+                <strong>示例2：</strong> $a=3,\ d=4$（级数：$3,7,11,15,19,23,27,\dots$）
+            </p>
+            <ul style="padding-left: 20px; line-height: 1.6;">
+                <li>互质性：$\gcd(3,4)=1$ ✓</li>
+                <li>级数中的素数：$3,\ 7,\ 11,\ 19,\ 23,\ 31,\ 43,\ 47,\ 59,\ 67,\ 71,\ \dots$</li>
+                <li>定理保证：存在无穷多个形如 $4k+3$ 的素数</li>
+            </ul>
+            
+            <p>
+                <strong>反例：</strong> $a=2,\ d=4$（级数：$2,6,10,14,18,\dots$）
+            </p>
+            <ul style="padding-left: 20px; line-height: 1.6;">
+                <li>互质性：$\gcd(2,4)=2 > 1$ ✗</li>
+                <li>级数中仅 $2$ 是素数，其余均为偶数且 $>2$，故为合数</li>
+                <li>验证了互质条件的必要性</li>
+            </ul>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 简单素性测试（试除法，适用于小数字）
+function isPrime(n) {
+    if (n < 2) return false;
+    if (n === 2) return true;
+    if (n % 2 === 0) return false;
+    const sqrt = Math.sqrt(n);
+    for (let i = 3; i <= sqrt; i += 2) {
+        if (n % i === 0) return false;
+    }
+    return true;
+}
+
+// 检查a与d是否互质
+function gcd(a, b) {
+    while (b !== 0) {
+        [a, b] = [b, a % b];
+    }
+    return a;
+}
+
+// 在算术级数 a + k*d (k≥0) 中寻找不超过limit的素数
+function primesInAP(a, d, limit) {
+    if (gcd(a, d) !== 1) {
+        console.warn(`警告: gcd(${a}, ${d}) = ${gcd(a,d)} > 1，级数中至多含一个素数`);
+    }
+    
+    const primes = [];
+    let k = 0;
+    while (true) {
+        const term = a + k * d;
+        if (term > limit) break;
+        if (isPrime(term)) primes.push(term);
+        k++;
+    }
+    return primes;
+}
+
+// 示例测试
+console.log("=== 狄利克雷定理验证示例 ===\n");
+
+// 示例1: 4k+1 型素数
+const ap1 = primesInAP(1, 4, 100);
+console.log(`级数 1 + 4k (≤100) 中的素数: ${ap1.join(', ')}`);
+console.log(`数量: ${ap1.length}\n`);
+
+// 示例2: 4k+3 型素数
+const ap2 = primesInAP(3, 4, 100);
+console.log(`级数 3 + 4k (≤100) 中的素数: ${ap2.join(', ')}`);
+console.log(`数量: ${ap2.length}\n`);
+
+// 示例3: 6k+5 型素数 (gcd(5,6)=1)
+const ap3 = primesInAP(5, 6, 150);
+console.log(`级数 5 + 6k (≤150) 中的素数: ${ap3.join(', ')}`);
+console.log(`数量: ${ap3.length}\n`);
+
+// 反例: 非互质情况
+const ap4 = primesInAP(2, 4, 50);
+console.log(`级数 2 + 4k (≤50) 中的素数: ${ap4.join(', ')}`);
+console.log(`数量: ${ap4.length} (仅含2，验证互质条件必要性)\n`);
+
+// 统计不同模数下素数分布
+console.log("=== 模4素数分布统计 (≤1000) ===");
+const count1 = primesInAP(1, 4, 1000).length;
+const count3 = primesInAP(3, 4, 1000).length;
+console.log(`4k+1 型素数数量: ${count1}`);
+console.log(`4k+3 型素数数量: ${count3}`);
+console.log(`比例 (4k+1)/(4k+3): ${(count1/count3).toFixed(3)}`);
+console.log(`(注：当上限→∞时，比例趋近于1，体现素数分布的均匀性)`);</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用与意义：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>素数分布理论基石：</strong>
+                    首次严格证明素数在满足同余条件的序列中无限存在，推动了解析数论发展。
+                </li>
+                <li>
+                    <strong>密码学基础：</strong>
+                    为RSA等公钥密码系统中大素数生成提供理论依据（需在特定同余类中寻找素数）。
+                </li>
+                <li>
+                    <strong>数论猜想支撑：</strong>
+                    为广义黎曼猜想、素数定理的算术级数推广等研究奠定基础。
+                </li>
+                <li>
+                    <strong>代数数论应用：</strong>
+                    在类域论、L函数理论中具有核心地位，影响现代数论多个分支。
+                </li>
+                <li>
+                    <strong>计算数论验证：</strong>
+                    指导高效素数搜索算法（如在特定同余类中筛法优化）。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史与延伸：</h4>
+            <p>
+                • <strong>1837年</strong>：约翰·彼得·古斯塔夫·勒热纳·狄利克雷首次用解析方法证明，开创解析数论先河。<br>
+                • <strong>关键突破</strong>：引入特征和L函数，将数论问题转化为复分析问题。<

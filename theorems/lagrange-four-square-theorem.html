@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>拉格朗日四平方和定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>拉格朗日四平方和定理 (Lagrange's Four-Square Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                每个正整数 $n$ 都可以表示为最多四个整数的平方和，即存在非负整数 $a, b, c, d$ 使得：
+                $$n = a^2 + b^2 + c^2 + d^2$$
+            </p>
+            
+            <p>
+                <strong>等价表述：</strong>
+                <ol style="line-height: 1.6;">
+                    <li>对于任意正整数 $n$，存在整数 $x_1, x_2, x_3, x_4$ 使得 $n = x_1^2 + x_2^2 + x_3^2 + x_4^2$。</li>
+                    <li>所有自然数都是四个平方数之和。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>例子：</strong>
+                <ul>
+                    <li>$1 = 1^2 + 0^2 + 0^2 + 0^2$</li>
+                    <li>$2 = 1^2 + 1^2 + 0^2 + 0^2$</li>
+                    <li>$3 = 1^2 + 1^2 + 1^2 + 0^2$</li>
+                    <li>$4 = 2^2 + 0^2 + 0^2 + 0^2 = 1^2 + 1^2 + 1^2 + 1^2$</li>
+                    <li>$7 = 2^2 + 1^2 + 1^2 + 1^2$</li>
+                    <li>$15 = 3^2 + 2^2 + 1^2 + 1^2$</li>
+                    <li>$31 = 5^2 + 2^2 + 1^2 + 1^2$</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                有些数可以用少于四个平方数表示，但定理保证最多需要四个。
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思路：</h3>
+            
+            <p>
+                <strong>欧拉四平方和恒等式：</strong>
+                证明的关键是欧拉发现的恒等式：
+                <div style="overflow-x: auto;">
+                $$(a^2 + b^2 + c^2 + d^2)(x^2 + y^2 + z^2 + w^2) = (ax + by + cz + dw)^2 + (ay - bx + cw - dz)^2 + (az - bw - cx + dy)^2 + (aw + bz - cy - dx)^2$$
+                </div>
+                这个恒等式表明，两个可以表示为四平方和的数的乘积也可以表示为四平方和。
+            </p>
+            
+            <p>
+                <strong>证明步骤：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>第一步：</strong> 证明每个素数都可以表示为四平方和。
+                    <ol type="a">
+                        <li>对于 $p = 2$，有 $2 = 1^2 + 1^2 + 0^2 + 0^2$。</li>
+                        <li>对于奇素数 $p$，证明存在整数 $x, y$ 使得 $x^2 + y^2 + 1 \equiv 0 \pmod{p}$。</li>
+                        <li>然后可以找到整数 $a, b, c, d$ 使得 $a^2 + b^2 + c^2 + d^2 = mp$，其中 $0 < m < p$。</li>
+                        <li>选取最小的 $m$，证明 $m = 1$，即 $p$ 可以表示为四平方和。</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>第二步：</strong> 证明每个合数都可以表示为四平方和。
+                    <ol type="a">
+                        <li>利用欧拉四平方和恒等式：如果 $m$ 和 $n$ 都可以表示为四平方和，那么 $mn$ 也可以。</li>
+                        <li>由于每个素数都可以表示为四平方和，根据算术基本定理，每个合数也可以。</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>第三步：</strong> 证明对于所有正整数都成立。
+                    <ol type="a">
+                        <li>结合第一步和第二步，所有大于1的整数都可以表示为四平方和。</li>
+                        <li>$1 = 1^2 + 0^2 + 0^2 + 0^2$ 显然成立。</li>
+                    </ol>
+                </li>
+            </ol>
+            
+            <p>
+                <strong>关键引理：</strong>
+                对于奇素数 $p$，存在整数 $x, y$ 使得 $x^2 + y^2 + 1 \equiv 0 \pmod{p}$。这可以通过计数论证证明：
+                模 $p$ 的二次剩余有 $\frac{p+1}{2}$ 个，$-1-y^2$ 也有 $\frac{p+1}{2}$ 个，由抽屉原理知存在 $x, y$ 满足条件。
+            </p>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 将 $23$ 表示为四平方和。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$23$ 是素数，需要找到表示。</li>
+                    <li>尝试：$23 = 3^2 + 3^2 + 2^2 + 1^2 = 9 + 9 + 4 + 1 = 23$ ✓</li>
+                    <li>另一种表示：$23 = 4^2 + 2^2 + 1^2 + 1^2 + 1^2$？不对，这是五个平方。</li>
+                    <li>实际上，$23$ 不能表示为三个平方和（因为 $23 \equiv 7 \pmod{8}$，根据勒让德三平方和定理）。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 将 $39$ 表示为四平方和。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$39$ 是合数：$39 = 3 \times 13$。</li>
+                    <li>$3 = 1^2 + 1^2 + 1^2 + 0^2$，$13 = 3^2 + 2^2 + 0^2 + 0^2$。</li>
+                    <li>使用欧拉恒等式计算乘积，或直接搜索：$39 = 5^2 + 3^2 + 1^2 + 2^2 = 25 + 9 + 1 + 4 = 39$。</li>
+                    <li>另一种表示：$39 = 6^2 + 1^2 + 1^2 + 1^2$。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 哪些数可以表示为少于四个平方和？
+            </p>
+            
+            <p>
+                <strong>分类：</strong>
+                <ul>
+                    <li><strong>一个平方和：</strong> 完全平方数，如 $1, 4, 9, 16, \dots$</li>
+                    <li><strong>两个平方和：</strong> 包括所有形如 $4^k(8m+7)$ 以外的数（根据费马二平方和定理及其推广）。</li>
+                    <li><strong>三个平方和：</strong> 所有不是形如 $4^k(8m+7)$ 的数（勒让德三平方和定理）。</li>
+                    <li><strong>四个平方和：</strong> 所有正整数。</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>勒让德三平方和定理：</strong>
+                一个正整数可以表示为三个整数的平方和当且仅当它不是形如 $4^k(8m+7)$ 的数。
+                例如，$7 = 4^0(8\times0+7)$ 不能表示为三个平方和，需要四个。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 判断一个数是否可以表示为三个平方和（勒让德三平方和定理）
+function canBeThreeSquares(n) {
+    // 勒让德三平方和定理：n可以表示为三个平方和当且仅当
+    // n不是形如 4^k(8m+7) 的数
+    let m = n;
+    
+    // 移除所有4的因子
+    while (m % 4 === 0) {
+        m = Math.floor(m / 4);
+    }
+    
+    // 检查是否形如 8m+7
+    return (m % 8 !== 7);
+}
+
+// 判断一个数需要的最小平方数个数
+function minSquaresRequired(n) {
+    // 完全平方数
+    const sqrt = Math.sqrt(n);
+    if (Math.abs(sqrt - Math.round(sqrt)) < 1e-10) {
+        return 1;
+    }
+    
+    // 检查是否可以表示为两个平方和
+    // 简单检查：是否存在 a,b 使得 a^2 + b^2 = n
+    for (let a = 0; a * a <= n; a++) {
+        const b2 = n - a * a;
+        const b = Math.sqrt(b2);
+        if (Math.abs(b - Math.round(b)) < 1e-10) {
+            return 2;
+        }
+    }
+    
+    // 检查是否可以表示为三个平方和
+    if (canBeThreeSquares(n)) {
+        // 尝试寻找三个平方和的表示
+        for (let a = 0; a * a <= n; a++) {
+            for (let b = a; a * a + b * b <= n; b++) {
+                const c2 = n - a * a - b * b;
+                const c = Math.sqrt(c2);
+                if (Math.abs(c - Math.round(c)) < 1e-10) {
+                    return 3;
+                }
+            }
+        }
+    }
+    
+    // 根据拉格朗日四平方和定理，总是可以表示为四个平方和
+    return 4;
+}
+
+// 寻找四平方和表示（暴力搜索，适用于较小的数）
+function findFourSquares(n) {
+    // 优化：先尝试用较少平方数表示
+    const limit = Math.sqrt(n);
+    
+    // 尝试一个平方
+    const sqrtInt = Math.floor(Math.sqrt(n));
+    if (sqrtInt * sqrtInt === n) {
+        return [sqrtInt, 0, 0, 0];
+    }
+    
+    // 尝试两个平方
+    for (let a = 0; a <= limit; a++) {
+        const a2 = a * a;
+        const remaining = n - a2;
+        if (remaining < 0) break;
+        
+        const b = Math.sqrt(remaining);
+        if (Math.abs(b - Math.round(b)) < 1e-10) {
+            return [a, Math.round(b), 0, 0];
+        }
+    }
+    
+    // 尝试三个平方
+    for (let a = 0; a <= limit; a++) {
+        const a2 = a * a;
+        for (let b = a; b <= limit; b++) {
+            const b2 = b * b;
+            const remaining = n - a2 - b2;
+            if (remaining < 0) break;
+            
+            const c = Math.sqrt(remaining);
+            if (Math.abs(c - Math.round(c)) < 1e-10) {
+                return [a, b, Math.round(c), 0];
+            }
+        }
+    }
+    
+    // 四个平方（总是存在）
+    for (let a = 0; a <= limit; a++) {
+        const a2 = a * a;
+        for (let b = a; b <= limit; b++) {
+            const b2 = b * b;
+            for (let c = b; c <= limit; c++) {
+                const c2 = c * c;
+                const remaining = n - a2 - b2 - c2;
+                if (remaining < 0) break;
+                
+                const d = Math.sqrt(remaining);
+                if (Math.abs(d - Math.round(d)) < 1e-10) {
+                    return [a, b, c, Math.round(d)];
+                }
+            }
+        }
+    }
+    
+    // 理论上不会执行到这里
+    return null;
+}
+
+// 使用更高效的算法（基于拉格朗日算法）
+function findFourSquaresLagrange(n) {
+    // 特殊情况
+    if (n === 0) return [0, 0, 0, 0];
+    if (n === 1) return [1, 0, 0, 0];
+    
+    // 步骤1：找到最大的平方 a^2 ≤ n
+    let a = Math.floor(Math.sqrt(n));
+    
+    // 如果 n 是完全平方数
+    if (a * a === n) {
+        return [a, 0, 0, 0];
+    }
+    
+    // 步骤2：尝试找到 b, c, d
+    // 这里使用简化的搜索，实际上有更高效的算法
+    return findFourSquares(n);
+}
+
+// 欧拉四平方和恒等式验证
+function eulerFourSquareIdentity(a, b, c, d, x, y, z, w) {
+    const left = (a*a + b*b + c*c + d*d) * (x*x + y*y + z*z + w*w);
+    
+    const r1 = a*x + b*y + c*z + d*w;
+    const r2 = a*y - b*x + c*w - d*z;
+    const r3 = a*z - b*w - c*x + d*y;
+    const r4 = a*w + b*z - c*y - d*x;
+    
+    const right = r1*r1 + r2*r2 + r3*r3 + r4*r4;
+    
+    return {
+        left: left,
+        right: right,
+        representation: [r1, r2, r3, r4],
+        valid: left === right
+    };
+}
+
+// 示例使用
+console.log("=== 拉格朗日四平方和定理示例 ===");
+
+// 测试一些数字
+const testNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 23, 31, 39, 87];
+
+console.log("数字\t最小平方数个数\t四平方和表示");
+console.log("-".repeat(60));
+
+for (const n of testNumbers) {
+    const minSquares = minSquaresRequired(n);
+    const representation = findFourSquares(n);
+    
+    console.log(
+        `${n}\t${minSquares}\t\t` +
+        `${representation[0]}² + ${representation[1]}² + ${representation[2]}² + ${representation[3]}²`
+    );
+}
+
+// 验证勒让德三平方和定理
+console.log("\n=== 勒让德三平方和定理验证 ===");
+const legendreTest = [7, 15, 23, 28, 31, 39, 47, 55, 60, 63];
+console.log("数字\t形如4^k(8m+7)?\t可表示为三平方和?");
+console.log("-".repeat(50));
+
+for (const n of legendreTest) {
+    let m = n;
+    while (m % 4 === 0) m = Math.floor(m / 4);
+    const isForm = (m % 8 === 7);
+    const canBeThree = canBeThreeSquares(n);
+    
+    console.log(`${n}\t${isForm ? '是' : '否'}\t\t${canBeThree ? '是' : '否'}`);
+}
+
+// 欧拉恒等式验证
+console.log("\n=== 欧拉四平方和恒等式验证 ===");
+
+const tests = [
+    { a: 1, b: 2, c: 3, d: 4, x: 2, y: 3, z: 4, w: 5 },
+    { a: 1, b: 1, c: 1, d: 1, x: 2, y: 2, z: 2, w: 2 },
+    { a: 2, b: 3, c: 5, d: 7, x: 11, y: 13, z: 17, w: 19 }
+];
+
+for (const test of tests) {
+    const result = eulerFourSquareIdentity(
+        test.a, test.b, test.c, test.d,
+        test.x, test.y, test.z, test.w
+    );
+    
+    console.log(`(${test.a}²+${test.b}²+${test.c}²+${test.d}²) × (${test.x}²+${test.y}²+${test.z}²+${test.w}²) = ${result.left}`);
+    console.log(`表示为: ${result.representation[0]}² + ${result.representation[1]}² + ${result.representation[2]}² + ${result.representation[3]}² = ${result.right}`);
+    console.log(`恒等式${result.valid ? '成立' : '不成立'}`);
+    console.log("-".repeat(60));
+}
+
+// 寻找需要四个平方和的最小数字
+console.log("\n=== 需要四个平方和的最小数字 ===");
+
+let countFourSquares = 0;
+for (let n = 1; n <= 100; n++) {
+    const minSquares = minSquaresRequired(n);
+    if (minSquares === 4) {
+        countFourSquares++;
+        const representation = findFourSquares(n);
+        console.log(`${n} = ${representation[0]}² + ${representation[1]}² + ${representation[2]}² + ${representation[3]}²`);
+        
+        if (countFourSquares === 10) {
+            console.log("... (更多)");
+            break;
+        }
+    }
+}
+
+// 性能测试：大数的四平方和表示
+console.log("\n=== 大数的四平方和表示 ===");
+
+const bigNumbers = [1000, 10000, 12345, 100000, 999999];
+for (const n of bigNumbers) {
+    console.time(`寻找 ${n} 的四平方和表示`);
+    const representation = findFourSquares(n);
+    console.timeEnd(`寻找 ${n} 的四平方和表示`);
+    
+    // 验证
+    const sum = representation[0]*representation[0] + representation[1]*representation[1] + 
+                representation[2]*representation[2] + representation[3]*representation[3];
+    console.log(`${n} = ${representation[0]}² + ${representation[1]}² + ${representation[2]}² + ${representation[3]}²`);
+    console.log(`验证: ${sum} = ${n} ${sum === n ? '✓' : '✗'}`);
+    console.log("-".repeat(40));
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用与推广：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>华林问题：</strong>
+                    拉格朗日四平方和定理是华林问题的特例。华林问题问：对于每个正整数 $k$，是否存在一个数 $g(k)$，使得每个正整数都可以表示为最多 $g(k)$ 个 $k$ 次幂的和？四平方和定理说明 $g(2) = 4$。
+                </li>
+                
+                <li>
+                    <strong>四元数范数：</strong>
+                    四平方和定理与四元数的范数有关。四元数 $a + bi + cj + dk$ 的范数是 $a^2 + b^2 + c^2 + d^2$，而四元数乘法的范数是范数的乘积，这对应欧拉四平方和恒等式。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    在某些加密方案中，四平方和表示可以用于参数选择或构造陷门函数。
+                </li>
+                
+                <li>
+                    <strong>组合数学：</strong>
+                    与分割问题和表示问题相关。
+                </li>
+                
+                <li>
+                    <strong>算法设计：</strong>
+                    寻找数的平方和表示是算法设计中的经典问题。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关定理：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">定理</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">内容</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">发现者/证明者</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">年份</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">费马二平方和定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">奇素数 $p$ 可表示为二平方和当且仅当 $p \equiv 1 \pmod{4}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">费马/欧拉</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1640/1747</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">勒让德三平方和定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">正整数可表示为三平方和当且仅当不是形如 $4^k(8m+7)$ 的数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">勒让德</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1798</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">拉格朗日四平方和定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">所有正整数都可表示为四平方和</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">拉格朗日</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1770</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">华林问题</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">每个正整数可表示为最多 $g(k)$ 个 $k$ 次幂的和</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">华林/希尔伯特</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">1770/1909</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景与扩展：</h4>
+            <p>
+                拉格朗日四平方和定理由约瑟夫·拉格朗日在1770年证明，但问题最早由丢番图（公元3世纪）和巴歇（公元17世纪）提出。
+            </p>
+            
+            <p>
+                <strong>扩展：</strong>
+                1. 四平方和表示不是唯一的，例如：
+                $$4 = 2^2 + 0^2 + 0^2 + 0^2 = 1^2 + 1^2 + 1^2 + 1^2$$
+                2. 雅可比证明了正整数 $n$ 表示为四平方和的方式数 $r_4(n)$ 的公式：
+                $$r_4(n) = 8 \sum_{d \mid n, 4 \nmid d} d$$
+                3. 对于 $n$ 表示为四个非零平方和的表示数，也有相应的公式。
+            </p>
+            
+            <p>
+                <strong>华林问题的进展：</strong>
+                希尔伯特在1909年证明了对每个 $k$，$g(k)$ 存在。已知：
+                <ul>
+                    <li>$g(2) = 4$（拉格朗日）</li>
+                    <li>$g(3) = 9$（韦伊费雷茨）</li>
+                    <li>$g(4) = 19$（巴拉苏布拉马尼安、德西勒斯、德莱尼）</li>
+                    <li>$g(5) = 37$（陈景润）</li>
+                </ul>
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                拉格朗日四平方和定理是初等数论中最优美的定理之一，它将代数、组合和数论紧密联系在一起。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

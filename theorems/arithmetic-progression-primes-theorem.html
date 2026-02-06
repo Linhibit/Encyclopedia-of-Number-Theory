@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>算术级数中的素数定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>算术级数中的素数定理 (Dirichlet's Theorem on Arithmetic Progressions)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $a$ 和 $d$ 为正整数，且 $\gcd(a, d) = 1$（即 $a$ 与 $d$ 互质）。
+                则算术级数（等差数列）：
+                $$a, a + d, a + 2d, a + 3d, \dots$$
+                中包含无穷多个素数。
+            </p>
+            
+            <p>
+                等价表述：对于任意互质的正整数 $a$ 和 $d$，集合
+                $$\{a + nd \mid n \in \mathbb{N}\}$$
+                中包含无穷多个素数。
+            </p>
+            
+            <p>
+                更精确的渐近形式（狄利克雷密度定理）：在不超过 $x$ 的素数中，属于该算术级数的素数比例渐近于 $1/\varphi(d)$，其中 $\varphi$ 是欧拉函数。
+                即：
+                $$\pi_{a,d}(x) \sim \frac{1}{\varphi(d)} \cdot \frac{x}{\ln x} \quad (x \to \infty)$$
+                其中 $\pi_{a,d}(x)$ 表示不超过 $x$ 且满足 $p \equiv a \pmod{d}$ 的素数 $p$ 的个数。
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思路：</h3>
+            
+            <p>
+                <strong>狄利克雷的解析证明（概要）：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>狄利克雷特征（Dirichlet characters）：</strong>
+                    对于模 $d$，定义特征 $\chi: \mathbb{Z} \to \mathbb{C}$，满足：
+                    <ul>
+                        <li>$\chi(n+d) = \chi(n)$（周期性）</li>
+                        <li>$\chi(mn) = \chi(m)\chi(n)$（完全积性）</li>
+                        <li>$\chi(1) = 1$，且若 $\gcd(n, d) > 1$ 则 $\chi(n) = 0$</li>
+                    </ul>
+                    共有 $\varphi(d)$ 个不同的特征。
+                </li>
+                <li>
+                    <strong>狄利克雷L函数：</strong>
+                    对于每个特征 $\chi$，定义：
+                    $$L(s, \chi) = \sum_{n=1}^{\infty} \frac{\chi(n)}{n^s}, \quad \Re(s) > 1$$
+                </li>
+                <li>
+                    <strong>特征的正交关系：</strong>
+                    利用特征的正交性，可以将算术级数中的素数计数表示为：
+                    $$\sum_{\substack{p \leq x \\ p \equiv a \ (\text{mod } d)}} 1 = \frac{1}{\varphi(d)} \sum_{\chi} \overline{\chi}(a) \sum_{p \leq x} \chi(p)$$
+                </li>
+                <li>
+                    <strong>非平凡特征L函数的非零性：</strong>
+                    证明对于非主特征 $\chi$，$L(1, \chi) \neq 0$。这是证明的关键步骤。
+                </li>
+                <li>
+                    <strong>解析延拓与渐近分析：</strong>
+                    通过分析L函数在 $s=1$ 附近的性质，得到素数分布的渐近公式。
+                </li>
+                <li>
+                    <strong>无穷性结论：</strong>
+                    从渐近公式直接推出算术级数中包含无穷多个素数。
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>证明难点：</strong>
+                <ul>
+                    <li>需要复杂的复分析和解析数论工具。</li>
+                    <li>关键步骤是证明 $L(1, \chi) \neq 0$，狄利克雷使用了巧妙的方法处理实数特征和复数特征。</li>
+                    <li>对于一般的 $d$，证明涉及群表示论和特征理论。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> $a = 3$，$d = 4$（即形如 $4n+3$ 的素数）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$\gcd(3, 4) = 1$，满足定理条件。</li>
+                    <li>该算术级数为：3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, ...</li>
+                    <li>其中的素数：3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, ...</li>
+                    <li>定理断言存在无穷多个这样的素数。</li>
+                    <li>事实上，形如 $4n+3$ 的素数有无穷多个，可以用初等方法证明（欧几里得变体）。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> $a = 1$，$d = 4$（即形如 $4n+1$ 的素数）。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$\gcd(1, 4) = 1$，满足定理条件。</li>
+                    <li>该算术级数为：1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, ...</li>
+                    <li>其中的素数：5, 13, 17, 29, 37, 41, 53, 61, 73, 89, 97, 101, ...</li>
+                    <li>形如 $4n+1$ 的素数也有无穷多个，但需要更复杂的方法证明。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> $a = 6$，$d = 7$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$\gcd(6, 7) = 1$，满足定理条件。</li>
+                    <li>该算术级数为：6, 13, 20, 27, 34, 41, 48, 55, 62, 69, 76, 83, 90, 97, ...</li>
+                    <li>其中的素数：13, 41, 83, 97, 139, 167, 181, 223, 251, 293, 307, 349, ...</li>
+                    <li>这些素数都满足 $p \equiv 6 \pmod{7}$。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>反例：</strong> 如果 $\gcd(a, d) > 1$，则结论不成立。
+                例如 $a = 2$，$d = 4$，则所有项都是偶数，只有第一项 $2$ 是素数，之后没有素数。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 欧几里得算法求最大公约数
+function gcd(a, b) {
+    while (b !== 0) {
+        [a, b] = [b, a % b];
+    }
+    return a;
+}
+
+// 判断是否为素数（简单试除法）
+function isPrime(n) {
+    if (n < 2) return false;
+    if (n % 2 === 0) return n === 2;
+    const limit = Math.sqrt(n);
+    for (let i = 3; i <= limit; i += 2) {
+        if (n % i === 0) return false;
+    }
+    return true;
+}
+
+// 生成算术级数中的素数
+function primesInArithmeticProgression(a, d, limit) {
+    if (gcd(a, d) !== 1) {
+        console.log(`警告：a=${a} 和 d=${d} 不互质，可能只有有限个素数。`);
+    }
+    
+    const primes = [];
+    let n = 0;
+    let value = a;
+    
+    while (value <= limit) {
+        if (isPrime(value)) {
+            primes.push(value);
+        }
+        n++;
+        value = a + n * d;
+    }
+    
+    return primes;
+}
+
+// 计算不超过x的算术级数中的素数个数
+function countPrimesInProgression(a, d, x) {
+    let count = 0;
+    let n = 0;
+    let value = a;
+    
+    while (value <= x) {
+        if (isPrime(value)) {
+            count++;
+        }
+        n++;
+        value = a + n * d;
+    }
+    
+    return count;
+}
+
+// 欧拉函数 φ(n)
+function eulerPhi(n) {
+    let result = n;
+    let p = 2;
+    
+    while (p * p <= n) {
+        if (n % p === 0) {
+            while (n % p === 0) {
+                n /= p;
+            }
+            result -= result / p;
+        }
+        p++;
+    }
+    
+    if (n > 1) {
+        result -= result / n;
+    }
+    
+    return result;
+}
+
+// 验证狄利克雷密度定理的近似
+function verifyDirichletDensity(a, d, x) {
+    const actualCount = countPrimesInProgression(a, d, x);
+    const totalPrimes = countPrimesInProgression(1, 1, x); // 所有不超过x的素数
+    const expectedCount = (1 / eulerPhi(d)) * (x / Math.log(x));
+    
+    return {
+        actual: actualCount,
+        expected: expectedCount,
+        ratio: actualCount / expectedCount,
+        proportion: actualCount / totalPrimes,
+        expectedProportion: 1 / eulerPhi(d)
+    };
+}
+
+// 示例使用
+console.log("=== 算术级数中的素数定理示例 ===");
+
+// 示例1：形如 4n+3 的素数
+console.log("\n1. 形如 4n+3 的素数（不超过100）：");
+const primes1 = primesInArithmeticProgression(3, 4, 100);
+console.log(`素数列表：${primes1.join(', ')}`);
+console.log(`个数：${primes1.length}`);
+
+// 示例2：形如 4n+1 的素数
+console.log("\n2. 形如 4n+1 的素数（不超过100）：");
+const primes2 = primesInArithmeticProgression(1, 4, 100);
+console.log(`素数列表：${primes2.join(', ')}`);
+console.log(`个数：${primes2.length}`);
+
+// 示例3：验证密度定理
+console.log("\n3. 验证狄利克雷密度定理（a=3, d=4）：");
+for (const x of [100, 1000, 10000, 100000]) {
+    const result = verifyDirichletDensity(3, 4, x);
+    console.log(`x=${x}: 实际素数数=${result.actual}, 预期≈${result.expected.toFixed(2)}, 比例=${result.ratio.toFixed(3)}`);
+}
+
+// 比较不同算术级数的素数分布
+console.log("\n4. 不同算术级数的素数分布比较（不超过10000）：");
+const moduli = [3, 4, 5, 6, 7, 8];
+for (const d of moduli) {
+    const phi = eulerPhi(d);
+    console.log(`\n模 d=${d} (φ(${d})=${phi}):`);
+    
+    for (let a = 1; a < d; a++) {
+        if (gcd(a, d) === 1) {
+            const count = countPrimesInProgression(a, d, 10000);
+            const proportion = count / countPrimesInProgression(1, 1, 10000);
+            console.log(`  a=${a}: ${count}个素数，占比=${proportion.toFixed(4)}，期望占比=${(1/phi).toFixed(4)}`);
+        }
+    }
+}
+
+// 寻找算术级数中的大素数
+console.log("\n5. 寻找算术级数中的大素数（a=1, d=1000）：");
+let largePrime = null;
+let n = 0;
+while (!largePrime && n < 1000) {
+    const value = 1 + n * 1000;
+    if (isPrime(value)) {
+        largePrime = value;
+        console.log(`找到素数：${largePrime} = 1 + ${n} × 1000`);
+    }
+    n++;
+}
+
+// 性能测试：计算大范围内的素数
+console.log("\n6. 性能测试：计算不超过1000000的形如 4n+3 的素数");
+console.time("计算时间");
+const count = countPrimesInProgression(3, 4, 1000000);
+console.timeEnd("计算时间");
+console.log(`素数个数：${count}`);
+
+// 使用更高效的素数判定（米勒-拉宾测试）
+function isPrimeMillerRabin(n, k = 5) {
+    if (n < 2) return false;
+    if (n === 2 || n === 3) return true;
+    if (n % 2 === 0) return false;
+    
+    // 将 n-1 分解为 2^s * d
+    let s = 0;
+    let d = n - 1;
+    while (d % 2 === 0) {
+        d /= 2;
+        s++;
+    }
+    
+    // 测试 k 轮
+    for (let i = 0; i < k; i++) {
+        const a = 2 + Math.floor(Math.random() * (n - 4));
+        let x = modPow(a, d, n);
+        
+        if (x === 1 || x === n - 1) continue;
+        
+        let continueLoop = false;
+        for (let r = 1; r < s; r++) {
+            x = modPow(x, 2, n);
+            if (x === n - 1) {
+                continueLoop = true;
+                break;
+            }
+        }
+        
+        if (continueLoop) continue;
+        return false;
+    }
+    
+    return true;
+}
+
+// 快速幂取模
+function modPow(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    let result = 1n;
+    base = BigInt(base) % BigInt(modulus);
+    let exp = BigInt(exponent);
+    
+    while (exp > 0n) {
+        if (exp % 2n === 1n) {
+            result = (result * base) % BigInt(modulus);
+        }
+        exp >>= 1n;
+        base = (base * base) % BigInt(modulus);
+    }
+    
+    return Number(result);
+}
+
+console.log("\n7. 使用米勒-拉宾测试验证大数");
+const largeNumbers = [1000003, 1000033, 1000037, 1000039];
+for (const num of largeNumbers) {
+    const isPrimeMR = isPrimeMillerRabin(num, 10);
+    console.log(`${num} 是素数？ ${isPrimeMR}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>数论研究：</strong>
+                    定理是解析数论的核心成果之一，推动了L函数和模形式理论的发展。
+                </li>
+                
+                <li>
+                    <strong>素数生成：</strong>
+                    在密码学中，需要生成大素数，算术级数提供了寻找素数的有效途径。
+                </li>
+                
+                <li>
+                    <strong>算法设计：</strong>
+                    基于算术级数的素数筛选算法，如狄利克雷特征用于加速计算。
+                </li>
+                
+                <li>
+                    <strong>数学教育：</strong>
+                    展示了解析方法在数论中的强大力量，是数论课程的重要教学内容。
+                </li>
+                
+                <li>
+                    <strong>理论计算机科学：</strong>
+                    在复杂性理论和算法分析中，算术级数中的素数分布有重要应用。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关定理：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">定理</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">内容</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">与狄利克雷定理的关系</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">欧几里得定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">存在无穷多个素数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">狄利克雷定理的特例（d=1）</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">素数定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\pi(x) \sim x/\ln x$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">狄利克雷密度定理的基础</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">格林-陶定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">素数包含任意长的算术级数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">狄利克雷定理的深化和推广</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">切比雪夫偏差</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">某些算术级数中素数更多</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">狄利克雷定理的精细结构</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景：</h4>
+            <p>
+                狄利克雷定理由德国数学家约翰·彼得·古斯塔夫·勒热纳·狄利克雷于1837年证明。
+                这是解析数论早期的重要成就，首次成功地将解析方法应用于数论问题。
+            </p>
+            
+            <p>
+                狄利克雷的证明引入了狄利克雷特征和L函数，这些工具后来成为现代数论的核心。
+                定理推广了欧几里得关于素数无穷多的结果，显示了素数在算术级数中的均匀分布。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                1. 定理要求 $\gcd(a, d) = 1$，否则算术级数中最多只有一个素数。<br>
+                2. 定理是"存在无穷多个"的定性结果，密度定理给出了定量的渐近分布。<br>
+                3. 对于某些特殊的 $d$（如 $d=4$），可以用初等方法证明，但一般情况需要解析方法。<br>
+                4. 定理在广义黎曼猜想下有更精确的误差项估计。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

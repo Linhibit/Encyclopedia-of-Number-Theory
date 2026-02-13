@@ -226,6 +226,24 @@
     "description": "洲阁筛是一种用于计算积性函数前缀和的通用算法，通过分段筛法和递归思想，在 $O(\\frac{n^{3/4}}{\\log n})$ 时间内计算 $\\sum_{i=1}^{n} f(i)$，适用于广泛的积性函数类。",
     "link": "algorithms/zhouge-sieve.html",
     "tags": ["前缀和", "积性函数", "分段筛", "数论算法"]
+  },
+  {
+    "title": "费马二平方和定理",
+    "description": "一个奇素数 $p$ 可以表示为两个整数的平方和 $p = a^2 + b^2$ 当且仅当 $p \\equiv 1 \\pmod{4}$。这是数论中关于素数表示的重要定理。",
+    "link": "theorems/fermat-two-square-theorem.html",
+    "tags": ["素数", "平方和", "模运算", "数论"]
+  },
+  {
+    "title": "勒让德三平方和定理",
+    "description": "一个自然数可以表示为三个整数的平方和当且仅当它不是形如 $4^a(8b+7)$ 的数，其中 $a$ 和 $b$ 是非负整数。",
+    "link": "theorems/legendre-three-square-theorem.html",
+    "tags": ["平方和", "数论", "丢番图方程", "整数表示"]
+  },
+  {
+    "title": "Tonelli-Shanks算法",
+    "description": "在模奇素数 $p$ 下求解二次剩余平方根的算法，用于求 $x^2 \\equiv n \\pmod{p}$ 的解。",
+    "link": "algorithms/tonelli-shanks.html",
+    "tags": ["模运算", "平方根", "二次剩余", "数论算法"]
   }
 ]
 

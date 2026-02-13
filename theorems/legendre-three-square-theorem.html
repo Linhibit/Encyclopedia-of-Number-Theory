@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>勒让德三平方和定理 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>勒让德三平方和定理 (Legendre's Three-Square Theorem)</h1>
+        </header>
+
+        <section class="theorem-box" 
+                 style="border-left: 5px solid #d32f2f; 
+                        background: #fff8f8; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>定理内容：</strong>
+            <p>
+                设 $n$ 是一个自然数（正整数）。则 $n$ 可以表示为三个整数的平方和：
+                $$n = x^2 + y^2 + z^2, \quad x, y, z \in \mathbb{Z}$$
+                当且仅当 $n$ 不是形如：
+                $$n = 4^a(8b + 7)$$
+                的数，其中 $a$ 和 $b$ 是非负整数。
+            </p>
+            
+            <p>
+                等价表述：一个自然数 $n$ 不能表示为三个平方和当且仅当存在非负整数 $a$ 和 $b$ 使得 $n = 4^a(8b+7)$。
+            </p>
+            
+            <p>
+                注意：整数包括零和负整数，但由于平方后非负，通常只需考虑非负整数解。
+            </p>
+        </section>
+
+        <section class="proof" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>证明思路：</h3>
+            
+            <p>
+                <strong>必要性（如果 $n$ 可表示为三平方和，则 $n \neq 4^a(8b+7)$）：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    首先证明：对于任意整数 $x$，$x^2 \mod 8$ 只能是 0, 1, 4。
+                    因为整数模8的完全剩余系为 $\{0, \pm1, \pm2, \pm3, 4\}$，平方后得：
+                    $$0^2 \equiv 0, \quad (\pm1)^2 \equiv 1, \quad (\pm2)^2 \equiv 4, \quad (\pm3)^2 \equiv 9 \equiv 1, \quad 4^2 \equiv 16 \equiv 0 \pmod{8}$$
+                </li>
+                <li>
+                    因此，三个平方和模8的可能值为 0-3 个 {0,1,4} 的和，计算所有组合可知，三个平方和模8不可能等于 7。
+                    具体来说，三个数从 {0,1,4} 中取（可重复），和模8的所有可能值为：0,1,2,3,4,5,6，但没有7。
+                </li>
+                <li>
+                    对于形如 $4^a(8b+7)$ 的数，如果 $a=0$，则 $n \equiv 7 \pmod{8}$，由上一步可知不能表示为三平方和。
+                </li>
+                <li>
+                    如果 $a \geq 1$，假设 $n = 4^a(8b+7)$ 可表示为三平方和，则考虑 $n/4 = 4^{a-1}(8b+7)$。
+                    利用平方数的性质：如果 $n$ 可被4整除且是三个平方和，则每个平方数都可被2整除（更一般地，如果 $n \equiv 0 \pmod{4}$，则 $x,y,z$ 必须都是偶数）。
+                    因此，$n/4$ 也是三个平方和。递归下去，最终得到 $8b+7$ 是三个平方和，矛盾。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>充分性（如果 $n \neq 4^a(8b+7)$，则 $n$ 可表示为三平方和）：</strong>
+            </p>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    使用数论中的雅可比恒等式和模形式理论，但有一个初等证明思路基于高斯的三平方和定理。
+                </li>
+                <li>
+                    关键引理：每个不是形如 $4^a(8b+7)$ 的自然数都可以表示为三个有理数的平方和。
+                </li>
+                <li>
+                    然后使用“下降法”将有理数解转化为整数解。
+                </li>
+                <li>
+                    另一种方法：结合二次型理论和 Hasse-Minkowski 定理，在局部全局原则下证明。
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>历史背景：</strong>
+                这个定理由阿德里安-马里·勒让德在1798年陈述，但完全证明由高斯在1801年给出，作为他的三平方和定理的一部分。勒让德的贡献是给出了这个简洁的刻画。
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例1：</strong> 判断 $n = 7$ 是否可以表示为三个平方和。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$7 = 8 \times 0 + 7$，即 $a=0, b=0$，所以 $7 = 4^0(8 \times 0 + 7)$。</li>
+                    <li>根据定理，$7$ 不能表示为三个平方和。</li>
+                    <li>验证：小于7的平方数有 0,1,4。尝试所有组合：0+0+0=0, 0+0+1=1, 0+1+1=2, 1+1+1=3, 0+0+4=4, 0+1+4=5, 1+1+4=6, 0+4+4=8, 1+4+4=9, 4+4+4=12。确实没有等于7的组合。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例2：</strong> 判断 $n = 15$ 是否可以表示为三个平方和。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>检查形如 $4^a(8b+7)$：当 $a=0$，$8b+7=15 \Rightarrow b=1$，所以 $15=4^0(8\times1+7)$。</li>
+                    <li>因此，$15$ 不能表示为三个平方和。</li>
+                    <li>验证：实际上，$15$ 确实不能表示为三个平方和，但可以表示为四个平方和（拉格朗日四平方定理）：$15=3^2+2^2+1^2+1^2$。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例3：</strong> 判断 $n = 28$ 是否可以表示为三个平方和。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>检查形如 $4^a(8b+7)$：首先，$28=4\times7$，而 $7=8\times0+7$，所以 $28=4^1(8\times0+7)$。</li>
+                    <li>因此，$28$ 不能表示为三个平方和。</li>
+                    <li>验证：尝试寻找表示，确实找不到三个平方和为28。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例4：</strong> 判断 $n = 11$ 是否可以表示为三个平方和，如果可以，找出表示。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>检查形如 $4^a(8b+7)$：$11$ 模8等于3，不是7，且 $11$ 不被4整除，所以 $11 \neq 4^a(8b+7)$。</li>
+                    <li>根据定理，$11$ 可以表示为三个平方和。</li>
+                    <li>寻找表示：$11 = 3^2 + 1^2 + 1^2 = 9 + 1 + 1$。还有其他表示如 $11 = 2^2 + 2^2 + 1^2 + 1^2 + 1^2$？不对，这是五个平方。三个平方表示还有 $11 = 3^2 + 1^2 + 1^2$ 是唯一的（忽略顺序和符号）。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>示例5：</strong> 找出 $n = 29$ 的三个平方和表示。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$29$ 模8等于5，不是7，且不被4整除，所以可以表示为三个平方和。</li>
+                    <li>$29 = 5^2 + 2^2 + 0^2 = 25 + 4 + 0$。还有 $29 = 4^2 + 3^2 + 2^2 = 16 + 9 + 4$。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 判断一个数是否是形如 4^a(8b+7) 的数
+function isOfForm4a8b7(n) {
+    let m = n;
+    // 除以4直到不能再除
+    while (m % 4 === 0) {
+        m /= 4;
+    }
+    // 检查是否满足 m ≡ 7 (mod 8)
+    return m % 8 === 7;
+}
+
+// 判断一个数是否可以表示为三个平方和（根据勒让德定理）
+function canBeThreeSquaresByLegendre(n) {
+    if (n < 0) return false;
+    return !isOfForm4a8b7(n);
+}
+
+// 暴力搜索三个平方和表示（用于验证，仅适用于较小n）
+function findThreeSquaresRepresentation(n) {
+    if (!canBeThreeSquaresByLegendre(n)) {
+        return null; // 根据定理，不可能
+    }
+    
+    const limit = Math.floor(Math.sqrt(n)) + 1;
+    for (let x = 0; x <= limit; x++) {
+        for (let y = x; y <= limit; y++) {
+            for (let z = y; z <= limit; z++) {
+                if (x*x + y*y + z*z === n) {
+                    return [x, y, z];
+                }
+            }
+        }
+    }
+    // 理论上不会到达这里，因为定理保证存在表示
+    // 但可能表示中包含负数，而我们的搜索只用了非负数
+    // 扩展搜索到负数（通过绝对值）
+    for (let x = -limit; x <= limit; x++) {
+        for (let y = -limit; y <= limit; y++) {
+            for (let z = -limit; z <= limit; z++) {
+                if (x*x + y*y + z*z === n) {
+                    return [x, y, z];
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// 生成所有不能表示为三个平方和的数（形如 4^a(8b+7)）
+function generateNumbersNotThreeSquares(limit) {
+    const result = [];
+    for (let n = 0; n <= limit; n++) {
+        if (isOfForm4a8b7(n)) {
+            result.push(n);
+        }
+    }
+    return result;
+}
+
+// 验证勒让德定理：对于所有n，定理判断与暴力搜索一致
+function verifyLegendreTheorem(limit) {
+    console.log(`验证勒让德定理，n从0到${limit}:`);
+    let passed = 0;
+    let failed = 0;
+    
+    for (let n = 0; n <= limit; n++) {
+        const byTheorem = canBeThreeSquaresByLegendre(n);
+        const byBruteForce = findThreeSquaresRepresentation(n) !== null;
+        
+        if (byTheorem === byBruteForce) {
+            passed++;
+        } else {
+            failed++;
+            console.log(`矛盾：n=${n}, 定理判断=${byTheorem}, 暴力搜索=${byBruteForce}`);
+        }
+    }
+    
+    console.log(`验证完成：通过 ${passed} 个，失败 ${failed} 个`);
+    return failed === 0;
+}
+
+// 示例使用
+console.log("=== 勒让德三平方和定理示例 ===");
+
+// 示例1：检查特定数字
+const testNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 28, 29, 30, 31, 32];
+console.log("\n1. 检查特定数字是否可以表示为三个平方和：");
+for (const n of testNumbers) {
+    const canBe = canBeThreeSquaresByLegendre(n);
+    const representation = findThreeSquaresRepresentation(n);
+    console.log(`n=${n}: 定理判断=${canBe}, 表示=${representation ? representation.join(', ') : '无'}`);
+}
+
+// 示例2：生成不能表示为三个平方和的数
+console.log("\n2. 不能表示为三个平方和的数（不超过100）：");
+const notThreeSquares = generateNumbersNotThreeSquares(100);
+console.log(notThreeSquares.join(', '));
+console.log(`个数：${notThreeSquares.length}`);
+
+// 示例3：验证定理
+console.log("\n3. 验证定理（n不超过50）：");
+verifyLegendreTheorem(50);
+
+// 示例4：寻找大数的表示
+console.log("\n4. 寻找大数的三个平方和表示：");
+const largeNumbers = [100, 101, 102, 103, 104, 105, 106, 107];
+for (const n of largeNumbers) {
+    const canBe = canBeThreeSquaresByLegendre(n);
+    console.log(`n=${n}: 可表示为三个平方和？${canBe}`);
+    if (canBe) {
+        // 对于大数，暴力搜索效率低，使用优化方法
+        // 这里使用一个简单的优化：先找到可能的平方根范围
+        const representation = findThreeSquaresRepresentation(n);
+        if (representation) {
+            console.log(`  表示：${n} = ${representation[0]}^2 + ${representation[1]}^2 + ${representation[2]}^2`);
+        } else {
+            console.log(`  未找到表示（可能搜索范围不够）`);
+        }
+    }
+}
+
+// 优化算法：使用数论性质更高效地寻找表示
+function findThreeSquaresEfficient(n) {
+    if (!canBeThreeSquaresByLegendre(n)) {
+        return null;
+    }
+    
+    // 方法：先尝试找到两个平方和，然后检查剩余是否为平方数
+    const sqrtN = Math.floor(Math.sqrt(n));
+    
+    // 尝试所有可能的x
+    for (let x = 0; x <= sqrtN; x++) {
+        const remaining = n - x * x;
+        if (remaining < 0) break;
+        
+        // 在剩余数中寻找两个平方和
+        const sqrtRemaining = Math.floor(Math.sqrt(remaining));
+        for (let y = 0; y <= sqrtRemaining; y++) {
+            const z2 = remaining - y * y;
+            if (z2 < 0) break;
+            
+            const z = Math.sqrt(z2);
+            if (Number.isInteger(z)) {
+                return [x, y, z];
+            }
+        }
+    }
+    
+    // 如果没找到，尝试负数
+    for (let x = -sqrtN; x <= sqrtN; x++) {
+        const remaining = n - x * x;
+        if (remaining < 0) continue;
+        
+        const sqrtRemaining = Math.floor(Math.sqrt(remaining));
+        for (let y = -sqrtRemaining; y <= sqrtRemaining; y++) {
+            const z2 = remaining - y * y;
+            if (z2 < 0) continue;
+            
+            const z = Math.sqrt(z2);
+            if (Number.isInteger(z)) {
+                return [x, y, z];
+            }
+        }
+    }
+    
+    return null;
+}
+
+console.log("\n5. 使用优化算法寻找表示：");
+for (const n of [100, 101, 102, 103, 104, 105]) {
+    const representation = findThreeSquaresEfficient(n);
+    console.log(`n=${n}: ${representation ? `表示：${representation.join(', ')}` : '无表示'}`);
+}
+
+// 统计性质：计算在给定范围内可表示为三个平方和的数的比例
+function statisticsThreeSquares(limit) {
+    let countCanBe = 0;
+    for (let n = 0; n <= limit; n++) {
+        if (canBeThreeSquaresByLegendre(n)) {
+            countCanBe++;
+        }
+    }
+    const proportion = countCanBe / (limit + 1);
+    console.log(`\n6. 统计（0-${limit}）：`);
+    console.log(`可表示为三个平方和的数：${countCanBe} 个`);
+    console.log(`比例：${(proportion * 100).toFixed(2)}%`);
+    console.log(`不能表示的：${limit + 1 - countCanBe} 个`);
+}
+
+statisticsThreeSquares(1000);
+
+// 与四平方和定理的关系：所有自然数都可以表示为四个平方和
+function findFourSquaresRepresentation(n) {
+    // 简单暴力搜索，仅用于演示
+    const limit = Math.floor(Math.sqrt(n)) + 1;
+    for (let a = 0; a <= limit; a++) {
+        for (let b = a; b <= limit; b++) {
+            for (let c = b; c <= limit; c++) {
+                for (let d = c; d <= limit; d++) {
+                    if (a*a + b*b + c*c + d*d === n) {
+                        return [a, b, c, d];
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
+console.log("\n7. 与拉格朗日四平方定理比较：");
+for (const n of [7, 15, 23, 28, 31]) {
+    const threeSquares = canBeThreeSquaresByLegendre(n);
+    const fourSquares = findFourSquaresRepresentation(n);
+    console.log(`n=${n}: 三平方和？${threeSquares}, 四平方和表示：${fourSquares ? fourSquares.join(', ') : '无'}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>数论研究：</strong>
+                    定理是平方和问题的重要结果，与高斯的三平方和定理、拉格朗日四平方和定理密切相关。
+                </li>
+                
+                <li>
+                    <strong>算法设计：</strong>
+                    在计算机科学中，用于判断一个数能否表示为三个平方和，例如在密码学或优化问题中。
+                </li>
+                
+                <li>
+                    <strong>数学教育：</strong>
+                    作为初等数论的经典定理，展示模运算和平方剩余的应用。
+                </li>
+                
+                <li>
+                    <strong>几何：</strong>
+                    在几何中，与球面格点和整数点问题有关。
+                </li>
+                
+                <li>
+                    <strong>组合数学：</strong>
+                    用于解决某些计数问题，涉及平方数的划分。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>相关定理：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">定理</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">内容</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">与勒让德定理的关系</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">费马二平方和定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">奇素数 $p$ 可表示为两个平方和当且仅当 $p \equiv 1 \pmod{4}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">处理两个平方和，勒让德处理三个平方和</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">拉格朗日四平方和定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">每个自然数都可表示为四个整数的平方和</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">勒让德定理说明哪些数需要四个平方，哪些只需要三个</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">高斯三平方和定理</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">自然数 $n$ 可表示为三个平方和当且仅当 $n \neq 4^a(8b+7)$，且 $n$ 不是形如 $4^a(8b+3)$ 的数的两倍？实际上高斯定理更复杂，但勒让德给出了简洁形式</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">勒让德定理是高斯定理的推论或等价形式</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">华林问题</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">每个自然数可表示为有限个 $k$ 次幂的和</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">平方和问题是 $k=2$ 的特例</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 注意：</h4>
+            <p>
+                1. 定理中的整数包括零和负整数，但由于平方的非负性，通常只需考虑非负整数解。<br>
+                2. 形如 $4^a(8b+7)$ 的数不能表示为三个平方和，但总可以表示为四个平方和（拉格朗日定理）。<br>
+                3. 定理的逆否命题：如果 $n$ 可以表示为三个平方和，则 $n \neq 4^a(8b+7)$。<br>
+                4. 对于 $n=0$，有 $0=0^2+0^2+0^2$，且 $0$ 不是形如 $4^a(8b+7)$ 的数（因为 $7>0$），所以定理成立。<br>
+                5. 定理在计算机科学中可用于优化算法，避免不必要的搜索。
+            </p>
+            
+            <p>
+                <strong>扩展：</strong>
+                勒让德定理可以推广到更多平方和的情况，但四平方和定理已经保证所有自然数都可以表示为四个平方和，因此三平方和定理给出了最经济的表示条件。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

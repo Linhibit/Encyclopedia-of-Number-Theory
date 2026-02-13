@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>杜教筛 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>杜教筛 (Du Sieve)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                杜教筛是一种用于计算数论函数前缀和的算法，由中国算法竞赛选手杜瑜皓在2016年提出。其核心思想是利用狄利克雷卷积的性质，通过递归和记忆化技术，在 $O(n^{2/3})$ 时间复杂度内计算积性函数的前缀和。
+            </p>
+            
+            <p>
+                <strong>核心公式：</strong>
+                设 $f$ 和 $g$ 是两个数论函数，$h = f * g$ 是它们的狄利克雷卷积，即：
+                $$h(n) = \sum_{d|n} f(d) g\left(\frac{n}{d}\right)$$
+                记 $S_f(n) = \sum_{i=1}^n f(i)$，则有：
+                $$\sum_{i=1}^n h(i) = \sum_{i=1}^n \sum_{d|i} f(d) g\left(\frac{i}{d}\right) = \sum_{d=1}^n f(d) \sum_{k=1}^{\lfloor n/d \rfloor} g(k)$$
+                即：
+                $$\sum_{i=1}^n h(i) = \sum_{d=1}^n f(d) S_g\left(\lfloor \frac{n}{d} \rfloor\right)$$
+            </p>
+            
+            <p>
+                整理得杜教筛递推公式：
+                $$g(1) S_f(n) = \sum_{i=1}^n h(i) - \sum_{d=2}^n f(d) S_g\left(\lfloor \frac{n}{d} \rfloor\right)$$
+            </p>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>输入：</strong>
+                    <ul>
+                        <li>目标函数 $f(n)$（积性函数）</li>
+                        <li>辅助函数 $g(n)$，满足 $g(1) \neq 0$</li>
+                        <li>卷积函数 $h(n) = (f * g)(n)$，且 $h(n)$ 的前缀和容易计算</li>
+                        <li>正整数 $n$</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>预处理：</strong>
+                    <ol type="a">
+                        <li>线性筛预处理 $f$ 的前 $m = \lfloor n^{2/3} \rfloor$ 个值，计算 $S_f(1)$ 到 $S_f(m)$</li>
+                        <li>同样预处理 $g$ 和 $h$ 的前 $m$ 个值及其前缀和</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>递归计算：</strong>
+                    对于给定的 $n$，计算 $S_f(n)$：
+                    <ol type="a">
+                        <li>如果 $n \leq m$，直接返回预计算的 $S_f(n)$</li>
+                        <li>如果 $n > m$，检查是否已计算过 $S_f(n)$（记忆化）</li>
+                        <li>如果未计算，使用杜教筛公式：
+                            $$S_f(n) = \frac{1}{g(1)} \left( S_h(n) - \sum_{d=2}^n f(d) S_g\left(\lfloor \frac{n}{d} \rfloor\right) \right)$$
+                        </li>
+                        <li>其中求和通过整数分块加速：$\lfloor n/d \rfloor$ 只有 $O(\sqrt{n})$ 个不同的值</li>
+                        <li>递归计算需要的 $S_g(\lfloor n/d \rfloor)$ 值</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>优化技巧：</strong>
+                    <ul>
+                        <li>使用哈希表记忆化已计算的 $S_f$ 值</li>
+                        <li>预处理前 $n^{2/3}$ 项以平衡时间和空间</li>
+                        <li>选择合适的辅助函数 $g$ 使得 $h$ 的前缀和容易计算</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>复杂度分析：</strong>
+                <ul>
+                    <li>预处理：$O(n^{2/3})$ 时间和空间</li>
+                    <li>递归计算：$O(n^{2/3})$ 时间（主定理分析）</li>
+                    <li>总复杂度：$O(n^{2/3})$，优于直接计算的 $O(n)$ 和朴素分块的 $O(\sqrt{n})$ 递归深度</li>
+                    <li>适用于 $n$ 高达 $10^{10}$ 甚至更大的情况</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>经典应用：</h3>
+            
+            <p>
+                <strong>例1：计算欧拉函数 $\varphi(n)$ 的前缀和</strong><br>
+                设 $f(n) = \varphi(n)$，取 $g(n) = 1$（常值函数），则：
+                $$h(n) = (\varphi * 1)(n) = \sum_{d|n} \varphi(d) = n$$
+                因此 $S_h(n) = \sum_{i=1}^n i = \frac{n(n+1)}{2}$。<br>
+                杜教筛公式为：
+                $$S_\varphi(n) = \frac{n(n+1)}{2} - \sum_{d=2}^n S_\varphi\left(\lfloor \frac{n}{d} \rfloor\right)$$
+            </p>
+            
+            <p>
+                <strong>例2：计算莫比乌斯函数 $\mu(n)$ 的前缀和</strong><br>
+                设 $f(n) = \mu(n)$，取 $g(n) = 1$，则：
+                $$h(n) = (\mu * 1)(n) = \varepsilon(n) = \begin{cases} 1 & n=1 \\ 0 & n>1 \end{cases}$$
+                因此 $S_h(n) = 1$。<br>
+                杜教筛公式为：
+                $$S_\mu(n) = 1 - \sum_{d=2}^n S_\mu\left(\lfloor \frac{n}{d} \rfloor\right)$$
+            </p>
+            
+            <p>
+                <strong>例3：计算约数个数函数 $d(n)$ 的前缀和</strong><br>
+                设 $f(n) = d(n)$，取 $g(n) = \mu(n)$，则：
+                $$h(n) = (d * \mu)(n) = 1$$
+                因为 $d = 1 * 1$，所以 $d * \mu = 1 * 1 * \mu = 1 * \varepsilon = 1$。<br>
+                因此 $S_h(n) = n$。<br>
+                杜教筛公式为：
+                $$S_d(n) = n - \sum_{d=2}^n \mu(d) S_d\left(\lfloor \frac{n}{d} \rfloor\right)$$
+                但这里需要 $\mu$ 的前缀和，可以同时计算。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 线性筛预处理多个积性函数
+function linearSieve(limit) {
+    const primes = [];
+    const isPrime = new Array(limit + 1).fill(true);
+    const mu = new Array(limit + 1).fill(0);      // 莫比乌斯函数
+    const phi = new Array(limit + 1).fill(0);     // 欧拉函数
+    const d = new Array(limit + 1).fill(0);       // 约数个数
+    const minPrime = new Array(limit + 1).fill(0); // 最小质因子
+    
+    // 初始化
+    mu[1] = 1;
+    phi[1] = 1;
+    d[1] = 1;
+    
+    for (let i = 2; i <= limit; i++) {
+        if (isPrime[i]) {
+            primes.push(i);
+            mu[i] = -1;
+            phi[i] = i - 1;
+            d[i] = 2;
+            minPrime[i] = i;
+        }
+        
+        for (const p of primes) {
+            if (i * p > limit) break;
+            
+            const num = i * p;
+            isPrime[num] = false;
+            minPrime[num] = p;
+            
+            if (i % p === 0) {
+                // i 包含质因子 p
+                mu[num] = 0;
+                phi[num] = phi[i] * p;
+                
+                // 计算 d(num)：如果 i = p^a * m，则 num = p^(a+1) * m
+                let temp = i, a = 0;
+                while (temp % p === 0) {
+                    temp /= p;
+                    a++;
+                }
+                d[num] = d[i] / (a + 1) * (a + 2);
+                break;
+            } else {
+                // i 和 p 互质
+                mu[num] = -mu[i];
+                phi[num] = phi[i] * (p - 1);
+                d[num] = d[i] * 2;
+            }
+        }
+    }
+    
+    // 计算前缀和
+    const sumMu = new Array(limit + 1).fill(0);
+    const sumPhi = new Array(limit + 1).fill(0);
+    const sumD = new Array(limit + 1).fill(0);
+    
+    for (let i = 1; i <= limit; i++) {
+        sumMu[i] = sumMu[i - 1] + mu[i];
+        sumPhi[i] = sumPhi[i - 1] + phi[i];
+        sumD[i] = sumD[i - 1] + d[i];
+    }
+    
+    return {
+        primes, mu, phi, d,
+        sumMu, sumPhi, sumD,
+        minPrime
+    };
+}
+
+// 杜教筛类
+class DuSieve {
+    constructor(n) {
+        this.n = n;
+        this.limit = Math.floor(Math.pow(n, 2/3)); // 预处理大小
+        this.pre = linearSieve(this.limit);
+        
+        // 记忆化存储
+        this.muMemo = new Map();
+        this.phiMemo = new Map();
+        this.dMemo = new Map();
+    }
+    
+    // 计算莫比乌斯函数前缀和 Sμ(n)
+    sumMuDu(n) {
+        if (n <= this.limit) return this.pre.sumMu[n];
+        if (this.muMemo.has(n)) return this.muMemo.get(n);
+        
+        let result = 1; // S_h(n) = 1 (h = μ * 1 = ε)
+        
+        // 整数分块求和
+        for (let l = 2, r; l <= n; l = r + 1) {
+            r = Math.floor(n / Math.floor(n / l));
+            result -= (r - l + 1) * this.sumMuDu(Math.floor(n / l));
+        }
+        
+        this.muMemo.set(n, result);
+        return result;
+    }
+    
+    // 计算欧拉函数前缀和 Sφ(n)
+    sumPhiDu(n) {
+        if (n <= this.limit) return this.pre.sumPhi[n];
+        if (this.phiMemo.has(n)) return this.phiMemo.get(n);
+        
+        // S_h(n) = n(n+1)/2 (h = φ * 1 = id)
+        let result = n * (n + 1) / 2;
+        
+        // 整数分块求和
+        for (let l = 2, r; l <= n; l = r + 1) {
+            r = Math.floor(n / Math.floor(n / l));
+            result -= (r - l + 1) * this.sumPhiDu(Math.floor(n / l));
+        }
+        
+        this.phiMemo.set(n, result);
+        return result;
+    }
+    
+    // 计算约数个数前缀和 Sd(n) - 需要同时计算 Sμ
+    sumDDu(n) {
+        if (n <= this.limit) return this.pre.sumD[n];
+        if (this.dMemo.has(n)) return this.dMemo.get(n);
+        
+        // h = d * μ = 1, 所以 S_h(n) = n
+        let result = n;
+        
+        // 需要 μ 的前缀和
+        for (let l = 2, r; l <= n; l = r + 1) {
+            r = Math.floor(n / Math.floor(n / l));
+            const sumMuRange = this.sumMuDu(r) - this.sumMuDu(l - 1);
+            result -= sumMuRange * this.sumDDu(Math.floor(n / l));
+        }
+        
+        this.dMemo.set(n, result);
+        return result;
+    }
+    
+    // 通用的杜教筛模板
+    // f: 目标函数，g: 辅助函数，h: 卷积函数，calcHSum: 计算h前缀和的函数
+    duSieveGeneral(n, fPre, gPre, calcHSum) {
+        if (n <= this.limit) return fPre[n];
+        
+        const memoKey = `f_${n}`;
+        if (this.generalMemo && this.generalMemo.has(memoKey)) {
+            return this.generalMemo.get(memoKey);
+        }
+        
+        let result = calcHSum(n);
+        
+        // 整数分块
+        for (let l = 2, r; l <= n; l = r + 1) {
+            r = Math.floor(n / Math.floor(n / l));
+            // 需要计算 ∑ g(d) for d in [l, r]
+            // 这里假设我们可以快速计算g的前缀和
+            const sumGRange = gPre[r] - gPre[l - 1];
+            result -= sumGRange * this.duSieveGeneral(
+                Math.floor(n / l), fPre, gPre, calcHSum
+            );
+        }
+        
+        // 除以 g(1)
+        result /= gPre[1] - gPre[0];
+        
+        if (this.generalMemo) {
+            this.generalMemo.set(memoKey, result);
+        }
+        
+        return result;
+    }
+}
+
+// 示例使用
+console.log("=== 杜教筛示例 ===");
+
+const n = 1000000000; // 10^9
+console.log(`计算 n = ${n} 的前缀和`);
+
+console.time("初始化杜教筛");
+const du = new DuSieve(n);
+console.timeEnd("初始化杜教筛");
+
+console.time("计算 Sμ(n)");
+const sumMu = du.sumMuDu(n);
+console.timeEnd("计算 Sμ(n)");
+console.log(`Sμ(${n}) = ${sumMu}`);
+
+console.time("计算 Sφ(n)");
+const sumPhi = du.sumPhiDu(n);
+console.timeEnd("计算 Sφ(n)");
+console.log(`Sφ(${n}) = ${sumPhi}`);
+
+console.time("计算 Sd(n)");
+const sumD = du.sumDDu(n);
+console.timeEnd("计算 Sd(n)");
+console.log(`Sd(${n}) = ${sumD}`);
+
+// 验证小数值
+console.log("\n=== 小数值验证 ===");
+const smallN = 1000;
+const smallPre = linearSieve(smallN);
+
+const duSmall = new DuSieve(smallN);
+const sumMuSmall = duSmall.sumMuDu(smallN);
+const sumPhiSmall = duSmall.sumPhiDu(smallN);
+const sumDSmall = duSmall.sumDDu(smallN);
+
+console.log(`n=${smallN}:`);
+console.log(`直接计算 Sμ = ${smallPre.sumMu[smallN]}, 杜教筛 = ${sumMuSmall}, 一致? ${Math.abs(sumMuSmall - smallPre.sumMu[smallN]) < 1e-6}`);
+console.log(`直接计算 Sφ = ${smallPre.sumPhi[smallN]}, 杜教筛 = ${sumPhiSmall}, 一致? ${Math.abs(sumPhiSmall - smallPre.sumPhi[smallN]) < 1e-6}`);
+console.log(`直接计算 Sd = ${smallPre.sumD[smallN]}, 杜教筛 = ${sumDSmall}, 一致? ${Math.abs(sumDSmall - smallPre.sumD[smallN]) < 1e-6}`);
+
+// 性能对比
+console.log("\n=== 性能对比 ===");
+const testNs = [1000000, 10000000, 100000000];
+
+for (const testN of testNs) {
+    console.log(`\nn = ${testN}:`);
+    
+    console.time("线性筛");
+    const pre = linearSieve(testN);
+    console.timeEnd("线性筛");
+    
+    console.time("杜教筛初始化");
+    const duTest = new DuSieve(testN);
+    console.timeEnd("杜教筛初始化");
+    
+    console.time("杜教筛计算 Sφ");
+    const phiDu = duTest.sumPhiDu(testN);
+    console.timeEnd("杜教筛计算 Sφ");
+    
+    console.log(`Sφ(${testN}) ≈ ${phiDu}`);
+}
+
+// 计算更大的n
+console.log("\n=== 大数值计算 ===");
+const hugeN = 10000000000; // 10^10
+console.log(`尝试计算 n = ${hugeN}`);
+
+console.time("杜教筛初始化 (大n)");
+const duHuge = new DuSieve(hugeN);
+console.timeEnd("杜教筛初始化 (大n)");
+
+console.time("计算 Sφ(10^10)");
+try {
+    const phiHuge = duHuge.sumPhiDu(hugeN);
+    console.timeEnd("计算 Sφ(10^10)");
+    console.log(`Sφ(${hugeN}) ≈ ${phiHuge}`);
+} catch (error) {
+    console.timeEnd("计算 Sφ(10^10)");
+    console.log(`计算失败: ${error.message}`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>数论函数求和：</strong>
+                    高效计算各种积性函数的前缀和，如 $\varphi(n)$、$\mu(n)$、$d(n)$、$\sigma(n)$ 等。
+                </li>
+                
+                <li>
+                    <strong>数论问题求解：</strong>
+                    许多数论问题最终归结为计算某个数论函数的前缀和，杜教筛提供高效算法。
+                </li>
+                
+                <li>
+                    <strong>算法竞赛：</strong>
+                    在要求计算大范围前缀和的题目中，杜教筛是常用工具。
+                </li>
+                
+                <li>
+                    <strong>数学研究：</strong>
+                    在研究数论函数的渐近行为时，需要计算大量前缀和作为实验数据。
+                </li>
+                
+                <li>
+                    <strong>密码学：</strong>
+                    在某些基于数论的密码算法分析中，需要计算相关函数的前缀和。
+                </li>
+            </ol>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 优化与扩展：</h4>
+            <p>
+                1. <strong>预处理大小选择：</strong> 通常取 $m = n^{2/3}$ 以达到理论最优复杂度 $O(n^{2/3})$。实际中可根据具体问题调整。<br>
+                2. <strong>记忆化优化：</strong> 使用哈希表存储已计算的结果，避免重复计算。<br>
+                3. <strong>多函数同时计算：</strong> 当需要计算多个相关函数的前缀和时，可以共享预处理和记忆化结果。<br>
+                4. <strong>递归深度控制：</strong> 通过预处理减少递归深度，提高实际运行效率。<br>
+                5. <strong>扩展性：</strong> 杜教筛可以推广到非积性函数，只要能找到合适的辅助函数 $g$ 使得 $h = f * g$ 的前缀和容易计算。<br>
+                6. <strong>局限性：</strong> 需要找到合适的辅助函数 $g$，且 $g$ 和 $h$ 的前缀和需要容易计算。对于某些函数可能不容易找到。
+            </p>
+            
+            <p>
+                <strong>历史背景：</strong>
+                杜教筛由中国算法竞赛选手杜瑜皓在2016年提出，并在算法竞赛社区中广泛传播和应用。
+                它是对传统数论函数求和方法的重大改进，使得计算高达 $10^{10}$ 甚至更大的前缀和成为可能。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

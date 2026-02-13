@@ -214,6 +214,12 @@
     "description": "狄利克雷定理：若 $a$ 和 $d$ 互质，则算术级数 $a + nd$（$n \\in \\mathbb{N}$）中包含无穷多个素数。",
     "link": "theorems/arithmetic-progression-primes-theorem.html",
     "tags": ["素数", "算术级数", "狄利克雷定理", "解析数论"]
+  },
+  {
+    "title": "杜教筛",
+    "description": "杜教筛是一种用于高效计算数论函数前缀和的算法，通过狄利克雷卷积和递归分块技术，在亚线性时间内计算 $\\sum_{i=1}^{n} f(i)$，其中 $f$ 是积性函数。",
+    "link": "algorithms/du-sieve.html",
+    "tags": ["前缀和", "积性函数", "狄利克雷卷积", "数论算法"]
   }
 ]
 

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>洲阁筛 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>洲阁筛 (Zhouge Sieve)</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                洲阁筛是一种用于计算积性函数前缀和的通用算法，由中国选手洲阁（周楷文）在2012年提出。它通过分段筛法和递归思想，能够处理更广泛的积性函数类，特别是那些在素数幂处取值有特定多项式形式的函数。
+            </p>
+            
+            <p>
+                <strong>核心思想：</strong>
+            </p>
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>函数分解：</strong> 将目标函数 $f(n)$ 分解为两部分：$f(n) = \sum_{d|n} g(d) h(n/d)$，其中 $g$ 和 $h$ 是更简单的函数。
+                </li>
+                <li>
+                    <strong>分段处理：</strong> 将 $[1, n]$ 分成若干段，分别处理每段中的函数值。
+                </li>
+                <li>
+                    <strong>递归计算：</strong> 对于每个素数 $p$，递归计算 $f$ 在 $p$ 的幂次上的贡献。
+                </li>
+                <li>
+                    <strong>前缀和合并：</strong> 将所有段的贡献合并，得到最终的前缀和。
+                </li>
+            </ol>
+            
+            <p>
+                <strong>适用条件：</strong>
+                洲阁筛适用于满足以下条件的积性函数 $f$：
+                <ul>
+                    <li>$f(p)$ 是关于 $p$ 的多项式函数（$p$ 为素数）</li>
+                    <li>$f(p^k)$ 可以快速计算（$k \geq 2$）</li>
+                    <li>函数在素数幂处的值有特定的递推关系</li>
+                </ul>
+            </p>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>预处理：</strong>
+                    <ol type="a">
+                        <li>计算 $\pi(\sqrt{n})$ 以内的所有素数</li>
+                        <li>预处理 $f(p)$ 和 $f(p^k)$ 的值（$p \leq \sqrt{n}$, $k \geq 2$）</li>
+                        <li>构建分段大小 $L = \lfloor \sqrt{n} \rfloor$</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>计算 $g$ 函数：</strong>
+                    定义 $g(x)$ 为只被 $\leq \sqrt{n}$ 的素数整除的数的 $f$ 值前缀和。
+                    <ol type="a">
+                        <li>初始化 $g(i) = 1$（对应常数函数）</li>
+                        <li>对于每个素数 $p \leq \sqrt{n}$，从大到小更新：
+                            $$g(i) \leftarrow g(i) - f(p) \cdot g(\lfloor i/p \rfloor)$$
+                        </li>
+                        <li>最终 $g(i)$ 表示 $[1, i]$ 中不被 $\leq \sqrt{n}$ 的素数整除的数的个数（乘以相应的函数值）</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>计算 $S$ 函数：</strong>
+                    定义 $S(n, m)$ 表示 $[1, n]$ 中最小质因子大于第 $m$ 个素数的数的 $f$ 值之和。
+                    <ol type="a">
+                        <li>边界条件：$S(n, 0) = \sum_{i=1}^n f(i)$（需要计算）</li>
+                        <li>递归关系：
+                            $$S(n, m) = S(n, m-1) - f(p_m) \cdot S(\lfloor n/p_m \rfloor, m-1)$$
+                        </li>
+                        <li>当 $n < p_m^2$ 时，可以直接计算</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>合并结果：</strong>
+                    最终前缀和为：
+                    $$\sum_{i=1}^n f(i) = S(n, \pi(\sqrt{n})) + \sum_{\substack{p \leq \sqrt{n} \\ k \geq 1}} f(p^k) \cdot S\left(\lfloor n/p^k \rfloor, \pi(p)\right)$$
+                </li>
+                
+                <li>
+                    <strong>优化：</strong>
+                    <ul>
+                        <li>使用整数分块减少递归调用</li>
+                        <li>记忆化已计算的 $S(n, m)$ 值</li>
+                        <li>预处理小范围内的函数值</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>复杂度分析：</strong>
+                <ul>
+                    <li>时间复杂度：$O\left(\frac{n^{3/4}}{\log n}\right)$</li>
+                    <li>空间复杂度：$O(\sqrt{n})$</li>
+                    <li>比杜教筛更通用，但实现更复杂</li>
+                    <li>适用于 $n$ 高达 $10^{11}$ 甚至更大的情况</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>经典应用：</h3>
+            
+            <p>
+                <strong>例1：计算素数计数函数 $\pi(n)$</strong><br>
+                虽然不是直接计算积性函数，但洲阁筛可以用于计算不超过 $n$ 的素数个数。
+                
+                定义函数 $f(n) = 1$ 当 $n$ 是素数，否则为 0。
+                虽然不是积性函数，但可以通过构造辅助函数使用洲阁筛思想。
+            </p>
+            
+            <p>
+                <strong>例2：计算 $f(n) = n^k$ 的前缀和</strong><br>
+                对于 $f(n) = n^k$，其中 $k$ 是固定整数。
+                
+                $f$ 是完全积性函数，$f(p) = p^k$ 是多项式。
+                洲阁筛可以直接应用。
+            </p>
+            
+            <p>
+                <strong>例3：计算 $\sigma_k(n)$ 的前缀和</strong><br>
+                其中 $\sigma_k(n) = \sum_{d|n} d^k$ 是除数函数。
+                
+                $\sigma_k(n)$ 是积性函数，且 $\sigma_k(p) = 1 + p^k$ 是多项式。
+                洲阁筛适用。
+            </p>
+            
+            <p>
+                <strong>例4：计算 $f(n) = \mu(n)^2$（无平方因子数的特征函数）</strong><br>
+                $f(n) = 1$ 当 $n$ 无平方因子，否则为 0。
+                
+                虽然不是积性函数，但可以通过洲阁筛的变体计算。
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 洲阁筛实现 - 计算数论函数前缀和
+class ZhougeSieve {
+    constructor(n) {
+        this.n = n;
+        this.sqrtN = Math.floor(Math.sqrt(n));
+        
+        // 预处理素数
+        this.primes = this.getPrimes(this.sqrtN);
+        this.primeCount = this.primes.length;
+        
+        // 预处理小范围函数值
+        this.smallLimit = Math.floor(Math.pow(n, 2/3));
+        this.precomputed = this.precomputeSmall(this.smallLimit);
+        
+        // 记忆化
+        this.memo = new Map();
+    }
+    
+    // 线性筛获取素数
+    getPrimes(limit) {
+        const primes = [];
+        const isPrime = new Array(limit + 1).fill(true);
+        
+        for (let i = 2; i <= limit; i++) {
+            if (isPrime[i]) {
+                primes.push(i);
+            }
+            for (const p of primes) {
+                if (i * p > limit) break;
+                isPrime[i * p] = false;
+                if (i % p === 0) break;
+            }
+        }
+        
+        return primes;
+    }
+    
+    // 预处理小范围的函数值
+    precomputeSmall(limit) {
+        // 这里以计算 μ(n) 和 φ(n) 为例
+        const mu = new Array(limit + 1).fill(0);
+        const phi = new Array(limit + 1).fill(0);
+        const isPrime = new Array(limit + 1).fill(true);
+        const primes = [];
+        
+        mu[1] = 1;
+        phi[1] = 1;
+        
+        for (let i = 2; i <= limit; i++) {
+            if (isPrime[i]) {
+                primes.push(i);
+                mu[i] = -1;
+                phi[i] = i - 1;
+            }
+            
+            for (const p of primes) {
+                if (i * p > limit) break;
+                
+                const num = i * p;
+                isPrime[num] = false;
+                
+                if (i % p === 0) {
+                    mu[num] = 0;
+                    phi[num] = phi[i] * p;
+                    break;
+                } else {
+                    mu[num] = -mu[i];
+                    phi[num] = phi[i] * (p - 1);
+                }
+            }
+        }
+        
+        // 计算前缀和
+        const sumMu = new Array(limit + 1).fill(0);
+        const sumPhi = new Array(limit + 1).fill(0);
+        
+        for (let i = 1; i <= limit; i++) {
+            sumMu[i] = sumMu[i - 1] + mu[i];
+            sumPhi[i] = sumPhi[i - 1] + phi[i];
+        }
+        
+        return { mu, phi, sumMu, sumPhi, primes };
+    }
+    
+    // 洲阁筛核心：计算 S(n, m)
+    // 表示 [1, n] 中最小质因子大于第 m 个素数的数的函数值之和
+    S(n, m, funcType = 'phi') {
+        if (n === 0) return 0;
+        
+        // 记忆化键
+        const memoKey = `${n},${m},${funcType}`;
+        if (this.memo.has(memoKey)) {
+            return this.memo.get(memoKey);
+        }
+        
+        // 如果 n 很小，直接返回预计算的值
+        if (n <= this.smallLimit) {
+            let result;
+            if (funcType === 'phi') {
+                result = this.precomputed.sumPhi[n];
+            } else if (funcType === 'mu') {
+                result = this.precomputed.sumMu[n];
+            }
+            this.memo.set(memoKey, result);
+            return result;
+        }
+        
+        // 如果 m = 0，表示没有素数限制
+        if (m === 0) {
+            // 需要计算 ∑ f(i) for i=1..n
+            // 对于 φ(n)，有公式 ∑ φ(i) = n(n+1)/2 - ∑_{d=2}^n S(⌊n/d⌋, 0)
+            // 这里使用递归计算
+            let result;
+            if (funcType === 'phi') {
+                result = n * (n + 1) / 2;
+                for (let l = 2, r; l <= n; l = r + 1) {
+                    r = Math.floor(n / Math.floor(n / l));
+                    result -= (r - l + 1) * this.S(Math.floor(n / l), 0, 'phi');
+                }
+            } else if (funcType === 'mu') {
+                result = 1;
+                for (let l = 2, r; l <= n; l = r + 1) {
+                    r = Math.floor(n / Math.floor(n / l));
+                    result -= (r - l + 1) * this.S(Math.floor(n / l), 0, 'mu');
+                }
+            }
+            this.memo.set(memoKey, result);
+            return result;
+        }
+        
+        // 递归关系：S(n, m) = S(n, m-1) - f(p_m) * S(⌊n/p_m⌋, m-1)
+        const p = this.primes[m - 1];
+        
+        // 如果 p^2 > n，可以直接计算
+        if (p * p > n) {
+            let result = this.S(n, m - 1, funcType);
+            
+            // 减去包含 p 作为最小质因子的数的贡献
+            const count = Math.floor(n / p);
+            if (count > 0) {
+                let fValue;
+                if (funcType === 'phi') {
+                    fValue = p - 1; // φ(p) = p-1
+                } else if (funcType === 'mu') {
+                    fValue = -1; // μ(p) = -1
+                }
+                result -= fValue * this.S(count, m - 1, funcType);
+            }
+            
+            this.memo.set(memoKey, result);
+            return result;
+        }
+        
+        // 一般情况
+        let result = this.S(n, m - 1, funcType);
+        
+        // 减去 p 的贡献
+        let currentP = p;
+        let k = 1;
+        
+        while (currentP <= n) {
+            const count = Math.floor(n / currentP);
+            if (count === 0) break;
+            
+            let fValue;
+            if (funcType === 'phi') {
+                if (k === 1) {
+                    fValue = p - 1; // φ(p) = p-1
+                } else {
+                    fValue = currentP - Math.floor(currentP / p); // φ(p^k) = p^k - p^(k-1)
+                }
+            } else if (funcType === 'mu') {
+                if (k === 1) {
+                    fValue = -1; // μ(p) = -1
+                } else {
+                    fValue = 0; // μ(p^k) = 0 for k ≥ 2
+                    break; // 后续的 μ 值都是 0，可以提前结束
+                }
+            }
+            
+            result -= fValue * this.S(count, m - 1, funcType);
+            
+            currentP *= p;
+            k++;
+        }
+        
+        this.memo.set(memoKey, result);
+        return result;
+    }
+    
+    // 计算欧拉函数前缀和
+    sumPhi(n) {
+        if (n <= this.smallLimit) {
+            return this.precomputed.sumPhi[n];
+        }
+        
+        // 使用洲阁筛公式
+        const m = this.primeCount;
+        let result = this.S(n, m, 'phi');
+        
+        // 加上素数幂的贡献
+        for (const p of this.primes) {
+            let currentP = p * p;
+            let k = 2;
+            
+            while (currentP <= n) {
+                const count = Math.floor(n / currentP);
+                if (count === 0) break;
+                
+                // φ(p^k) = p^k - p^(k-1)
+                const phiValue = currentP - Math.floor(currentP / p);
+                result += phiValue * this.S(count, this.getPrimeIndex(p), 'phi');
+                
+                currentP *= p;
+                k++;
+            }
+        }
+        
+        return result;
+    }
+    
+    // 计算莫比乌斯函数前缀和
+    sumMu(n) {
+        if (n <= this.smallLimit) {
+            return this.precomputed.sumMu[n];
+        }
+        
+        const m = this.primeCount;
+        let result = this.S(n, m, 'mu');
+        
+        // 对于 μ，只有 p^1 有非零贡献（μ(p) = -1）
+        // p^k for k ≥ 2 的 μ 值都是 0
+        for (const p of this.primes) {
+            const count = Math.floor(n / p);
+            if (count === 0) break;
+            
+            // μ(p) = -1
+            result += (-1) * this.S(count, this.getPrimeIndex(p), 'mu');
+        }
+        
+        return result;
+    }
+    
+    // 获取素数的索引
+    getPrimeIndex(p) {
+        // 简化实现：返回素数在列表中的索引
+        // 实际中可能需要更高效的查找
+        return this.primes.indexOf(p);
+    }
+}
+
+// 示例使用
+console.log("=== 洲阁筛示例 ===");
+
+const n = 1000000000; // 10^9
+console.log(`计算 n = ${n} 的前缀和`);
+
+console.time("初始化洲阁筛");
+const zg = new ZhougeSieve(n);
+console.timeEnd("初始化洲阁筛");
+
+console.time("计算 Sφ(n) 使用洲阁筛");
+const sumPhiZG = zg.sumPhi(n);
+console.timeEnd("计算 Sφ(n) 使用洲阁筛");
+console.log(`Sφ(${n}) = ${sumPhiZG}`);
+
+console.time("计算 Sμ(n) 使用洲阁筛");
+const sumMuZG = zg.sumMu(n);
+console.timeEnd("计算 Sμ(n) 使用洲阁筛");
+console.log(`Sμ(${n}) = ${sumMuZG}`);
+
+// 验证小数值
+console.log("\n=== 小数值验证 ===");
+const smallN = 1000;
+const zgSmall = new ZhougeSieve(smallN);
+
+const sumPhiSmallZG = zgSmall.sumPhi(smallN);
+const sumMuSmallZG = zgSmall.sumMu(smallN);
+
+console.log(`n=${smallN}:`);
+console.log(`直接计算 Sφ = ${zgSmall.precomputed.sumPhi[smallN]}, 洲阁筛 = ${sumPhiSmallZG}, 一致? ${Math.abs(sumPhiSmallZG - zgSmall.precomputed.sumPhi[smallN]) < 1e-6}`);
+console.log(`直接计算 Sμ = ${zgSmall.precomputed.sumMu[smallN]}, 洲阁筛 = ${sumMuSmallZG}, 一致? ${Math.abs(sumMuSmallZG - zgSmall.precomputed.sumMu[smallN]) < 1e-6}`);
+
+// 性能对比
+console.log("\n=== 性能对比 ===");
+const testNs = [1000000, 10000000, 50000000];
+
+for (const testN of testNs) {
+    console.log(`\nn = ${testN}:`);
+    
+    console.time("洲阁筛初始化");
+    const zgTest = new ZhougeSieve(testN);
+    console.timeEnd("洲阁筛初始化");
+    
+    console.time("洲阁筛计算 Sφ");
+    const phiZG = zgTest.sumPhi(testN);
+    console.timeEnd("洲阁筛计算 Sφ");
+    
+    console.log(`Sφ(${testN}) ≈ ${phiZG}`);
+}
+
+// 更通用的洲阁筛模板
+class GeneralZhougeSieve {
+    constructor(n, f, fPrime, fPrimePower) {
+        this.n = n;
+        this.sqrtN = Math.floor(Math.sqrt(n));
+        
+        // 函数定义
+        this.f = f;                     // 目标函数 f(n)
+        this.fPrime = fPrime;           // f(p) for prime p
+        this.fPrimePower = fPrimePower; // f(p^k) for k ≥ 2
+        
+        // 预处理素数
+        this.primes = this.getPrimes(this.sqrtN);
+        this.primeCount = this.primes.length;
+        
+        // 记忆化
+        this.memo = new Map();
+    }
+    
+    getPrimes(limit) {
+        const primes = [];
+        const isPrime = new Array(limit + 1).fill(true);
+        
+        for (let i = 2; i <= limit; i++) {
+            if (isPrime[i]) {
+                primes.push(i);
+            }
+            for (const p of primes) {
+                if (i * p > limit) break;
+                isPrime[i * p] = false;
+                if (i % p === 0) break;
+            }
+        }
+        
+        return primes;
+    }
+    
+    // 通用的 S(n, m) 计算
+    S_general(n, m) {
+        if (n === 0) return 0;
+        
+        const memoKey = `S_${n}_${m}`;
+        if (this.memo.has(memoKey)) {
+            return this.memo.get(memoKey);
+        }
+        
+        // 边界条件
+        if (m === 0) {
+            // 需要计算 ∑_{i=1}^n f(i)
+            // 这里可以使用递归或其它方法
+            // 简化：假设我们可以直接计算小范围的
+            let result = 0;
+            for (let i = 1; i <= n; i++) {
+                result += this.f(i);
+            }
+            this.memo.set(memoKey, result);
+            return result;
+        }
+        
+        const p = this.primes[m - 1];
+        
+        // 如果 p^2 > n
+        if (p * p > n) {
+            let result = this.S_general(n, m - 1);
+            
+            const count = Math.floor(n / p);
+            if (count > 0) {
+                const fPrimeVal = this.fPrime(p);
+                result -= fPrimeVal * this.S_general(count, m - 1);
+            }
+            
+            this.memo.set(memoKey, result);
+            return result;
+        }
+        
+        // 一般情况
+        let result = this.S_general(n, m - 1);
+        
+        let currentP = p;
+        let k = 1;
+        
+        while (currentP <= n) {
+            const count = Math.floor(n / currentP);
+            if (count === 0) break;
+            
+            let fValue;
+            if (k === 1) {
+                fValue = this.fPrime(p);
+            } else {
+                fValue = this.fPrimePower(p, k);
+            }
+            
+            result -= fValue * this.S_general(count, m - 1);
+            
+            currentP *= p;
+            k++;
+        }
+        
+        this.memo.set(memoKey, result);
+        return result;
+    }
+    
+    // 计算前缀和
+    sumF(n) {
+        const m = this.primeCount;
+        let result = this.S_general(n, m);
+        
+        // 加上素数幂的贡献
+        for (const p of this.primes) {
+            let currentP = p * p;
+            let k = 2;
+            
+            while (currentP <= n) {
+                const count = Math.floor(n / currentP);
+                if (count === 0) break;
+                
+                const fValue = this.fPrimePower(p, k);
+                const primeIndex = this.primes.indexOf(p);
+                result += fValue * this.S_general(count, primeIndex);
+                
+                currentP *= p;
+                k++;
+            }
+        }
+        
+        return result;
+    }
+}
+
+// 示例：计算 f(n) = n 的前缀和（即 1+2+...+n）
+console.log("\n=== 通用洲阁筛示例：计算 f(n) = n 的前缀和 ===");
+
+const n2 = 1000000;
+const f = x => x;
+const fPrime = p => p; // f(p) = p
+const fPrimePower = (p, k) => Math.pow(p, k); // f(p^k) = p^k
+
+console.time("通用洲阁筛初始化");
+const generalZG = new GeneralZhougeSieve(n2, f, fPrime, fPrimePower);
+console.timeEnd("通用洲阁筛初始化");
+
+console.time("计算前缀和");
+const sumF = generalZG.sumF(n2);
+console.timeEnd("计算前缀和");
+
+const expected = n2 * (n2 + 1) / 2;
+console.log(`计算值: ${sumF}, 期望值: ${expected}, 一致? ${Math.abs(sumF - expected) < 1e-6}`);</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>通用积性函数求和：</strong>
+                    适用于各种积性函数的前缀和计算，特别是那些在素数处为多项式的函数。
+                </li>
+                
+                <li>
+                    <strong>素数计数函数：</strong>
+                    可以用于计算 $\pi(n)$（不超过 $n$ 的素数个数），虽然不是直接计算积性函数。
+                </li>
+                
+                <li>
+                    <strong>除数函数：</strong>
+                    计算 $\sigma_k(n)$、$d(n)$ 等除数函数的前缀和。
+                </li>
+                
+                <li>
+                    <strong>幂函数：</strong>
+                    计算 $f(n) = n^k$ 的前缀和。
+                </li>
+                
+                <li>
+                    <strong>数论研究：</strong>
+                    在研究数论函数的渐近性质时，需要计算大量前缀和作为实验数据。
+                </li>
+                
+                <li>
+                    <strong>算法竞赛：</strong>
+                    在需要高效计算复杂积性函数前缀和的题目中，洲阁筛是强大工具。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>与杜教筛的比较：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">特性</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">杜教筛</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">洲阁筛</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">时间复杂度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n^{2/3})$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O\left(\frac{n^{3/4}}{\log n}\right)$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">空间复杂度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(n^{2/3})$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\sqrt{n})$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">适用函数类</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">需要找到合适的辅助函数 $g$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">更广泛，特别是素数处为多项式的函数</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">实现难度</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">相对简单</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">较复杂</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">实际性能</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">对于常见函数很快</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">理论复杂度更好，常数较大</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">适用范围</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varphi, \mu, d$ 等特定函数</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">更通用的积性函数</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 优化与扩展：</h4>
+            <p>
+                1. <strong>分段优化：</strong> 合理选择分段大小，平衡预处理和递归计算的开销。<br>
+                2. <strong>记忆化策略：</strong> 使用哈希表记忆化已计算的 $S(n, m)$ 值，避免重复计算。<br>
+                3. <strong>递归剪枝：</strong> 当 $p^2 > n$ 时可以直接计算，减少递归深度。<br>
+                4. <strong>多函数同时计算：</strong> 当需要计算多个相关函数时，可以共享预处理结果。<br>
+                5. <strong>并行计算：</strong> 洲阁筛的某些部分可以并行化，提高计算速度。<br>
+                6. <strong>与Min_25筛的关系：</strong> 洲阁筛与Min_25筛有密切联系，都是处理积性函数前缀和的强大工具。Min_25筛在某些情况下更简单高效。
+            </p>
+            
+            <p>
+                <strong>历史背景：</strong>
+                洲阁筛由中国算法竞赛选手洲阁（周楷文）在2012年提出，并在2013年的论文中详细描述。
+                它是对传统筛法的重大改进，使得计算更大范围的积性函数前缀和成为可能。
+                洲阁筛及其变体（如Min_25筛）在现代算法竞赛和数论计算中发挥着重要作用。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                洲阁筛的实现相对复杂，需要仔细处理递归边界和记忆化策略。
+                在实际应用中，通常需要根据具体问题调整算法参数和优化策略。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

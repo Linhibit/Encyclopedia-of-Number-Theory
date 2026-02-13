@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Tonelli-Shanks 算法 - 数论百科</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    
+    <script 
+        id="MathJax-script" 
+        async 
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+
+<body>
+    <div class="article-container" 
+         style="max-width: 800px; 
+                margin: 40px auto; 
+                padding: 20px;">
+        
+        <nav>
+            <a href="../index.html" class="back-home" aria-label="返回首页">
+                <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                返回首页
+            </a>
+        </nav>
+        
+        <header>
+            <h1>Tonelli-Shanks 算法</h1>
+        </header>
+
+        <section class="algorithm-box" 
+                 style="border-left: 5px solid #2196F3; 
+                        background: #f8fdff; 
+                        padding: 20px; 
+                        margin: 20px 0;">
+            
+            <strong>算法原理：</strong>
+            <p>
+                Tonelli-Shanks算法是一种用于求解模奇素数 $p$ 的二次剩余平方根的算法[citation:9]。给定一个奇素数 $p$ 和一个二次剩余 $n$（即存在整数 $x$ 使得 $x^2 \equiv n \pmod{p}$），该算法可以找到这样的 $x$。
+            </p>
+            
+            <p>
+                <strong>前置知识：</strong>
+                <ol style="line-height: 1.6;">
+                    <li><strong>二次剩余：</strong> 若存在整数 $x$ 使得 $x^2 \equiv n \pmod{p}$，则称 $n$ 是模 $p$ 的二次剩余[citation:3]。</li>
+                    <li><strong>欧拉准则：</strong> 对于奇素数 $p$ 和与 $p$ 互质的整数 $n$，$n$ 是二次剩余当且仅当 $n^{(p-1)/2} \equiv 1 \pmod{p}$[citation:9]。</li>
+                    <li><strong>勒让德符号：</strong> $\left(\frac{n}{p}\right) = n^{(p-1)/2} \bmod p$，取值为 $1$（二次剩余）、$-1$（二次非剩余）或 $0$（$p \mid n$）[citation:1]。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>核心思想：</strong>
+                将 $p-1$ 分解为 $p-1 = Q \cdot 2^S$，其中 $Q$ 是奇数。算法通过迭代逐步降低阶数，最终找到平方根[citation:9]。
+            </p>
+        </section>
+
+        <section class="algorithm" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>算法步骤：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>输入：</strong>奇素数 $p$，二次剩余 $n$（$0 < n < p$）。
+                </li>
+                
+                <li>
+                    <strong>特殊情况处理：</strong>
+                    <ol type="a">
+                        <li>若 $n = 0$，返回 $0$。</li>
+                        <li>若 $p = 2$，返回 $n \bmod 2$。</li>
+                        <li>若 $p \equiv 3 \pmod{4}$，则 $x \equiv n^{(p+1)/4} \pmod{p}$ 是一个解[citation:1]。</li>
+                        <li>若 $p \equiv 5 \pmod{8}$，也有特殊公式，但通用算法已覆盖[citation:5]。</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>分解 $p-1$：</strong>
+                    将 $p-1$ 写成 $p-1 = Q \cdot 2^S$，其中 $Q$ 是奇数[citation:1]。
+                    即不断除以 $2$ 直到结果为奇数。
+                </li>
+                
+                <li>
+                    <strong>寻找二次非剩余：</strong>
+                    随机选择一个整数 $z$（$2 \leq z \leq p-1$），使得 $\left(\frac{z}{p}\right) = -1$（即 $z$ 是二次非剩余）[citation:1][citation:10]。
+                    令 $c \equiv z^Q \pmod{p}$。
+                </li>
+                
+                <li>
+                    <strong>初始化：</strong>
+                    <ul>
+                        <li>$x \equiv n^{(Q+1)/2} \pmod{p}$（当前候选解）</li>
+                        <li>$t \equiv n^Q \pmod{p}$（用于判断是否找到解）</li>
+                        <li>$M = S$（剩余指数）</li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <strong>主循环：</strong>
+                    <ol type="a">
+                        <li>如果 $t \equiv 1 \pmod{p}$，则 $x$ 即为一个解，返回 $x$。</li>
+                        <li>否则，找到最小的 $i$（$0 < i < M$）使得 $t^{2^i} \equiv 1 \pmod{p}$[citation:9]。</li>
+                        <li>令 $b \equiv c^{2^{M-i-1}} \pmod{p}$。</li>
+                        <li>更新：$x \equiv x \cdot b \pmod{p}$，$t \equiv t \cdot b^2 \pmod{p}$，$c \equiv b^2 \pmod{p}$，$M = i$。</li>
+                        <li>回到步骤a。</li>
+                    </ol>
+                </li>
+                
+                <li>
+                    <strong>输出：</strong>
+                    方程 $x^2 \equiv n \pmod{p}$ 的一个解 $x$。另一个解为 $p - x$。
+                </li>
+            </ol>
+            
+            <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <strong>复杂度分析：</strong>
+                <ul>
+                    <li>时间复杂度：$O(\log^2 p)$ 次模乘运算[citation:9]。</li>
+                    <li>空间复杂度：$O(1)$。</li>
+                    <li>算法总能终止，因为 $M$ 在每次循环中严格递减[citation:9]。</li>
+                    <li>适用于任意奇素数 $p$，是求解模素数平方根的最通用算法之一。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="example" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>示例：</h3>
+            
+            <p>
+                <strong>示例：</strong> 求解 $x^2 \equiv 10 \pmod{13}$。
+            </p>
+            
+            <p>
+                <strong>解法：</strong>
+                <ol>
+                    <li>$p = 13$，$n = 10$。首先验证 $10$ 是否是二次剩余：$10^{(13-1)/2} = 10^6 \equiv 1 \pmod{13}$，满足欧拉准则。</li>
+                    <li>$p \not\equiv 3 \pmod{4}$（$13 \equiv 1 \pmod{4}$），进入通用算法。</li>
+                    <li>分解 $p-1 = 12 = 3 \times 2^2$，所以 $Q = 3$，$S = 2$。</li>
+                    <li>寻找二次非剩余：$z = 2$，计算 $2^{(13-1)/2} = 2^6 = 64 \equiv 12 \equiv -1 \pmod{13}$，所以 $2$ 是二次非剩余。
+                        $c \equiv z^Q = 2^3 = 8 \pmod{13}$。</li>
+                    <li>初始化：
+                        <ul>
+                            <li>$x \equiv n^{(Q+1)/2} = 10^{2} = 100 \equiv 9 \pmod{13}$</li>
+                            <li>$t \equiv n^Q = 10^3 = 1000 \equiv 12 \pmod{13}$（因为 $1000 = 13 \times 76 + 12$）</li>
+                            <li>$M = 2$</li>
+                        </ul>
+                    </li>
+                    <li>主循环：
+                        <ul>
+                            <li>$t \equiv 12 \not\equiv 1$，继续。</li>
+                            <li>计算 $t^{2^1} = 12^2 = 144 \equiv 1 \pmod{13}$（因为 $144 = 13 \times 11 + 1$），所以 $i = 1$。</li>
+                            <li>$b \equiv c^{2^{M-i-1}} = c^{2^{0}} = c^1 = 8 \pmod{13}$。</li>
+                            <li>更新：
+                                <ul>
+                                    <li>$x \equiv 9 \times 8 = 72 \equiv 7 \pmod{13}$（因为 $72 = 13 \times 5 + 7$）</li>
+                                    <li>$t \equiv 12 \times 8^2 = 12 \times 64 = 768 \equiv 1 \pmod{13}$（因为 $768 = 13 \times 59 + 1$）</li>
+                                    <li>$c \equiv 8^2 = 64 \equiv 12 \pmod{13}$</li>
+                                    <li>$M = 1$</li>
+                                </ul>
+                            </li>
+                            <li>现在 $t \equiv 1$，循环终止，$x = 7$ 是一个解。</li>
+                        </ul>
+                    </li>
+                    <li>验证：$7^2 = 49 \equiv 10 \pmod{13}$ ✓。另一个解是 $13 - 7 = 6$，验证 $6^2 = 36 \equiv 10 \pmod{13}$ ✓。</li>
+                </ol>
+            </p>
+            
+            <p>
+                <strong>另一个例子：</strong> $p \equiv 3 \pmod{4}$ 的特殊情况。
+                求解 $x^2 \equiv 2 \pmod{7}$。
+                <ol>
+                    <li>$7 \equiv 3 \pmod{4}$，直接使用公式 $x \equiv 2^{(7+1)/4} = 2^2 = 4 \pmod{7}$。</li>
+                    <li>验证：$4^2 = 16 \equiv 2 \pmod{7}$ ✓。另一个解是 $7-4=3$，$3^2=9\equiv2\pmod{7}$ ✓。</li>
+                </ol>
+            </p>
+        </section>
+
+        <section class="code-example" 
+                 style="background: #2d2d2d; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
+            
+            <pre style="background: #1e1e1e; 
+                        color: #f8f8f2; 
+                        padding: 15px; 
+                        border-radius: 5px; 
+                        overflow-x: auto;">
+<code>// 快速幂 (a^b mod m)
+function modPow(a, b, m) {
+    a = BigInt(a) % BigInt(m);
+    let result = 1n;
+    let exp = BigInt(b);
+    while (exp > 0n) {
+        if (exp & 1n) result = (result * a) % BigInt(m);
+        a = (a * a) % BigInt(m);
+        exp >>= 1n;
+    }
+    return Number(result);
+}
+
+// 勒让德符号 (a/p)
+function legendreSymbol(a, p) {
+    const ls = modPow(a, (p - 1) / 2, p);
+    return ls === p - 1 ? -1 : ls;
+}
+
+// 判断一个数是否为素数（简单实现，仅用于示例）
+function isPrime(n) {
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 === 0 || n % 3 === 0) return false;
+    for (let i = 5; i * i <= n; i += 6) {
+        if (n % i === 0 || n % (i + 2) === 0) return false;
+    }
+    return true;
+}
+
+// Tonelli-Shanks 算法主函数
+function tonelliShanks(n, p) {
+    // 输入检查
+    n = n % p;
+    if (!isPrime(p) || p === 2) {
+        throw new Error("p 必须是奇素数");
+    }
+    
+    // 处理 n = 0 的情况
+    if (n === 0) return 0;
+    
+    // 欧拉准则：检查是否有解
+    if (legendreSymbol(n, p) !== 1) {
+        return null; // 无解
+    }
+    
+    // 特殊情况 1: p ≡ 3 (mod 4)
+    if (p % 4 === 3) {
+        return modPow(n, (p + 1) / 4, p);
+    }
+    
+    // 特殊情况 2: p ≡ 5 (mod 8)
+    // 可选：处理 p ≡ 5 (mod 8) 的情况以提高效率
+    // 但通用算法也能处理
+    
+    // 分解 p-1 = Q * 2^S
+    let Q = p - 1;
+    let S = 0;
+    while (Q % 2 === 0) {
+        Q /= 2;
+        S++;
+    }
+    
+    // 寻找二次非剩余 z
+    let z = 2;
+    while (legendreSymbol(z, p) !== -1) {
+        z++;
+    }
+    let c = modPow(z, Q, p);
+    
+    // 初始化
+    let x = modPow(n, (Q + 1) / 2, p);
+    let t = modPow(n, Q, p);
+    let M = S;
+    
+    // 主循环
+    while (t !== 1) {
+        // 找到最小的 i 使得 t^(2^i) ≡ 1
+        let i = 1;
+        let t2i = modPow(t, Math.pow(2, i), p);
+        while (t2i !== 1 && i < M) {
+            i++;
+            t2i = modPow(t, Math.pow(2, i), p);
+        }
+        
+        if (i === M) {
+            return null; // 不应该发生，说明算法出错
+        }
+        
+        // 计算 b
+        let b = modPow(c, Math.pow(2, M - i - 1), p);
+        
+        // 更新变量
+        x = (x * b) % p;
+        c = (b * b) % p;
+        t = (t * c) % p;
+        M = i;
+    }
+    
+    return x;
+}
+
+// 示例使用
+console.log("=== Tonelli-Shanks 算法示例 ===");
+
+// 测试用例
+const testCases = [
+    { n: 5, p: 13, desc: "x² ≡ 5 mod 13" },
+    { n: 10, p: 13, desc: "x² ≡ 10 mod 13" },
+    { n: 2, p: 7, desc: "x² ≡ 2 mod 7 (p≡3 mod 4)" },
+    { n: 2, p: 17, desc: "x² ≡ 2 mod 17" },
+    { n: 3, p: 11, desc: "x² ≡ 3 mod 11" },
+    { n: 6, p: 19, desc: "x² ≡ 6 mod 19" }
+];
+
+for (const tc of testCases) {
+    console.log(`\n求解 ${tc.desc}:`);
+    const result = tonelliShanks(tc.n, tc.p);
+    if (result === null) {
+        console.log(`  ${tc.n} 不是模 ${tc.p} 的二次剩余`);
+    } else {
+        const other = tc.p - result;
+        console.log(`  解为: x = ${result} 或 x = ${other}`);
+        console.log(`  验证: ${result}² mod ${tc.p} = ${(result * result) % tc.p}`);
+        console.log(`       ${other}² mod ${tc.p} = ${(other * other) % tc.p}`);
+    }
+}
+
+// 测试随机素数
+console.log("\n=== 随机测试 ===");
+
+// 生成小素数列表
+const smallPrimes = [];
+for (let i = 2; i <= 100; i++) {
+    if (isPrime(i)) smallPrimes.push(i);
+}
+
+// 对每个素数测试所有可能的二次剩余
+for (const p of smallPrimes.slice(0, 10)) { // 取前10个素数测试
+    console.log(`\n模数 p = ${p}:`);
+    const residues = [];
+    const nonResidues = [];
+    
+    // 找出所有二次剩余
+    for (let n = 1; n < p; n++) {
+        const result = tonelliShanks(n, p);
+        if (result !== null) {
+            residues.push(n);
+        } else {
+            nonResidues.push(n);
+        }
+    }
+    
+    console.log(`  二次剩余: [${residues.join(', ')}]`);
+    console.log(`  二次非剩余: [${nonResidues.join(', ')}]`);
+    console.log(`  二次剩余个数: ${residues.length} (应为 ${(p-1)/2})`);
+}
+
+// 性能测试
+console.log("\n=== 性能测试 ===");
+
+const bigPrime = 1000000007; // 一个较大的素数
+const testN = 123456789;
+console.log(`测试: 计算 x² ≡ ${testN} mod ${bigPrime}`);
+
+console.time("Tonelli-Shanks 算法");
+const result = tonelliShanks(testN, bigPrime);
+console.timeEnd("Tonelli-Shanks 算法");
+
+if (result !== null) {
+    console.log(`找到一个解: ${result}`);
+    console.log(`验证: ${result}² mod ${bigPrime} = ${(result * result) % bigPrime}`);
+} else {
+    console.log(`${testN} 不是二次剩余`);
+}</code>
+            </pre>
+        </section>
+
+        <section class="applications" 
+                 style="background: #f0f8ff; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>应用：</h3>
+            
+            <ol style="line-height: 1.6;">
+                <li>
+                    <strong>密码学：</strong>
+                    在椭圆曲线密码学中，需要计算点的坐标，有时需要求解二次剩余方程[citation:4]。
+                </li>
+                
+                <li>
+                    <strong>数论算法：</strong>
+                    作为求解模素数平方根的通用工具，在其他数论算法中作为子程序使用。
+                </li>
+                
+                <li>
+                    <strong>编码理论：</strong>
+                    在某些纠错码的译码算法中需要求解二次方程。
+                </li>
+                
+                <li>
+                    <strong>随机数生成：</strong>
+                    某些伪随机数生成器基于二次剩余的性质。
+                </li>
+                
+                <li>
+                    <strong>竞赛编程：</strong>
+                    在算法竞赛中，当需要计算模素数平方根时，Tonelli-Shanks算法是标准解法[citation:1][citation:3]。
+                </li>
+            </ol>
+        </section>
+
+        <section class="comparison" 
+                 style="background: #f9f9f9; 
+                        padding: 20px; 
+                        margin: 20px 0; 
+                        border-radius: 5px;">
+            
+            <h3>与其他算法的比较：</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 8px; border: 1px solid #ccc;">算法</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">适用条件</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">复杂度</th>
+                        <th style="padding: 8px; border: 1px solid #ccc;">特点</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">Tonelli-Shanks</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">任意奇素数 $p$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\log^2 p)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">最通用，实现稍复杂</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">Cipolla 算法</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">任意奇素数 $p$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\log p)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">期望时间更优，需要随机化[citation:3]</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">特殊公式</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$p \equiv 3 \pmod{4}$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$O(\log p)$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">最简单，快速</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc;">Adleman-Manders-Miller</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$p$ 为素数幂</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">多项式时间</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">可处理素数幂情况[citation:5]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="notes" 
+                 style="background: #fffde7; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        border-left: 3px solid #ffd600;">
+            
+            <h4>📝 历史背景与扩展：</h4>
+            <p>
+                Tonelli-Shanks算法由意大利数学家阿尔贝托·托内利（Alberto Tonelli）在1891年提出，后由丹尼尔·尚克斯（Daniel Shanks）在1973年独立发现并改进[citation:9]。该算法是求解模素数平方根的最通用方法之一。
+            </p>
+            
+            <p>
+                <strong>扩展：</strong>
+                1. 对于素数幂 $p^k$ 的情况，可以通过 Hensel 引理将 Tonelli-Shanks 算法推广到模素数幂[citation:7]。<br>
+                2. 对于合数模数，可以使用中国剩余定理将问题分解为模素数幂的情况分别求解[citation:7]。<br>
+                3. 算法的变体可以用于求解更高次剩余，如立方根等。
+            </p>
+            
+            <p>
+                <strong>注意：</strong>
+                <ul>
+                    <li>算法要求输入 $n$ 确实是二次剩余，否则可能陷入无限循环。因此调用前应先用欧拉准则验证[citation:1]。</li>
+                    <li>在寻找二次非剩余 $z$ 时，随机选择是高效的，因为大约一半的数都是二次非剩余[citation:9]。</li>
+                    <li>对于 $p \equiv 1 \pmod{4}$ 且 $p \equiv 5 \pmod{8}$ 的情况，有更简单的公式，但 Tonelli-Shanks 也能处理。</li>
+                    <li>在密码学应用中，通常需要保证算法运行时间是常数时间，以防止侧信道攻击。</li>
+                </ul>
+            </p>
+        </section>
+    </div>
+</body>
+</html>

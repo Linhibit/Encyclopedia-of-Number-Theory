@@ -49,24 +49,24 @@
             
             <strong>算法原理：</strong>
             <p>
-                AKS素性测试是第一个被发表的、一般的、多项式的、确定性的和无依赖的素数判定算法[citation:3][citation:5]。它由印度坎普尔理工学院的Manindra Agrawal、Neeraj Kayal和Nitin Saxena于2002年提出，解决了几个世纪以来的开放问题——素数判定是否属于P，并因此获得了2006年的哥德尔奖和Fulkerson奖[citation:3]。
+                AKS素性测试是第一个被发表的、一般的、多项式的、确定性的和无依赖的素数判定算法。它由印度坎普尔理工学院的Manindra Agrawal、Neeraj Kayal和Nitin Saxena于2002年提出，解决了几个世纪以来的开放问题——素数判定是否属于P，并因此获得了2006年的哥德尔奖和Fulkerson奖。
             </p>
             
             <p>
                 <strong>核心定理：</strong>
                 整数 $n \geq 2$ 是素数，当且仅当对于所有与 $n$ 互素的整数 $a$，有：
                 $$(X + a)^n \equiv X^n + a \pmod{n}$$
-                这是费马小定理在多项式环上的推广[citation:3][citation:10]。AKS算法通过选取合适的参数 $r$ 并限制 $a$ 的范围，在多项式时间内检验该同余式。
+                这是费马小定理在多项式环上的推广。AKS算法通过选取合适的参数 $r$ 并限制 $a$ 的范围，在多项式时间内检验该同余式。
             </p>
             
             <p>
                 <strong>历史意义：</strong>
                 先前的算法至多达到以下三点之一，但从未达到全部四个：
                 <ul>
-                    <li><strong>一般性：</strong>适用于所有整数，而非特定形式的数（如梅森数、费马数）[citation:3]</li>
-                    <li><strong>多项式时间：</strong>运行时间是输入规模 $\log n$ 的多项式函数[citation:5]</li>
-                    <li><strong>确定性：</strong>总是给出正确结果，而非概率性[citation:3]</li>
-                    <li><strong>无依赖：</strong>不依赖任何未证明的猜想（如广义黎曼猜想）[citation:3]</li>
+                    <li><strong>一般性：</strong>适用于所有整数，而非特定形式的数（如梅森数、费马数）</li>
+                    <li><strong>多项式时间：</strong>运行时间是输入规模 $\log n$ 的多项式函数</li>
+                    <li><strong>确定性：</strong>总是给出正确结果，而非概率性</li>
+                    <li><strong>无依赖：</strong>不依赖任何未证明的猜想（如广义黎曼猜想）</li>
                 </ul>
             </p>
         </section>
@@ -86,22 +86,22 @@
                 
                 <li>
                     <strong>检测完全幂：</strong>
-                    如果 $n = a^b$，其中 $a \in \mathbb{N}$，$b > 1$，则输出"合数"[citation:8][citation:10]。
+                    如果 $n = a^b$，其中 $a \in \mathbb{N}$，$b > 1$，则输出"合数"。
                 </li>
                 
                 <li>
                     <strong>寻找最小的 $r$：</strong>
-                    找到最小的 $r \in \mathbb{N}$，使得 $\operatorname{ord}_r(n) > \log^2 n$（即 $n^k \not\equiv 1 \pmod{r}$ 对所有 $k \leq \log^2 n$ 成立）[citation:8][citation:10]。
+                    找到最小的 $r \in \mathbb{N}$，使得 $\operatorname{ord}_r(n) > \log^2 n$（即 $n^k \not\equiv 1 \pmod{r}$ 对所有 $k \leq \log^2 n$ 成立）。
                 </li>
                 
                 <li>
                     <strong>检查小因子：</strong>
-                    如果存在 $a \leq r$ 使得 $1 < \gcd(a, n) < n$，则输出"合数"[citation:8][citation:10]。
+                    如果存在 $a \leq r$ 使得 $1 < \gcd(a, n) < n$，则输出"合数"。
                 </li>
                 
                 <li>
                     <strong>小 $n$ 特判：</strong>
-                    如果 $n \leq r$，则输出"素数"[citation:8][citation:10]。
+                    如果 $n \leq r$，则输出"素数"。
                 </li>
                 
                 <li>
@@ -109,20 +109,20 @@
                     对于 $a = 1$ 到 $\lfloor \sqrt{\phi(r)} \log n \rfloor$：
                     <br>检验多项式同余式是否成立：
                     $$(X + a)^n \equiv X^n + a \pmod{X^r - 1, n}$$
-                    如果不成立，输出"合数"[citation:8][citation:10]。
+                    如果不成立，输出"合数"。
                 </li>
                 
                 <li>
-                    <strong>输出：</strong> "素数"[citation:8]。
+                    <strong>输出：</strong> "素数"。
                 </li>
             </ol>
             
             <div style="background: #e8f4f8; padding: 15px; margin: 15px 0; border-radius: 5px;">
                 <strong>复杂度分析：</strong>
                 <ul>
-                    <li>原始AKS算法的时间复杂度为 $O((\log n)^{12})$[citation:2][citation:5]。</li>
-                    <li>后续改进版本（如Bernstein的改进）将复杂度降至 $O((\log n)^6)$[citation:1][citation:6]。</li>
-                    <li>尽管是多项式时间，但实际运行速度远慢于概率算法（如Miller-Rabin），因此主要用于理论意义[citation:10]。</li>
+                    <li>原始AKS算法的时间复杂度为 $O((\log n)^{12})$。</li>
+                    <li>后续改进版本（如Bernstein的改进）将复杂度降至 $O((\log n)^6)$。</li>
+                    <li>尽管是多项式时间，但实际运行速度远慢于概率算法（如Miller-Rabin），因此主要用于理论意义。</li>
                 </ul>
             </div>
         </section>
@@ -150,7 +150,7 @@
                     </li>
                     <li>检查 $a \leq 29$ 的 $\gcd(a,31)$，均为1（因为31是素数），通过。</li>
                     <li>$n=31 > r=29$，继续核心检验。</li>
-                    <li>对于 $a=1$ 到 $\lfloor \sqrt{\phi(29)} \log 31 \rfloor = \lfloor \sqrt{28} \times 5 \rfloor \approx 26$，检验多项式同余式。由于31是素数，所有同余式成立[citation:10]。</li>
+                    <li>对于 $a=1$ 到 $\lfloor \sqrt{\phi(29)} \log 31 \rfloor = \lfloor \sqrt{28} \times 5 \rfloor \approx 26$，检验多项式同余式。由于31是素数，所有同余式成立。</li>
                     <li>输出"素数"。</li>
                 </ol>
             </p>
@@ -179,7 +179,7 @@
             </p>
             
             <p>
-                对于 $n=3$，在第2步后找到的 $r$ 可能大于3，此时 $n \leq r$，算法直接在第5步输出"素数"[citation:8][citation:10]。
+                对于 $n=3$，在第2步后找到的 $r$ 可能大于3，此时 $n \leq r$，算法直接在第5步输出"素数"。
             </p>
         </section>
 
@@ -190,7 +190,7 @@
                         border-radius: 5px;">
             
             <h3 style="color: #f8f8f2;">代码示例 (Python)：</h3>
-            <p style="color: #ccc; font-size: 0.9em;">注：这是一个教学性质的简化实现，完整的高效实现需要复杂的多项式运算优化[citation:1][citation:6]。</p>
+            <p style="color: #ccc; font-size: 0.9em;">注：这是一个教学性质的简化实现，完整的高效实现需要复杂的多项式运算优化。</p>
             
             <pre style="background: #1e1e1e; 
                         color: #f8f8f2; 
@@ -316,22 +316,22 @@ for n in [97, 101, 103, 107, 109, 113, 121]:
             <ol style="line-height: 1.6;">
                 <li>
                     <strong>理论计算机科学：</strong>
-                    AKS算法解决了"素数是否属于P"这一重要复杂性理论问题，是计算复杂性理论的里程碑[citation:3]。
+                    AKS算法解决了"素数是否属于P"这一重要复杂性理论问题，是计算复杂性理论的里程碑。
                 </li>
                 
                 <li>
                     <strong>数论研究：</strong>
-                    提供了第一个无条件确定性多项式时间素数判定算法，对数论研究具有深远影响[citation:5]。
+                    提供了第一个无条件确定性多项式时间素数判定算法，对数论研究具有深远影响。
                 </li>
                 
                 <li>
                     <strong>密码学基础：</strong>
-                    虽然实际密码学中更常用Miller-Rabin等概率算法，但AKS的存在保证了素数判定的理论可行性[citation:1]。
+                    虽然实际密码学中更常用Miller-Rabin等概率算法，但AKS的存在保证了素数判定的理论可行性。
                 </li>
                 
                 <li>
                     <strong>算法改进与优化：</strong>
-                    后续出现了众多改进版本（如Bernstein的优化），将复杂度降至 $O((\log n)^6)$，并在小范围内实现了实用化[citation:6][citation:9]。
+                    后续出现了众多改进版本（如Bernstein的优化），将复杂度降至 $O((\log n)^6)$，并在小范围内实现了实用化。
                 </li>
             </ol>
         </section>
@@ -374,14 +374,14 @@ for n in [97, 101, 103, 107, 109, 113, 121]:
                         <td style="padding: 8px; border: 1px solid #ccc;">确定性</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">$O((\log n)^{6-12})$</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">理论上完美，无依赖</td>
-                        <td style="padding: 8px; border: 1px solid #ccc;">实际运行极慢，常数大[citation:9]</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">实际运行极慢，常数大</td>
                     </tr>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ccc;">ECPP</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">确定性</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">启发式多项式</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">可处理万位大数</td>
-                        <td style="padding: 8px; border: 1px solid #ccc;">复杂度分析复杂[citation:5]</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">复杂度分析复杂</td>
                     </tr>
                 </tbody>
             </table>
@@ -395,23 +395,23 @@ for n in [97, 101, 103, 107, 109, 113, 121]:
             
             <h4>📝 历史背景与优化：</h4>
             <p>
-                AKS算法由印度理工学院的三位学者在2002年提出，论文标题为《PRIMES is in P》[citation:3]。这一发现震惊了数学界和计算机科学界，因为它结束了几个世纪以来关于素数判定复杂性的争论。
+                AKS算法由印度理工学院的三位学者在2002年提出，论文标题为《PRIMES is in P》。这一发现震惊了数学界和计算机科学界，因为它结束了几个世纪以来关于素数判定复杂性的争论。
             </p>
             
             <p>
                 <strong>优化版本：</strong>
                 原始AKS算法的复杂度为 $O((\log n)^{12})$，经过多次改进：
                 <ul>
-                    <li>Bernstein提出了优化版本，将复杂度降至 $O((\log n)^6)$[citation:6]。</li>
+                    <li>Bernstein提出了优化版本，将复杂度降至 $O((\log n)^6)$。</li>
                     <li>Lenstra和Pomerance进一步改进，提出了更实用的变体。</li>
-                    <li>对于 $2^{13}-1$ 这样的数，高效实现仍需约30分钟[citation:8]。</li>
-                    <li>改进后的算法在Pentium IV/1.8G上可在几十秒内完成部分测试[citation:6]。</li>
+                    <li>对于 $2^{13}-1$ 这样的数，高效实现仍需约30分钟。</li>
+                    <li>改进后的算法在Pentium IV/1.8G上可在几十秒内完成部分测试。</li>
                 </ul>
             </p>
             
             <p>
                 <strong>实际应用：</strong>
-                尽管AKS具有理论上的完美性，但在实际密码学应用中（如RSA密钥生成），Miller-Rabin测试仍是首选，因为它足够快且误判率可忽略不计。AKS主要用于学术研究和理论验证[citation:10]。
+                尽管AKS具有理论上的完美性，但在实际密码学应用中（如RSA密钥生成），Miller-Rabin测试仍是首选，因为它足够快且误判率可忽略不计。AKS主要用于学术研究和理论验证。
             </p>
             
             <p>
@@ -419,7 +419,7 @@ for n in [97, 101, 103, 107, 109, 113, 121]:
                 <ul>
                     <li><strong>循环群AKS测试：</strong> 利用分圆域的性质改进效率。</li>
                     <li><strong>改进版AKS：</strong> 优化参数选择，缩小 $a$ 的检验范围。</li>
-                    <li><strong>AKS-Bernstein第二算法：</strong> 在PC上实现了较好的实际运行效率[citation:6]。</li>
+                    <li><strong>AKS-Bernstein第二算法：</strong> 在PC上实现了较好的实际运行效率。</li>
                 </ul>
             </p>
         </section>

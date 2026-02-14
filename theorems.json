@@ -244,6 +244,12 @@
     "description": "在模奇素数 $p$ 下求解二次剩余平方根的算法，用于求 $x^2 \\equiv n \\pmod{p}$ 的解。",
     "link": "algorithms/tonelli-shanks.html",
     "tags": ["模运算", "平方根", "二次剩余", "数论算法"]
+  },
+  {
+    "title": "AKS素性测试",
+    "description": "AKS素性测试是一种确定性的、多项式时间的、无依赖的素数判定算法，由Agrawal、Kayal和Saxena于2002年提出，证明了\"素数属于P\"。其核心基于有限域上的多项式恒等式 $(X+a)^n \\equiv X^n + a \\pmod{X^r-1, n}$ 的检验。",
+    "link": "algorithms/aks-primality-test.html",
+    "tags": ["素数判定", "确定性算法", "多项式时间", "数论", "P问题"]
   }
 ]
 

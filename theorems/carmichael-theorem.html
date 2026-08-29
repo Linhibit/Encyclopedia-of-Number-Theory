@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>卡迈克尔定理 - 数论百科</title>
+    <title>卡迈克尔定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -232,222 +232,214 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算欧拉函数 φ(n)
-function eulerPhi(n) {
-    let result = n;
-    let temp = n;
-    
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
-            while (temp % p === 0) {
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;iomanip&gt;
+
+using namespace std;
+
+// 计算最大公约数
+long long gcd_ll(long long a, long long b) {
+    return b == 0 ? a : gcd_ll(b, a % b);
+}
+
+// 计算最小公倍数
+long long lcm_ll(long long a, long long b) {
+    return a / gcd_ll(a, b) * b;
+}
+
+// 计算欧拉函数 φ(n)
+long long eulerPhi(long long n) {
+    long long result = n;
+    long long temp = n;
+
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
+            while (temp % p == 0) {
                 temp /= p;
             }
             result -= result / p;
         }
     }
-    
-    if (temp > 1) {
+
+    if (temp &gt; 1) {
         result -= result / temp;
     }
-    
+
+    return result;
+}
+
+// 快速幂：计算 base^exp mod mod（用 __int128 避免 64 位乘法溢出）
+long long modPow(long long base, long long exp, long long mod) {
+    if (mod == 1) return 0;
+    long long result = 1;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) {
+            result = (__int128)result * base % mod;
+        }
+        base = (__int128)base * base % mod;
+        exp &gt;&gt;= 1;
+    }
     return result;
 }
 
 // 计算卡迈克尔函数 λ(n)
-function carmichaelLambda(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
+long long carmichaelLambda(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
     // 分解质因数
-    const factors = {};
-    let temp = n;
-    
-    // 处理因子2
-    let count2 = 0;
-    while (temp % 2 === 0) {
+    map&lt;long long, int&gt; factors;
+    long long temp = n;
+
+    // 处理因子 2
+    int count2 = 0;
+    while (temp % 2 == 0) {
         temp /= 2;
         count2++;
     }
-    if (count2 > 0) {
+    if (count2 &gt; 0) {
         factors[2] = count2;
     }
-    
+
     // 处理奇数因子
-    for (let p = 3; p * p <= temp; p += 2) {
-        let count = 0;
-        while (temp % p === 0) {
+    for (long long p = 3; p * p &lt;= temp; p += 2) {
+        int count = 0;
+        while (temp % p == 0) {
             temp /= p;
             count++;
         }
-        if (count > 0) {
+        if (count &gt; 0) {
             factors[p] = count;
         }
     }
-    
-    if (temp > 1) {
+
+    if (temp &gt; 1) {
         factors[temp] = 1;
     }
-    
-    // 计算各个素因子幂的λ值
-    const lambdaValues = [];
-    
-    for (const [p, k] of Object.entries(factors)) {
-        const prime = Number(p);
-        const exponent = k;
-        
-        if (prime === 2) {
-            if (exponent === 1) {
-                lambdaValues.push(1);
-            } else if (exponent === 2) {
-                lambdaValues.push(2);
-            } else { // exponent >= 3
-                lambdaValues.push(Math.pow(2, exponent - 2));
+
+    // 计算各个素因子幂的 λ 值，并求最小公倍数
+    long long result = 1;
+
+    for (const auto&amp; [prime, exponent] : factors) {
+        long long val;
+        if (prime == 2) {
+            if (exponent == 1) {
+                val = 1;
+            } else if (exponent == 2) {
+                val = 2;
+            } else { // exponent &gt;= 3
+                val = 1LL &lt;&lt; (exponent - 2);
             }
         } else { // 奇素数
-            if (exponent === 1) {
-                lambdaValues.push(prime - 1);
-            } else {
-                lambdaValues.push(Math.pow(prime, exponent - 1) * (prime - 1));
+            long long power = 1;
+            for (int i = 0; i &lt; exponent - 1; i++) {
+                power *= prime;
             }
+            val = power * (prime - 1);
         }
+        result = lcm_ll(result, val);
     }
-    
-    // 计算最小公倍数
-    function lcm(a, b) {
-        return (a * b) / gcd(a, b);
-    }
-    
-    function gcd(a, b) {
-        return b === 0 ? a : gcd(b, a % b);
-    }
-    
-    let result = 1;
-    for (const val of lambdaValues) {
-        result = lcm(result, val);
-    }
-    
+
     return result;
 }
 
 // 验证卡迈克尔函数的性质
-function verifyCarmichael(n) {
-    const lambdaN = carmichaelLambda(n);
-    const phiN = eulerPhi(n);
-    
-    console.log(`n = ${n}:`);
-    console.log(`  φ(n) = ${phiN}`);
-    console.log(`  λ(n) = ${lambdaN}`);
-    console.log(`  λ(n) 整除 φ(n)? ${phiN % lambdaN === 0 ? '是' : '否'}`);
-    
-    // 验证对于所有与n互质的a，a^λ(n) ≡ 1 mod n
-    let allPass = true;
-    const coprimeNumbers = [];
-    
-    for (let a = 1; a < n; a++) {
-        if (gcd(a, n) === 1) {
-            coprimeNumbers.push(a);
-            const modPowResult = modPow(a, lambdaN, n);
-            if (modPowResult !== 1) {
-                console.log(`  错误: ${a}^${lambdaN} mod ${n} = ${modPowResult} ≠ 1`);
+bool verifyCarmichael(long long n) {
+    long long lambdaN = carmichaelLambda(n);
+    long long phiN = eulerPhi(n);
+
+    cout &lt;&lt; "n = " &lt;&lt; n &lt;&lt; ":\n";
+    cout &lt;&lt; "  φ(n) = " &lt;&lt; phiN &lt;&lt; '\n';
+    cout &lt;&lt; "  λ(n) = " &lt;&lt; lambdaN &lt;&lt; '\n';
+    cout &lt;&lt; "  λ(n) 整除 φ(n)? " &lt;&lt; (phiN % lambdaN == 0 ? "是" : "否") &lt;&lt; '\n';
+
+    // 验证对于所有与 n 互质的 a，a^λ(n) ≡ 1 (mod n)
+    bool allPass = true;
+    vector&lt;long long&gt; coprimeNumbers;
+
+    for (long long a = 1; a &lt; n; a++) {
+        if (gcd_ll(a, n) == 1) {
+            coprimeNumbers.push_back(a);
+            long long modPowResult = modPow(a, lambdaN, n);
+            if (modPowResult != 1) {
+                cout &lt;&lt; "  错误: " &lt;&lt; a &lt;&lt; "^" &lt;&lt; lambdaN &lt;&lt; " mod " &lt;&lt; n
+                     &lt;&lt; " = " &lt;&lt; modPowResult &lt;&lt; " ≠ 1\n";
                 allPass = false;
             }
         }
     }
-    
+
     if (allPass) {
-        console.log(`  验证通过: 所有${coprimeNumbers.length}个与${n}互质的数都满足a^λ(n) ≡ 1 mod n`);
+        cout &lt;&lt; "  验证通过: 所有" &lt;&lt; coprimeNumbers.size()
+             &lt;&lt; "个与" &lt;&lt; n &lt;&lt; "互质的数都满足a^λ(n) ≡ 1 mod n\n";
     }
-    
+
     return allPass;
 }
 
-// 快速幂算法
-function modPow(base, exp, mod) {
-    if (mod === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        e >>= 1n;
-        base = (base * base) % BigInt(mod);
+// 判断是否为素数
+bool isPrime(long long num) {
+    if (num &lt; 2) return false;
+    if (num % 2 == 0) return num == 2;
+    for (long long i = 3; i * i &lt;= num; i += 2) {
+        if (num % i == 0) return false;
     }
-    return Number(result);
+    return true;
 }
 
-// 辅助函数：最大公约数
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
+// 卡迈克尔数：合数 n 满足对任意与 n 互质的 a，有 a^(n-1) ≡ 1 (mod n)
+bool isCarmichaelNumber(long long n) {
+    if (n &lt; 2 || isPrime(n)) return false;
 
-// 示例使用
-console.log("=== 卡迈克尔函数计算 ===");
-
-const testNumbers = [1, 2, 3, 4, 5, 8, 15, 24, 100, 561];
-for (const n of testNumbers) {
-    console.log(`\nn = ${n}:`);
-    const lambda = carmichaelLambda(n);
-    const phi = eulerPhi(n);
-    console.log(`λ(${n}) = ${lambda}, φ(${n}) = ${phi}`);
-    console.log(`λ(${n}) / φ(${n}) = ${(lambda/phi).toFixed(3)}`);
-}
-
-console.log("\n=== 验证卡迈克尔函数的性质 ===");
-verifyCarmichael(15);
-verifyCarmichael(24);
-verifyCarmichael(100);
-
-// 卡迈克尔数：合数n满足对任意与n互质的a，有a^{n-1} ≡ 1 mod n
-console.log("\n=== 卡迈克尔数检测 ===");
-function isCarmichaelNumber(n) {
-    if (n < 2 || isPrime(n)) return false;
-    
-    // 检查是否对所有与n互质的a，a^{n-1} ≡ 1 mod n
-    // 实际上只需要检查a=2,3,5,...到一定范围
-    for (let a = 2; a < n; a++) {
-        if (gcd(a, n) === 1) {
-            if (modPow(a, n - 1, n) !== 1) {
+    // 检查是否对所有与 n 互质的 a，a^(n-1) ≡ 1 (mod n)
+    for (long long a = 2; a &lt; n; a++) {
+        if (gcd_ll(a, n) == 1) {
+            if (modPow(a, n - 1, n) != 1) {
                 return false;
             }
         }
     }
-    
+
     return true;
 }
 
-function isPrime(num) {
-    if (num < 2) return false;
-    if (num % 2 === 0) return num === 2;
-    const limit = Math.sqrt(num);
-    for (let i = 3; i <= limit; i += 2) {
-        if (num % i === 0) return false;
+int main() {
+    cout &lt;&lt; "=== 卡迈克尔函数计算 ===\n";
+
+    vector&lt;long long&gt; testNumbers = {1, 2, 3, 4, 5, 8, 15, 24, 100, 561};
+    for (long long n : testNumbers) {
+        cout &lt;&lt; "\nn = " &lt;&lt; n &lt;&lt; ":\n";
+        long long lambda = carmichaelLambda(n);
+        long long phi = eulerPhi(n);
+        cout &lt;&lt; "λ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; lambda &lt;&lt; ", φ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; phi &lt;&lt; '\n';
+        cout &lt;&lt; "λ(" &lt;&lt; n &lt;&lt; ") / φ(" &lt;&lt; n &lt;&lt; ") = "
+             &lt;&lt; fixed &lt;&lt; setprecision(3) &lt;&lt; (double)lambda / (double)phi &lt;&lt; '\n';
     }
-    return true;
-}
 
-// 已知的卡迈克尔数
-const knownCarmichael = [561, 1105, 1729, 2465, 2821, 6601, 8911];
-console.log("已知卡迈克尔数检测:");
-for (const n of knownCarmichael) {
-    const isCarmichael = isCarmichaelNumber(n);
-    console.log(`${n}: ${isCarmichael ? '是卡迈克尔数' : '不是卡迈克尔数'}`);
-}</code>
-            </pre>
+    cout &lt;&lt; "\n=== 验证卡迈克尔函数的性质 ===\n";
+    verifyCarmichael(15);
+    verifyCarmichael(24);
+    verifyCarmichael(100);
+
+    cout &lt;&lt; "\n=== 卡迈克尔数检测 ===\n";
+
+    // 已知的卡迈克尔数
+    vector&lt;long long&gt; knownCarmichael = {561, 1105, 1729, 2465, 2821, 6601, 8911};
+    cout &lt;&lt; "已知卡迈克尔数检测:\n";
+    for (long long n : knownCarmichael) {
+        bool isCarmichael = isCarmichaelNumber(n);
+        cout &lt;&lt; n &lt;&lt; ": " &lt;&lt; (isCarmichael ? "是卡迈克尔数" : "不是卡迈克尔数") &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

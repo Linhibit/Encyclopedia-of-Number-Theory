@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>欧拉定理 - 数论百科</title>
+    <title>欧拉定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -151,122 +151,115 @@
             </div>
         </section>
 
-        <section class="code-example" 
-                 style="background: #f5f5f5; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3>代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #2d2d2d; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算欧拉函数 φ(n)
-function eulerPhi(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    let result = n;
-    let temp = n;
-    
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note"><strong>算法应用：</strong>欧拉定理在计算大指数模幂时非常有用。当 $\gcd(a, n) = 1$ 时，可以将指数对 $\varphi(n)$ 取模，大大减少计算量。</p>
+            <pre><code>
+#include &lt;iostream&gt;
+using namespace std;
+
+// 计算欧拉函数 φ(n)
+long long eulerPhi(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    long long result = n;
+    long long temp = n;
+
     // 试除法分解质因数
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
             // p是质因子
-            while (temp % p === 0) {
+            while (temp % p == 0) {
                 temp /= p;
             }
             result -= result / p;
         }
     }
-    
+
     // 如果还有大于1的质因子
-    if (temp > 1) {
+    if (temp &gt; 1) {
         result -= result / temp;
     }
-    
+
+    return result;
+}
+
+// 辅助函数：最大公约数
+long long gcd(long long a, long long b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+// 快速幂算法
+long long fastModularExponentiation(long long base, long long exponent, long long modulus) {
+    if (modulus == 1) return 0;
+
+    long long result = 1;
+    base = base % modulus;
+
+    while (exponent &gt; 0) {
+        if (exponent % 2 == 1) {
+            result = (result * base) % modulus;
+        }
+        exponent = exponent / 2;
+        base = (base * base) % modulus;
+    }
+
     return result;
 }
 
 // 使用欧拉定理计算模幂 a^k mod n（当gcd(a,n)=1时）
-function modularExponentiation(a, k, n) {
-    if (gcd(a, n) !== 1) {
-        throw new Error("a和n必须互质才能使用欧拉定理");
+long long modularExponentiation(long long a, long long k, long long n) {
+    if (gcd(a, n) != 1) {
+        // a和n必须互质才能使用欧拉定理
+        return -1;
     }
-    
+
     // 计算欧拉函数值
-    const phi_n = eulerPhi(n);
-    
+    long long phi_n = eulerPhi(n);
+
     // 利用欧拉定理简化指数
-    const reduced_k = k % phi_n;
-    
+    long long reduced_k = k % phi_n;
+
     // 使用快速幂算法计算模幂
     return fastModularExponentiation(a, reduced_k, n);
 }
 
-// 辅助函数：最大公约数
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
-
-// 快速幂算法
-function fastModularExponentiation(base, exponent, modulus) {
-    if (modulus === 1) return 0;
-    
-    let result = 1;
-    base = base % modulus;
-    
-    while (exponent > 0) {
-        if (exponent % 2 === 1) {
-            result = (result * base) % modulus;
-        }
-        exponent = Math.floor(exponent / 2);
-        base = (base * base) % modulus;
-    }
-    
-    return result;
-}
-
 // 验证欧拉定理
-function verifyEulerTheorem(a, n) {
-    if (gcd(a, n) !== 1) {
+bool verifyEulerTheorem(long long a, long long n) {
+    if (gcd(a, n) != 1) {
         return false;
     }
-    
-    const phi_n = eulerPhi(n);
-    const left = fastModularExponentiation(a, phi_n, n);
-    
-    return left === 1;
+
+    long long phi_n = eulerPhi(n);
+    long long left = fastModularExponentiation(a, phi_n, n);
+
+    return left == 1;
 }
 
 // 示例使用
-console.log("欧拉函数值示例:");
-console.log(`φ(1) = ${eulerPhi(1)}`);
-console.log(`φ(6) = ${eulerPhi(6)}`);
-console.log(`φ(12) = ${eulerPhi(12)}`);
-console.log(`φ(30) = ${eulerPhi(30)}`);
-console.log(`φ(100) = ${eulerPhi(100)}`);
+int main() {
+    cout &lt;&lt; "欧拉函数值示例:" &lt;&lt; '\n';
+    cout &lt;&lt; "φ(1) = " &lt;&lt; eulerPhi(1) &lt;&lt; '\n';
+    cout &lt;&lt; "φ(6) = " &lt;&lt; eulerPhi(6) &lt;&lt; '\n';
+    cout &lt;&lt; "φ(12) = " &lt;&lt; eulerPhi(12) &lt;&lt; '\n';
+    cout &lt;&lt; "φ(30) = " &lt;&lt; eulerPhi(30) &lt;&lt; '\n';
+    cout &lt;&lt; "φ(100) = " &lt;&lt; eulerPhi(100) &lt;&lt; '\n';
 
-console.log("\n欧拉定理验证:");
-console.log(`验证 7^φ(12) ≡ 1 mod 12: ${verifyEulerTheorem(7, 12)}`);
-console.log(`7^4 mod 12 = ${fastModularExponentiation(7, eulerPhi(12), 12)}`);
+    cout &lt;&lt; "\n欧拉定理验证:" &lt;&lt; '\n';
+    cout &lt;&lt; "验证 7^φ(12) ≡ 1 mod 12: " &lt;&lt; (verifyEulerTheorem(7, 12) ? "true" : "false") &lt;&lt; '\n';
+    cout &lt;&lt; "7^4 mod 12 = " &lt;&lt; fastModularExponentiation(7, eulerPhi(12), 12) &lt;&lt; '\n';
 
-console.log("\n使用欧拉定理计算大指数模幂:");
-// 计算 5^100 mod 13，由于gcd(5,13)=1，φ(13)=12
-// 100 mod 12 = 4，所以 5^100 mod 13 = 5^4 mod 13
-const result = modularExponentiation(5, 100, 13);
-console.log(`5^100 mod 13 = ${result}`);
-console.log(`直接计算验证: ${fastModularExponentiation(5, 100, 13)}`);</code>
-            </pre>
-            
-            <p style="margin-top: 15px;">
-                <strong>算法应用：</strong>
-                欧拉定理在计算大指数模幂时非常有用。当 $\gcd(a, n) = 1$ 时，
-                可以将指数对 $\varphi(n)$ 取模，大大减少计算量。
-            </p>
+    cout &lt;&lt; "\n使用欧拉定理计算大指数模幂:" &lt;&lt; '\n';
+    // 计算 5^100 mod 13，由于gcd(5,13)=1，φ(13)=12
+    // 100 mod 12 = 4，所以 5^100 mod 13 = 5^4 mod 13
+    long long result = modularExponentiation(5, 100, 13);
+    cout &lt;&lt; "5^100 mod 13 = " &lt;&lt; result &lt;&lt; '\n';
+    cout &lt;&lt; "直接计算验证: " &lt;&lt; fastModularExponentiation(5, 100, 13) &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="example" 
@@ -379,7 +372,7 @@ console.log(`直接计算验证: ${fastModularExponentiation(5, 100, 13)}`);</co
                 </li>
                 <li>
                     <strong>广义欧拉定理：</strong>
-                    对于任意整数 $a$ 和 $n > 1$，有：
+                    对于任意整数 $a$ 和 $n \gt 1$，有：
                     $$a^{k} \equiv a^{k \bmod \varphi(n) + \varphi(n)} \pmod{n}$$
                     对足够大的 $k$ 成立（当 $k \geq \log_2 n$ 时）。
                 </li>

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>算术级数中的素数定理 - 数论百科</title>
+    <title>算术级数中的素数定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -88,14 +88,14 @@
                     <ul>
                         <li>$\chi(n+d) = \chi(n)$（周期性）</li>
                         <li>$\chi(mn) = \chi(m)\chi(n)$（完全积性）</li>
-                        <li>$\chi(1) = 1$，且若 $\gcd(n, d) > 1$ 则 $\chi(n) = 0$</li>
+                        <li>$\chi(1) = 1$，且若 $\gcd(n, d) \gt 1$ 则 $\chi(n) = 0$</li>
                     </ul>
                     共有 $\varphi(d)$ 个不同的特征。
                 </li>
                 <li>
                     <strong>狄利克雷L函数：</strong>
                     对于每个特征 $\chi$，定义：
-                    $$L(s, \chi) = \sum_{n=1}^{\infty} \frac{\chi(n)}{n^s}, \quad \Re(s) > 1$$
+                    $$L(s, \chi) = \sum_{n=1}^{\infty} \frac{\chi(n)}{n^s}, \quad \Re(s) \gt 1$$
                 </li>
                 <li>
                     <strong>特征的正交关系：</strong>
@@ -178,238 +178,219 @@
             </p>
             
             <p>
-                <strong>反例：</strong> 如果 $\gcd(a, d) > 1$，则结论不成立。
+                <strong>反例：</strong> 如果 $\gcd(a, d) \gt 1$，则结论不成立。
                 例如 $a = 2$，$d = 4$，则所有项都是偶数，只有第一项 $2$ 是素数，之后没有素数。
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 欧几里得算法求最大公约数
-function gcd(a, b) {
-    while (b !== 0) {
-        [a, b] = [b, a % b];
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+#include &lt;chrono&gt;
+#include &lt;random&gt;
+using namespace std;
+
+// 欧几里得算法求最大公约数
+long long gcd(long long a, long long b) {
+    while (b != 0) {
+        long long t = a % b;
+        a = b;
+        b = t;
     }
     return a;
 }
 
 // 判断是否为素数（简单试除法）
-function isPrime(n) {
-    if (n < 2) return false;
-    if (n % 2 === 0) return n === 2;
-    const limit = Math.sqrt(n);
-    for (let i = 3; i <= limit; i += 2) {
-        if (n % i === 0) return false;
+bool isPrime(long long n) {
+    if (n &lt; 2) return false;
+    if (n % 2 == 0) return n == 2;
+    for (long long i = 3; i * i &lt;= n; i += 2) {
+        if (n % i == 0) return false;
     }
     return true;
 }
 
 // 生成算术级数中的素数
-function primesInArithmeticProgression(a, d, limit) {
-    if (gcd(a, d) !== 1) {
-        console.log(`警告：a=${a} 和 d=${d} 不互质，可能只有有限个素数。`);
+vector&lt;long long&gt; primesInArithmeticProgression(long long a, long long d, long long limit) {
+    if (gcd(a, d) != 1) {
+        cout &lt;&lt; "警告：a=" &lt;&lt; a &lt;&lt; " 和 d=" &lt;&lt; d &lt;&lt; " 不互质，可能只有有限个素数。\n";
     }
-    
-    const primes = [];
-    let n = 0;
-    let value = a;
-    
-    while (value <= limit) {
-        if (isPrime(value)) {
-            primes.push(value);
-        }
+    vector&lt;long long&gt; primes;
+    long long n = 0;
+    long long value = a;
+    while (value &lt;= limit) {
+        if (isPrime(value)) primes.push_back(value);
         n++;
         value = a + n * d;
     }
-    
     return primes;
 }
 
 // 计算不超过x的算术级数中的素数个数
-function countPrimesInProgression(a, d, x) {
-    let count = 0;
-    let n = 0;
-    let value = a;
-    
-    while (value <= x) {
-        if (isPrime(value)) {
-            count++;
-        }
+long long countPrimesInProgression(long long a, long long d, long long x) {
+    long long count = 0;
+    long long n = 0;
+    long long value = a;
+    while (value &lt;= x) {
+        if (isPrime(value)) count++;
         n++;
         value = a + n * d;
     }
-    
     return count;
 }
 
 // 欧拉函数 φ(n)
-function eulerPhi(n) {
-    let result = n;
-    let p = 2;
-    
-    while (p * p <= n) {
-        if (n % p === 0) {
-            while (n % p === 0) {
-                n /= p;
-            }
+long long eulerPhi(long long n) {
+    long long result = n;
+    long long p = 2;
+    while (p * p &lt;= n) {
+        if (n % p == 0) {
+            while (n % p == 0) n /= p;
             result -= result / p;
         }
         p++;
     }
-    
-    if (n > 1) {
-        result -= result / n;
-    }
-    
+    if (n &gt; 1) result -= result / n;
     return result;
 }
 
-// 验证狄利克雷密度定理的近似
-function verifyDirichletDensity(a, d, x) {
-    const actualCount = countPrimesInProgression(a, d, x);
-    const totalPrimes = countPrimesInProgression(1, 1, x); // 所有不超过x的素数
-    const expectedCount = (1 / eulerPhi(d)) * (x / Math.log(x));
-    
-    return {
-        actual: actualCount,
-        expected: expectedCount,
-        ratio: actualCount / expectedCount,
-        proportion: actualCount / totalPrimes,
-        expectedProportion: 1 / eulerPhi(d)
-    };
-}
-
-// 示例使用
-console.log("=== 算术级数中的素数定理示例 ===");
-
-// 示例1：形如 4n+3 的素数
-console.log("\n1. 形如 4n+3 的素数（不超过100）：");
-const primes1 = primesInArithmeticProgression(3, 4, 100);
-console.log(`素数列表：${primes1.join(', ')}`);
-console.log(`个数：${primes1.length}`);
-
-// 示例2：形如 4n+1 的素数
-console.log("\n2. 形如 4n+1 的素数（不超过100）：");
-const primes2 = primesInArithmeticProgression(1, 4, 100);
-console.log(`素数列表：${primes2.join(', ')}`);
-console.log(`个数：${primes2.length}`);
-
-// 示例3：验证密度定理
-console.log("\n3. 验证狄利克雷密度定理（a=3, d=4）：");
-for (const x of [100, 1000, 10000, 100000]) {
-    const result = verifyDirichletDensity(3, 4, x);
-    console.log(`x=${x}: 实际素数数=${result.actual}, 预期≈${result.expected.toFixed(2)}, 比例=${result.ratio.toFixed(3)}`);
-}
-
-// 比较不同算术级数的素数分布
-console.log("\n4. 不同算术级数的素数分布比较（不超过10000）：");
-const moduli = [3, 4, 5, 6, 7, 8];
-for (const d of moduli) {
-    const phi = eulerPhi(d);
-    console.log(`\n模 d=${d} (φ(${d})=${phi}):`);
-    
-    for (let a = 1; a < d; a++) {
-        if (gcd(a, d) === 1) {
-            const count = countPrimesInProgression(a, d, 10000);
-            const proportion = count / countPrimesInProgression(1, 1, 10000);
-            console.log(`  a=${a}: ${count}个素数，占比=${proportion.toFixed(4)}，期望占比=${(1/phi).toFixed(4)}`);
-        }
+// 快速幂取模（使用 __int128 防止乘法溢出）
+long long modPow(long long base, long long exponent, long long modulus) {
+    if (modulus == 1) return 0;
+    long long result = 1;
+    base %= modulus;
+    while (exponent &gt; 0) {
+        if (exponent &amp; 1) result = (__int128)result * base % modulus;
+        exponent &gt;&gt;= 1;
+        base = (__int128)base * base % modulus;
     }
+    return result;
 }
 
-// 寻找算术级数中的大素数
-console.log("\n5. 寻找算术级数中的大素数（a=1, d=1000）：");
-let largePrime = null;
-let n = 0;
-while (!largePrime && n < 1000) {
-    const value = 1 + n * 1000;
-    if (isPrime(value)) {
-        largePrime = value;
-        console.log(`找到素数：${largePrime} = 1 + ${n} × 1000`);
-    }
-    n++;
-}
+// 米勒-拉宾素性测试
+bool isPrimeMillerRabin(long long n, int k = 5) {
+    if (n &lt; 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
 
-// 性能测试：计算大范围内的素数
-console.log("\n6. 性能测试：计算不超过1000000的形如 4n+3 的素数");
-console.time("计算时间");
-const count = countPrimesInProgression(3, 4, 1000000);
-console.timeEnd("计算时间");
-console.log(`素数个数：${count}`);
-
-// 使用更高效的素数判定（米勒-拉宾测试）
-function isPrimeMillerRabin(n, k = 5) {
-    if (n < 2) return false;
-    if (n === 2 || n === 3) return true;
-    if (n % 2 === 0) return false;
-    
     // 将 n-1 分解为 2^s * d
-    let s = 0;
-    let d = n - 1;
-    while (d % 2 === 0) {
+    long long s = 0;
+    long long d = n - 1;
+    while (d % 2 == 0) {
         d /= 2;
         s++;
     }
-    
-    // 测试 k 轮
-    for (let i = 0; i < k; i++) {
-        const a = 2 + Math.floor(Math.random() * (n - 4));
-        let x = modPow(a, d, n);
-        
-        if (x === 1 || x === n - 1) continue;
-        
-        let continueLoop = false;
-        for (let r = 1; r < s; r++) {
+
+    static mt19937 rng(123456789); // 固定种子，结果可复现
+    for (int i = 0; i &lt; k; i++) {
+        long long a = 2 + (long long)(rng() % (n - 4));
+        long long x = modPow(a, d, n);
+
+        if (x == 1 || x == n - 1) continue;
+
+        bool ok = false;
+        for (long long r = 1; r &lt; s; r++) {
             x = modPow(x, 2, n);
-            if (x === n - 1) {
-                continueLoop = true;
+            if (x == n - 1) {
+                ok = true;
                 break;
             }
         }
-        
-        if (continueLoop) continue;
+
+        if (ok) continue;
         return false;
     }
-    
+
     return true;
 }
 
-// 快速幂取模
-function modPow(base, exponent, modulus) {
-    if (modulus === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(modulus);
-    let exp = BigInt(exponent);
-    
-    while (exp > 0n) {
-        if (exp % 2n === 1n) {
-            result = (result * base) % BigInt(modulus);
-        }
-        exp >>= 1n;
-        base = (base * base) % BigInt(modulus);
-    }
-    
-    return Number(result);
-}
+int main() {
+    cout &lt;&lt; "=== 算术级数中的素数定理示例 ===\n";
 
-console.log("\n7. 使用米勒-拉宾测试验证大数");
-const largeNumbers = [1000003, 1000033, 1000037, 1000039];
-for (const num of largeNumbers) {
-    const isPrimeMR = isPrimeMillerRabin(num, 10);
-    console.log(`${num} 是素数？ ${isPrimeMR}`);
-}</code>
-            </pre>
+    // 示例1：形如 4n+3 的素数
+    cout &lt;&lt; "\n1. 形如 4n+3 的素数（不超过100）：\n";
+    vector&lt;long long&gt; primes1 = primesInArithmeticProgression(3, 4, 100);
+    cout &lt;&lt; "素数列表：";
+    for (size_t i = 0; i &lt; primes1.size(); i++) {
+        if (i) cout &lt;&lt; ", ";
+        cout &lt;&lt; primes1[i];
+    }
+    cout &lt;&lt; "\n个数：" &lt;&lt; primes1.size() &lt;&lt; "\n";
+
+    // 示例2：形如 4n+1 的素数
+    cout &lt;&lt; "\n2. 形如 4n+1 的素数（不超过100）：\n";
+    vector&lt;long long&gt; primes2 = primesInArithmeticProgression(1, 4, 100);
+    cout &lt;&lt; "素数列表：";
+    for (size_t i = 0; i &lt; primes2.size(); i++) {
+        if (i) cout &lt;&lt; ", ";
+        cout &lt;&lt; primes2[i];
+    }
+    cout &lt;&lt; "\n个数：" &lt;&lt; primes2.size() &lt;&lt; "\n";
+
+    // 示例3：验证密度定理
+    cout &lt;&lt; "\n3. 验证狄利克雷密度定理（a=3, d=4）：\n";
+    for (long long x : {100LL, 1000LL, 10000LL, 100000LL}) {
+        long long actual = countPrimesInProgression(3, 4, x);
+        double expected = (1.0 / eulerPhi(4)) * (x / log(x));
+        cout &lt;&lt; "x=" &lt;&lt; x &lt;&lt; ": 实际素数数=" &lt;&lt; actual
+             &lt;&lt; ", 预期≈" &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; expected
+             &lt;&lt; ", 比例=" &lt;&lt; fixed &lt;&lt; setprecision(3) &lt;&lt; actual / expected &lt;&lt; "\n";
+    }
+
+    // 比较不同算术级数的素数分布
+    cout &lt;&lt; "\n4. 不同算术级数的素数分布比较（不超过10000）：\n";
+    for (long long d : {3LL, 4LL, 5LL, 6LL, 7LL, 8LL}) {
+        long long phi = eulerPhi(d);
+        cout &lt;&lt; "\n模 d=" &lt;&lt; d &lt;&lt; " (φ(" &lt;&lt; d &lt;&lt; ")=" &lt;&lt; phi &lt;&lt; "):\n";
+        long long total = countPrimesInProgression(1, 1, 10000);
+        for (long long a = 1; a &lt; d; a++) {
+            if (gcd(a, d) == 1) {
+                long long count = countPrimesInProgression(a, d, 10000);
+                double proportion = (double)count / total;
+                double expectedProp = 1.0 / phi;
+                cout &lt;&lt; "  a=" &lt;&lt; a &lt;&lt; ": " &lt;&lt; count &lt;&lt; "个素数，占比="
+                     &lt;&lt; fixed &lt;&lt; setprecision(4) &lt;&lt; proportion
+                     &lt;&lt; "，期望占比=" &lt;&lt; expectedProp &lt;&lt; "\n";
+            }
+        }
+    }
+
+    // 寻找算术级数中的大素数
+    cout &lt;&lt; "\n5. 寻找算术级数中的大素数（a=1, d=1000）：\n";
+    long long largePrime = 0;
+    long long n = 0;
+    while (largePrime == 0 &amp;&amp; n &lt; 1000) {
+        long long value = 1 + n * 1000;
+        if (isPrime(value)) {
+            largePrime = value;
+            cout &lt;&lt; "找到素数：" &lt;&lt; largePrime &lt;&lt; " = 1 + " &lt;&lt; n &lt;&lt; " × 1000\n";
+        }
+        n++;
+    }
+
+    // 性能测试：计算大范围内的素数
+    cout &lt;&lt; "\n6. 性能测试：计算不超过1000000的形如 4n+3 的素数\n";
+    auto start = chrono::steady_clock::now();
+    long long count = countPrimesInProgression(3, 4, 1000000);
+    auto end = chrono::steady_clock::now();
+    double ms = chrono::duration&lt;double, milli&gt;(end - start).count();
+    cout &lt;&lt; "计算时间：" &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; ms &lt;&lt; " 毫秒\n";
+    cout &lt;&lt; "素数个数：" &lt;&lt; count &lt;&lt; "\n";
+
+    // 使用米勒-拉宾测试验证大数
+    cout &lt;&lt; "\n7. 使用米勒-拉宾测试验证大数\n";
+    for (long long num : {1000003LL, 1000033LL, 1000037LL, 1000039LL}) {
+        bool isPrimeMR = isPrimeMillerRabin(num, 10);
+        cout &lt;&lt; num &lt;&lt; " 是素数？ " &lt;&lt; (isPrimeMR ? "true" : "false") &lt;&lt; "\n";
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

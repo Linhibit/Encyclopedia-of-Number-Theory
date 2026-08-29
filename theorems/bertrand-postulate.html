@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>伯特兰公设 - 数论百科</title>
+    <title>伯特兰公设 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -50,14 +50,14 @@
             <strong>定理内容：</strong>
             <p>
                 对于任意大于1的整数 $n$，至少存在一个素数 $p$ 满足：
-                $$n < p < 2n$$
+                $$n \lt p \lt 2n$$
             </p>
             
             <p>
                 <strong>等价表述：</strong>
                 <ol style="line-height: 1.6;">
-                    <li>对于任意 $n > 1$，区间 $(n, 2n)$ 内至少包含一个素数。</li>
-                    <li>对于任意正整数 $n$，存在素数 $p$ 使得 $n < p \leq 2n$。</li>
+                    <li>对于任意 $n \gt 1$，区间 $(n, 2n)$ 内至少包含一个素数。</li>
+                    <li>对于任意正整数 $n$，存在素数 $p$ 使得 $n \lt p \leq 2n$。</li>
                 </ol>
             </p>
             
@@ -119,9 +119,9 @@
                 </li>
                 
                 <li>
-                    <strong>第二步：</strong> 验证 $n < 468$ 的情况。
+                    <strong>第二步：</strong> 验证 $n \lt 468$ 的情况。
                     <ol type="a">
-                        <li>对于 $n < 468$，可以直接通过计算机验证或手工检查素数表。</li>
+                        <li>对于 $n \lt 468$，可以直接通过计算机验证或手工检查素数表。</li>
                         <li>实际上，切比雪夫通过更初等的方法处理了所有 $n$。</li>
                     </ol>
                 </li>
@@ -129,7 +129,7 @@
                 <li>
                     <strong>第三步：</strong> 完整证明。
                     <ol type="a">
-                        <li>结合第一步和第二步，得到对所有 $n > 1$ 成立。</li>
+                        <li>结合第一步和第二步，得到对所有 $n \gt 1$ 成立。</li>
                     </ol>
                 </li>
             </ol>
@@ -162,7 +162,7 @@
                 <ol>
                     <li>区间 $(20, 40)$ 中的整数：$21, 22, 23, \dots, 39$</li>
                     <li>检查其中的素数：$23, 29, 31, 37$</li>
-                    <li>所以确实存在素数 $p$ 满足 $20 < p < 40$。</li>
+                    <li>所以确实存在素数 $p$ 满足 $20 \lt p \lt 40$。</li>
                 </ol>
             </p>
             
@@ -173,9 +173,9 @@
             <p>
                 <strong>解法：</strong>
                 <ol>
-                    <li>根据伯特兰公设，对于任意 $m > 1$，存在素数 $p$ 满足 $m < p < 2m$。</li>
-                    <li>取 $m = n!$，则存在素数 $p$ 满足 $n! < p < 2 \cdot n!$。</li>
-                    <li>因为 $2 \cdot n! \leq (n+1)!$（当 $n \geq 2$ 时），所以 $n! < p < (n+1)!$。</li>
+                    <li>根据伯特兰公设，对于任意 $m \gt 1$，存在素数 $p$ 满足 $m \lt p \lt 2m$。</li>
+                    <li>取 $m = n!$，则存在素数 $p$ 满足 $n! \lt p \lt 2 \cdot n!$。</li>
+                    <li>因为 $2 \cdot n! \leq (n+1)!$（当 $n \geq 2$ 时），所以 $n! \lt p \lt (n+1)!$。</li>
                     <li>这证明了 $n!$ 和 $(n+1)!$ 之间总有素数（对 $n \geq 2$）。</li>
                 </ol>
             </p>
@@ -185,12 +185,12 @@
             </p>
             
             <p>
-                伯特兰公设给出了素数间隔的一个上界：对于任意 $n > 1$，$n$ 和 $2n$ 之间至少有一个素数。
+                伯特兰公设给出了素数间隔的一个上界：对于任意 $n \gt 1$，$n$ 和 $2n$ 之间至少有一个素数。
                 这意味着素数的最大间隔不能太大。
                 
                 <ul>
                     <li>例如，在 $n$ 和 $2n$ 之间没有素数的最大 $n$ 是多少？</li>
-                    <li>根据伯特兰公设，这样的 $n$ 不存在（对于 $n > 1$）。</li>
+                    <li>根据伯特兰公设，这样的 $n$ 不存在（对于 $n \gt 1$）。</li>
                     <li>但实际上，素数间隔可以更大，如 $n!+2, n!+3, \dots, n!+n$ 都是合数，这给出了长度为 $n-1$ 的合数区间。</li>
                 </ul>
             </p>
@@ -204,253 +204,141 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 判断一个数是否为素数
-function isPrime(num) {
-    if (num <= 1) return false;
-    if (num <= 3) return true;
-    if (num % 2 === 0 || num % 3 === 0) return false;
-    
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) return false;
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+
+using namespace std;
+
+// 判断一个数是否为素数（6k±1 试除法）
+bool isPrime(long long num) {
+    if (num &lt;= 1) return false;
+    if (num &lt;= 3) return true;
+    if (num % 2 == 0 || num % 3 == 0) return false;
+
+    for (long long i = 5; i * i &lt;= num; i += 6) {
+        if (num % i == 0 || num % (i + 2) == 0) return false;
     }
-    
     return true;
 }
 
-// 验证伯特兰公设：对于给定的n，检查区间(n, 2n)内是否有素数
-function verifyBertrandPostulate(n) {
-    if (n <= 1) {
-        console.log("n必须大于1");
-        return false;
+// 寻找区间 (n, 2n) 内的最小素数
+long long findSmallestPrimeInInterval(long long n) {
+    for (long long i = n + 1; i &lt; 2 * n; i++) {
+        if (isPrime(i)) return i;
     }
-    
-    const lower = n + 1;
-    const upper = 2 * n - 1;
-    const primesInInterval = [];
-    
-    // 检查区间内的每个数是否为素数
-    for (let i = lower; i <= upper; i++) {
-        if (isPrime(i)) {
-            primesInInterval.push(i);
-        }
-    }
-    
-    return {
-        n: n,
-        interval: `(${n}, ${2 * n})`,
-        primesFound: primesInInterval,
-        count: primesInInterval.length,
-        valid: primesInInterval.length > 0
-    };
+    return -1; // 根据伯特兰公设，这不应该发生
 }
 
-// 查找区间(n, 2n)内的所有素数
-function findPrimesInBertrandInterval(n) {
-    const primes = [];
-    for (let i = n + 1; i < 2 * n; i++) {
-        if (isPrime(i)) {
-            primes.push(i);
-        }
-    }
-    return primes;
-}
-
-// 测试伯特兰公设对于一系列n的值
-function testBertrandPostulate(limit) {
-    console.log(`测试伯特兰公设对于 n = 2 到 ${limit}:`);
-    console.log("n\t区间\t\t素数个数\t验证结果");
-    console.log("-".repeat(60));
-    
-    let allValid = true;
-    
-    for (let n = 2; n <= limit; n++) {
-        const result = verifyBertrandPostulate(n);
-        
-        console.log(
-            `${n}\t(${n}, ${2 * n})\t${result.count}\t\t` +
-            `${result.valid ? '通过' : '失败'}`
-        );
-        
-        if (!result.valid) {
-            allValid = false;
-            console.log(`错误：区间(${n}, ${2 * n})中没有找到素数！`);
-            break;
-        }
-    }
-    
-    if (allValid) {
-        console.log(`\n所有测试通过！伯特兰公设在 n ≤ ${limit} 时成立。`);
-    }
-    
-    return allValid;
-}
-
-// 寻找最小的素数 p 满足 n < p < 2n
-function findSmallestPrimeInInterval(n) {
-    for (let i = n + 1; i < 2 * n; i++) {
-        if (isPrime(i)) {
-            return i;
-        }
-    }
-    return null; // 根据伯特兰公设，这不应该发生
-}
-
-// 计算区间(n, 2n)内素数的个数
-function countPrimesInBertrandInterval(n) {
-    let count = 0;
-    for (let i = n + 1; i < 2 * n; i++) {
-        if (isPrime(i)) {
-            count++;
-        }
+// 计算区间 (n, 2n) 内素数的个数
+int countPrimesInBertrandInterval(long long n) {
+    int count = 0;
+    for (long long i = n + 1; i &lt; 2 * n; i++) {
+        if (isPrime(i)) count++;
     }
     return count;
 }
 
-// 示例使用
-console.log("=== 伯特兰公设验证 ===");
-
-// 验证几个具体的n值
-const testValues = [2, 3, 4, 5, 10, 20, 50, 100];
-
-console.log("n\t区间\t\t最小素数\t素数个数");
-console.log("-".repeat(60));
-
-for (const n of testValues) {
-    const smallestPrime = findSmallestPrimeInInterval(n);
-    const primeCount = countPrimesInBertrandInterval(n);
-    
-    console.log(
-        `${n}\t(${n}, ${2 * n})\t${smallestPrime}\t\t${primeCount}`
-    );
-}
-
-// 运行测试
-console.log("\n=== 运行完整性测试 (n ≤ 1000) ===");
-testBertrandPostulate(1000);
-
-// 验证更大的n值（使用更高效的素数检测）
-console.log("\n=== 验证较大的n值 ===");
-
-const largeValues = [1000, 5000, 10000, 50000];
-console.log("n\t区间\t\t最小素数\t验证时间");
-console.log("-".repeat(60));
-
-// 更高效的素数检测（用于大数）
-function isPrimeOptimized(num) {
-    if (num <= 1) return false;
-    if (num <= 3) return true;
-    if (num % 2 === 0 || num % 3 === 0) return false;
-    
-    // 检查6k±1形式的因子
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) return false;
+// 验证伯特兰公设：对于给定的 n，检查区间 (n, 2n) 内是否有素数
+bool verifyBertrandPostulate(long long n) {
+    if (n &lt;= 1) {
+        cout &lt;&lt; "n必须大于1\n";
+        return false;
     }
-    
-    return true;
+    return findSmallestPrimeInInterval(n) != -1;
 }
 
-for (const n of largeValues) {
-    console.time(`验证 n=${n}`);
-    let found = false;
-    let smallestPrime = null;
-    
-    // 只需要找到一个素数即可
-    for (let i = n + 1; i < 2 * n; i++) {
-        if (isPrimeOptimized(i)) {
-            found = true;
-            smallestPrime = i;
+int main() {
+    cout &lt;&lt; "=== 伯特兰公设验证 ===\n";
+
+    // 验证几个具体的 n 值
+    vector&lt;long long&gt; testValues = {2, 3, 4, 5, 10, 20, 50, 100};
+
+    cout &lt;&lt; "n\t区间\t\t最小素数\t素数个数\n";
+    cout &lt;&lt; "------------------------------------------------------------\n";
+
+    for (auto n : testValues) {
+        long long smallestPrime = findSmallestPrimeInInterval(n);
+        int primeCount = countPrimesInBertrandInterval(n);
+        cout &lt;&lt; n &lt;&lt; "\t(" &lt;&lt; n &lt;&lt; ", " &lt;&lt; 2 * n &lt;&lt; ")\t"
+             &lt;&lt; smallestPrime &lt;&lt; "\t\t" &lt;&lt; primeCount &lt;&lt; "\n";
+    }
+
+    // 运行完整性测试 (n ≤ 1000)
+    cout &lt;&lt; "\n=== 运行完整性测试 (n ≤ 1000) ===\n";
+    bool allValid = true;
+    for (long long n = 2; n &lt;= 1000; n++) {
+        if (!verifyBertrandPostulate(n)) {
+            allValid = false;
+            cout &lt;&lt; "错误：区间(" &lt;&lt; n &lt;&lt; ", " &lt;&lt; 2 * n &lt;&lt; ")中没有找到素数！\n";
             break;
         }
     }
-    
-    console.timeEnd(`验证 n=${n}`);
-    
-    console.log(
-        `${n}\t(${n}, ${2 * n})\t${smallestPrime}\t\t` +
-        `${found ? '找到素数' : '未找到（不应发生）'}`
-    );
-}
-
-// 研究区间内素数的数量
-console.log("\n=== 区间(n, 2n)内素数数量的统计 ===");
-
-console.log("n\t区间\t\t素数个数\t密度(%)");
-console.log("-".repeat(60));
-
-const sampleSizes = [10, 50, 100, 200, 500, 1000, 2000, 5000];
-for (const n of sampleSizes) {
-    const primeCount = countPrimesInBertrandInterval(n);
-    const intervalLength = n - 1; // (n+1) 到 (2n-1) 共 n-1 个数
-    const density = (primeCount / intervalLength * 100).toFixed(2);
-    
-    console.log(
-        `${n}\t(${n}, ${2 * n})\t${primeCount}\t\t${density}%`
-    );
-}
-
-// 验证与素数定理的关系
-console.log("\n=== 与素数定理的对比 ===");
-console.log("素数定理预测：区间(n, 2n)内的素数数量约为 n/ln(n)");
-
-function estimatedPrimesByPrimeTheorem(n) {
-    // 素数定理：小于x的素数数量约为 x/ln(x)
-    // 区间(n, 2n)内的素数数量 ≈ 2n/ln(2n) - n/ln(n)
-    const count1 = 2 * n / Math.log(2 * n);
-    const count2 = n / Math.log(n);
-    return Math.round(count1 - count2);
-}
-
-console.log("n\t实际素数数量\t素数定理估计\t误差(%)");
-console.log("-".repeat(60));
-
-for (const n of [100, 500, 1000, 5000, 10000]) {
-    const actual = countPrimesInBertrandInterval(n);
-    const estimated = estimatedPrimesByPrimeTheorem(n);
-    const error = Math.abs(actual - estimated) / actual * 100;
-    
-    console.log(
-        `${n}\t${actual}\t\t${estimated}\t\t${error.toFixed(2)}%`
-    );
-}
-
-// 验证一个相关猜想：是否存在多个素数？
-console.log("\n=== 验证区间内是否存在多个素数 ===");
-console.log("猜想：对于足够大的n，区间(n, 2n)内至少包含2个素数");
-
-function hasMultiplePrimes(n) {
-    let primeCount = 0;
-    for (let i = n + 1; i < 2 * n; i++) {
-        if (isPrime(i)) {
-            primeCount++;
-            if (primeCount >= 2) {
-                return true;
-            }
-        }
+    if (allValid) {
+        cout &lt;&lt; "所有测试通过！伯特兰公设在 n ≤ 1000 时成立。\n";
     }
-    return false;
+
+    // 验证较大的 n 值
+    cout &lt;&lt; "\n=== 验证较大的n值 ===\n";
+    vector&lt;long long&gt; largeValues = {1000, 5000, 10000, 50000};
+    cout &lt;&lt; "n\t区间\t\t最小素数\t验证结果\n";
+    cout &lt;&lt; "------------------------------------------------------------\n";
+    for (auto n : largeValues) {
+        long long smallestPrime = findSmallestPrimeInInterval(n);
+        cout &lt;&lt; n &lt;&lt; "\t(" &lt;&lt; n &lt;&lt; ", " &lt;&lt; 2 * n &lt;&lt; ")\t"
+             &lt;&lt; smallestPrime &lt;&lt; "\t\t"
+             &lt;&lt; (smallestPrime != -1 ? "找到素数" : "未找到（不应发生）") &lt;&lt; "\n";
+    }
+
+    // 区间 (n, 2n) 内素数数量的统计
+    cout &lt;&lt; "\n=== 区间(n, 2n)内素数数量的统计 ===\n";
+    cout &lt;&lt; "n\t区间\t\t素数个数\t密度(%)\n";
+    cout &lt;&lt; "------------------------------------------------------------\n";
+    vector&lt;long long&gt; sampleSizes = {10, 50, 100, 200, 500, 1000, 2000, 5000};
+    for (auto n : sampleSizes) {
+        int primeCount = countPrimesInBertrandInterval(n);
+        double intervalLength = n - 1; // (n+1) 到 (2n-1) 共 n-1 个数
+        double density = primeCount / intervalLength * 100.0;
+        cout &lt;&lt; n &lt;&lt; "\t(" &lt;&lt; n &lt;&lt; ", " &lt;&lt; 2 * n &lt;&lt; ")\t"
+             &lt;&lt; primeCount &lt;&lt; "\t\t" &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; density &lt;&lt; "%\n";
+    }
+
+    // 与素数定理的对比
+    cout &lt;&lt; "\n=== 与素数定理的对比 ===\n";
+    cout &lt;&lt; "素数定理预测：区间(n, 2n)内的素数数量约为 n/ln(n)\n";
+    cout &lt;&lt; "n\t实际素数数量\t素数定理估计\t误差(%)\n";
+    cout &lt;&lt; "------------------------------------------------------------\n";
+    vector&lt;long long&gt; primeTheoremValues = {100, 500, 1000, 5000, 10000};
+    for (auto n : primeTheoremValues) {
+        int actual = countPrimesInBertrandInterval(n);
+        // 素数定理：区间 (n, 2n) 内的素数数量 ≈ 2n/ln(2n) - n/ln(n)
+        double count1 = 2.0 * n / log(2.0 * n);
+        double count2 = n / log((double)n);
+        int estimated = (int)lround(count1 - count2);
+        double error = fabs(actual - estimated) / actual * 100.0;
+        cout &lt;&lt; n &lt;&lt; "\t" &lt;&lt; actual &lt;&lt; "\t\t" &lt;&lt; estimated &lt;&lt; "\t\t"
+             &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; error &lt;&lt; "%\n";
+    }
+
+    // 验证区间内是否存在多个素数
+    cout &lt;&lt; "\n=== 验证区间内是否存在多个素数 ===\n";
+    cout &lt;&lt; "猜想：对于足够大的n，区间(n, 2n)内至少包含2个素数\n";
+    cout &lt;&lt; "n\t区间\t\t至少2个素数?\n";
+    cout &lt;&lt; "------------------------------------------------------------\n";
+    vector&lt;long long&gt; multiplePrimesValues = {5, 10, 20, 50, 100, 200, 500, 1000};
+    for (auto n : multiplePrimesValues) {
+        bool hasMultiple = countPrimesInBertrandInterval(n) &gt;= 2;
+        cout &lt;&lt; n &lt;&lt; "\t(" &lt;&lt; n &lt;&lt; ", " &lt;&lt; 2 * n &lt;&lt; ")\t"
+             &lt;&lt; (hasMultiple ? "是" : "否") &lt;&lt; "\n";
+    }
+
+    return 0;
 }
-
-console.log("n\t区间\t\t至少2个素数?");
-console.log("-".repeat(60));
-
-for (const n of [5, 10, 20, 50, 100, 200, 500, 1000]) {
-    const hasMultiple = hasMultiplePrimes(n);
-    console.log(`${n}\t(${n}, ${2 * n})\t${hasMultiple ? '是' : '否'}`);
-}</code>
-            </pre>
+            </code></pre>
         </section>
 
         <section class="applications" 
@@ -492,7 +380,7 @@ for (const n of [5, 10, 20, 50, 100, 200, 500, 1000]) {
                 <strong>推广：</strong>
                 伯特兰公设有一些强化版本：
                 <ul>
-                    <li>对于 $n > 5$，区间 $(n, 2n)$ 中至少包含两个素数。</li>
+                    <li>对于 $n \gt 5$，区间 $(n, 2n)$ 中至少包含两个素数。</li>
                     <li>对于充分大的 $n$，区间 $(n, n + n^{0.525})$ 中至少包含一个素数（Baker-Harman-Pintz, 2001）。</li>
                     <li>著名的"素数间隙"问题研究相邻素数之间的最大间隔。</li>
                 </ul>
@@ -519,7 +407,7 @@ for (const n of [5, 10, 20, 50, 100, 200, 500, 1000]) {
                 <tbody>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ccc;">伯特兰公设</td>
-                        <td style="padding: 8px; border: 1px solid #ccc;">对任意 $n > 1$，存在素数 $p$ 满足 $n < p < 2n$</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">对任意 $n \gt 1$，存在素数 $p$ 满足 $n \lt p \lt 2n$</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">已证明（切比雪夫）</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">1850</td>
                     </tr>
@@ -574,7 +462,7 @@ for (const n of [5, 10, 20, 50, 100, 200, 500, 1000]) {
             
             <p>
                 <strong>强化版本：</strong>
-                1. 西尔维斯特（Sylvester）推广了伯特兰公设：对于 $n > 2k$，$n$ 和 $n+k$ 之间至少有一个素数，其中 $k$ 是小于 $n$ 的最大素数个数。<br>
+                1. 西尔维斯特（Sylvester）推广了伯特兰公设：对于 $n \gt 2k$，$n$ 和 $n+k$ 之间至少有一个素数，其中 $k$ 是小于 $n$ 的最大素数个数。<br>
                 2. 拉马努金（Ramanujan）给出了一个更强的结果：对于充分大的 $n$，区间 $(n, 2n)$ 中至少包含多个素数。<br>
                 3. 目前已知的最强结果之一是：对于充分大的 $n$，区间 $(n, n + n^{0.525})$ 中至少包含一个素数。
             </p>

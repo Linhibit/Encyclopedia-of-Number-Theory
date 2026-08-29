@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>算术基本定理 - 数论百科</title>
+    <title>算术基本定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -55,7 +55,7 @@
             $$n = p_1^{\alpha_1} p_2^{\alpha_2} \cdots p_k^{\alpha_k}$$
             
             <p>
-                其中 $p_1 < p_2 < \cdots < p_k$ 是素数，
+                其中 $p_1 \lt p_2 \lt \cdots \lt p_k$ 是素数，
                 $\alpha_1, \alpha_2, \dots, \alpha_k$ 是正整数。
             </p>
             
@@ -88,7 +88,7 @@
                     <ul>
                         <li>如果 $n$ 是素数，则分解就是 $n$ 本身。</li>
                         <li>
-                            如果 $n$ 是合数，则存在正整数 $a, b$ 满足 $1 < a, b < n$ 且 $n = ab$。
+                            如果 $n$ 是合数，则存在正整数 $a, b$ 满足 $1 \lt a, b \lt n$ 且 $n = ab$。
                             由归纳假设，$a$ 和 $b$ 都可以分解为素数的乘积。
                             将这两个分解相乘，就得到 $n$ 的一个素数分解。
                         </li>
@@ -234,70 +234,69 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #f5f5f5; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3>代码示例：质因数分解算法</h3>
-            
-            <pre style="background: #2d2d2d; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// JavaScript 实现质因数分解
-function primeFactorization(n) {
-    if (n <= 1) {
-        throw new Error("输入必须大于1");
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note">该算法的时间复杂度约为 $O(\sqrt{n})$，对于大数可以使用更高效的算法（如Pollard Rho算法）。</p>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;stdexcept&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// 质因数分解：返回 n 的标准分解式（素数 -&gt; 指数）
+map&lt;long long, int&gt; primeFactorization(long long n) {
+    if (n &lt;= 1) {
+        throw invalid_argument("输入必须大于1");
     }
-    
-    const factors = {};
-    let temp = n;
-    
+    map&lt;long long, int&gt; factors;
+    long long temp = n;
+
     // 处理因子2
-    while (temp % 2 === 0) {
-        factors[2] = (factors[2] || 0) + 1;
+    while (temp % 2 == 0) {
+        factors[2]++;
         temp /= 2;
     }
-    
+
     // 处理奇数因子
-    for (let i = 3; i * i <= temp; i += 2) {
-        while (temp % i === 0) {
-            factors[i] = (factors[i] || 0) + 1;
+    for (long long i = 3; i * i &lt;= temp; i += 2) {
+        while (temp % i == 0) {
+            factors[i]++;
             temp /= i;
         }
     }
-    
+
     // 如果最后剩余的数大于1，它本身是素数
-    if (temp > 1) {
-        factors[temp] = (factors[temp] || 0) + 1;
+    if (temp &gt; 1) {
+        factors[temp]++;
     }
-    
+
     return factors;
 }
 
-// 格式化输出
-function formatFactorization(factors) {
-    const primes = Object.keys(factors).map(Number).sort((a, b) => a - b);
-    const parts = primes.map(p => {
-        const exp = factors[p];
-        return exp === 1 ? `${p}` : `${p}^${exp}`;
-    });
-    return parts.join(" × ");
+// 格式化输出：形如 "2^3 × 3^2 × 5"
+string formatFactorization(const map&lt;long long, int&gt;&amp; factors) {
+    string result;
+    bool first = true;
+    for (const auto&amp; kv : factors) {
+        if (!first) result += " × ";
+        first = false;
+        result += to_string(kv.first);
+        if (kv.second != 1) {
+            result += "^" + to_string(kv.second);
+        }
+    }
+    return result;
 }
 
-// 示例使用
-console.log(primeFactorization(360));  // {2: 3, 3: 2, 5: 1}
-console.log(formatFactorization(primeFactorization(360)));  // "2^3 × 3^2 × 5"
-console.log(formatFactorization(primeFactorization(17)));   // "17"
-console.log(formatFactorization(primeFactorization(100)));  // "2^2 × 5^2"</code>
-            </pre>
-            
-            <p style="margin-top: 15px;">
-                该算法的时间复杂度约为 $O(\sqrt{n})$，对于大数可以使用更高效的算法（如Pollard Rho算法）。
-            </p>
+int main() {
+    // 示例使用
+    cout &lt;&lt; "360 = " &lt;&lt; formatFactorization(primeFactorization(360)) &lt;&lt; '\n';   // 2^3 × 3^2 × 5
+    cout &lt;&lt; "17 = " &lt;&lt; formatFactorization(primeFactorization(17)) &lt;&lt; '\n';      // 17
+    cout &lt;&lt; "100 = " &lt;&lt; formatFactorization(primeFactorization(100)) &lt;&lt; '\n';    // 2^2 × 5^2
+    return 0;
+}
+</code></pre>
         </section>
     </div>
 </body>

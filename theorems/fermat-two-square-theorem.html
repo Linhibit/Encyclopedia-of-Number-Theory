@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>费马二平方和定理 - 数论百科</title>
+    <title>费马二平方和定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -102,7 +102,7 @@
                 <li>考虑所有形如 $a + bx$ 的数，其中 $0 \le a, b \le \lfloor\sqrt{p}\rfloor$。</li>
                 <li>根据抽屉原理，存在两对不同的 $(a,b)$ 使得 $a + bx \equiv a' + b'x \pmod{p}$。</li>
                 <li>设 $u = a - a'$，$v = b - b'$，则 $u + vx \equiv 0 \pmod{p}$。</li>
-                <li>因此 $p \mid (u^2 + v^2)$，且 $0 < u^2 + v^2 < 2p$。</li>
+                <li>因此 $p \mid (u^2 + v^2)$，且 $0 \lt u^2 + v^2 \lt 2p$。</li>
                 <li>所以 $u^2 + v^2 = p$，即 $p$ 可以表示为两个平方和。</li>
             </ol>
             
@@ -175,198 +175,214 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 判断一个数是否为素数
-function isPrime(n) {
-    if (n <= 1) return false;
-    if (n <= 3) return true;
-    if (n % 2 === 0 || n % 3 === 0) return false;
-    for (let i = 5; i * i <= n; i += 6) {
-        if (n % i === 0 || n % (i + 2) === 0) return false;
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cmath&gt;
+#include &lt;cstdlib&gt;
+using namespace std;
+using ll = long long;
+
+// 二平方和表示的结构体
+struct Repr {
+    ll a;
+    ll b;
+};
+
+// 判断一个数是否为素数
+bool isPrime(ll n) {
+    if (n &lt;= 1) return false;
+    if (n &lt;= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    for (ll i = 5; i * i &lt;= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
     }
     return true;
 }
 
 // 使用费马二平方和定理判断素数是否可以表示为二平方和
-function canBeRepresentedAsTwoSquares(p) {
+bool canBeRepresentedAsTwoSquares(ll p) {
     if (!isPrime(p)) {
-        console.log(`注意：${p} 不是素数，费马二平方和定理只适用于素数`);
+        cout &lt;&lt; "注意：" &lt;&lt; p &lt;&lt; " 不是素数，费马二平方和定理只适用于素数\n";
     }
     
     // 对于 p = 2，有 2 = 1^2 + 1^2
-    if (p === 2) return true;
+    if (p == 2) return true;
     
     // 奇素数可以表示为二平方和当且仅当 p ≡ 1 mod 4
-    return (p % 4 === 1);
+    return (p % 4 == 1);
 }
 
 // 寻找二平方和表示（适用于满足条件的素数）
-function findTwoSquaresRepresentation(p) {
-    if (p === 2) return { a: 1, b: 1 };
+Repr findTwoSquaresRepresentation(ll p) {
+    Repr r = {-1, -1};
+    if (p == 2) { r.a = 1; r.b = 1; return r; }
     
     // 检查条件
-    if (p % 4 !== 1) {
-        return null; // 不能表示为二平方和
+    if (p % 4 != 1) {
+        return r; // 不能表示为二平方和
     }
     
     // 寻找 a 使得 p - a^2 是完全平方数
-    for (let a = 1; a * a <= p; a++) {
-        const remainder = p - a * a;
-        const b = Math.sqrt(remainder);
+    for (ll a = 1; a * a &lt;= p; a++) {
+        ll remainder = p - a * a;
+        ll b = llround(sqrt((double)remainder));
         
         // 检查是否为整数平方
-        if (Math.abs(b - Math.round(b)) < 1e-10) {
-            return { a: a, b: Math.round(b) };
+        if (b * b == remainder) {
+            r.a = a;
+            r.b = b;
+            return r;
         }
     }
     
-    return null; // 理论上不会执行到这里
+    return r; // 理论上不会执行到这里
 }
 
 // 使用更高效的算法（基于欧几里得算法）
-function findTwoSquaresEfficient(p) {
-    if (p === 2) return { a: 1, b: 1 };
-    if (p % 4 !== 1) return null;
+Repr findTwoSquaresEfficient(ll p) {
+    Repr r = {-1, -1};
+    if (p == 2) { r.a = 1; r.b = 1; return r; }
+    if (p % 4 != 1) return r;
     
     // 步骤1：寻找 x 使得 x^2 ≡ -1 mod p
-    let x = -1;
-    for (let i = 2; i < p; i++) {
-        if ((i * i) % p === p - 1) {
+    ll x = -1;
+    for (ll i = 2; i &lt; p; i++) {
+        if ((i * i) % p == p - 1) {
             x = i;
             break;
         }
     }
     
     // 步骤2：使用欧几里得算法
-    let a = p;
-    let b = x;
-    
-    while (b * b > p) {
-        const r = a % b;
+    ll a = p;
+    ll b = x;
+    while (b * b &gt; p) {
+        ll rem = a % b;
         a = b;
-        b = r;
+        b = rem;
     }
     
-    const b2 = Math.sqrt(p - b * b);
-    if (Math.abs(b2 - Math.round(b2)) < 1e-10) {
-        return { a: b, b: Math.round(b2) };
+    ll b2 = llround(sqrt((double)(p - b * b)));
+    if (b2 * b2 == p - b * b) {
+        r.a = b;
+        r.b = b2;
+        return r;
     }
     
-    return null;
+    return r;
 }
 
-// 示例使用
-console.log("=== 费马二平方和定理示例 ===");
-
-// 测试一些素数
-const testPrimes = [2, 3, 5, 7, 13, 17, 29, 37, 41, 97, 101, 109, 113];
-
-console.log("素数\t≡1 mod 4?\t可表示为二平方和?\t表示");
-console.log("-".repeat(60));
-
-for (const p of testPrimes) {
-    const canBe = canBeRepresentedAsTwoSquares(p);
-    let representation = null;
+// 布拉马古普塔-斐波那契恒等式
+void brahmaguptaFibonacci(ll a, ll b, ll c, ll d) {
+    ll product = (a*a + b*b) * (c*c + d*d);
+    ll ac_bd1 = a*c + b*d;
+    ll ad_bc1 = abs(a*d - b*c);
+    ll ac_bd2 = abs(a*c - b*d);
+    ll ad_bc2 = a*d + b*c;
     
-    if (canBe) {
-        representation = findTwoSquaresEfficient(p);
-    }
-    
-    console.log(
-        `${p}\t${p % 4 === 1 ? '是' : '否'}\t\t` +
-        `${canBe ? '是' : '否'}\t\t\t` +
-        `${representation ? `${representation.a}² + ${representation.b}²` : '无'}`
-    );
+    cout &lt;&lt; "(" &lt;&lt; a &lt;&lt; "² + " &lt;&lt; b &lt;&lt; "²) × (" &lt;&lt; c &lt;&lt; "² + " &lt;&lt; d &lt;&lt; "²) = " &lt;&lt; product &lt;&lt; '\n';
+    cout &lt;&lt; "表示1: (" &lt;&lt; a &lt;&lt; "×" &lt;&lt; c &lt;&lt; " + " &lt;&lt; b &lt;&lt; "×" &lt;&lt; d &lt;&lt; ")² + (" &lt;&lt; a &lt;&lt; "×" &lt;&lt; d &lt;&lt; " - " &lt;&lt; b &lt;&lt; "×" &lt;&lt; c &lt;&lt; ")² = " &lt;&lt; ac_bd1 &lt;&lt; "² + " &lt;&lt; ad_bc1 &lt;&lt; "²\n";
+    cout &lt;&lt; "表示2: (" &lt;&lt; a &lt;&lt; "×" &lt;&lt; c &lt;&lt; " - " &lt;&lt; b &lt;&lt; "×" &lt;&lt; d &lt;&lt; ")² + (" &lt;&lt; a &lt;&lt; "×" &lt;&lt; d &lt;&lt; " + " &lt;&lt; b &lt;&lt; "×" &lt;&lt; c &lt;&lt; ")² = " &lt;&lt; ac_bd2 &lt;&lt; "² + " &lt;&lt; ad_bc2 &lt;&lt; "²\n";
+    cout &lt;&lt; "验证: " &lt;&lt; (ac_bd1*ac_bd1 + ad_bc1*ad_bc1) &lt;&lt; " = " &lt;&lt; product &lt;&lt; '\n';
+    cout &lt;&lt; "验证: " &lt;&lt; (ac_bd2*ac_bd2 + ad_bc2*ad_bc2) &lt;&lt; " = " &lt;&lt; product &lt;&lt; '\n';
+    cout &lt;&lt; string(40, '-') &lt;&lt; '\n';
 }
-
-// 验证布拉马古普塔-斐波那契恒等式
-console.log("\n=== 布拉马古普塔-斐波那契恒等式验证 ===");
-
-function brahmaguptaFibonacci(a, b, c, d) {
-    const product = (a*a + b*b) * (c*c + d*d);
-    const representation1 = {
-        ac_bd: a*c + b*d,
-        ad_bc: Math.abs(a*d - b*c)
-    };
-    const representation2 = {
-        ac_bd: Math.abs(a*c - b*d),
-        ad_bc: a*d + b*c
-    };
-    
-    console.log(`(${a}² + ${b}²) × (${c}² + ${d}²) = ${product}`);
-    console.log(`表示1: (${a}×${c} + ${b}×${d})² + (${a}×${d} - ${b}×${c})² = ${representation1.ac_bd}² + ${representation1.ad_bc}²`);
-    console.log(`表示2: (${a}×${c} - ${b}×${d})² + (${a}×${d} + ${b}×${c})² = ${representation2.ac_bd}² + ${representation2.ad_bc}²`);
-    console.log(`验证: ${representation1.ac_bd*representation1.ac_bd + representation1.ad_bc*representation1.ad_bc} = ${product}`);
-    console.log(`验证: ${representation2.ac_bd*representation2.ac_bd + representation2.ad_bc*representation2.ad_bc} = ${product}`);
-    console.log("-".repeat(40));
-}
-
-// 测试几个例子
-brahmaguptaFibonacci(1, 2, 2, 3);  // (1²+2²)×(2²+3²) = 5×13 = 65
-brahmaguptaFibonacci(2, 3, 1, 4);  // (2²+3²)×(1²+4²) = 13×17 = 221
-brahmaguptaFibonacci(3, 4, 2, 5);  // (3²+4²)×(2²+5²) = 25×29 = 725
 
 // 合数的二平方和表示
-console.log("\n=== 合数的二平方和表示 ===");
-
-function findTwoSquaresForComposite(n) {
-    const representations = [];
+vector&lt;Repr&gt; findTwoSquaresForComposite(ll n) {
+    vector&lt;Repr&gt; representations;
     
     // 简单搜索（适用于较小的数）
-    const limit = Math.sqrt(n);
-    for (let a = 0; a <= limit; a++) {
-        const a2 = a * a;
-        const remainder = n - a2;
-        if (remainder < 0) break;
+    ll limit = (ll)sqrt((double)n);
+    for (ll a = 0; a &lt;= limit; a++) {
+        ll a2 = a * a;
+        ll remainder = n - a2;
+        if (remainder &lt; 0) break;
         
-        const b = Math.sqrt(remainder);
-        if (Math.abs(b - Math.round(b)) < 1e-10) {
-            representations.push({ a: a, b: Math.round(b) });
+        ll b = llround(sqrt((double)remainder));
+        if (b * b == remainder) {
+            Repr r = {a, b};
+            representations.push_back(r);
         }
     }
     
     return representations;
 }
 
-const compositeNumbers = [10, 25, 50, 65, 85, 100];
-for (const n of compositeNumbers) {
-    const reps = findTwoSquaresForComposite(n);
-    console.log(`${n} 的二平方和表示:`);
-    if (reps.length > 0) {
-        reps.forEach(rep => {
-            console.log(`  ${rep.a}² + ${rep.b}²`);
-        });
-    } else {
-        console.log("  无（注意：有些数如6, 14等不能表示为二平方和）");
-    }
-}
-
-// 高斯整数环上的应用
-console.log("\n=== 高斯整数环上的应用 ===");
-
 // 判断素数在 Z[i] 中是否可约
-function isPrimeInGaussianIntegers(p) {
-    if (p === 2) return false; // 2 = (1+i)(1-i)，可约
-    return (p % 4 === 1); // p ≡ 1 mod 4 时可约
+bool isPrimeInGaussianIntegers(ll p) {
+    if (p == 2) return false; // 2 = (1+i)(1-i)，可约
+    return (p % 4 == 1); // p ≡ 1 mod 4 时可约
 }
 
-for (const p of [2, 3, 5, 7, 11, 13, 17, 19]) {
-    const reducible = isPrimeInGaussianIntegers(p);
-    console.log(`${p} 在 Z[i] 中${reducible ? '可约' : '不可约（是素元）'}`);
-}</code>
-            </pre>
+int main() {
+    // 示例使用
+    cout &lt;&lt; "=== 费马二平方和定理示例 ===\n";
+    
+    // 测试一些素数
+    vector&lt;ll&gt; testPrimes = {2, 3, 5, 7, 13, 17, 29, 37, 41, 97, 101, 109, 113};
+    
+    cout &lt;&lt; "素数\t≡1 mod 4?\t可表示为二平方和?\t表示\n";
+    cout &lt;&lt; string(60, '-') &lt;&lt; '\n';
+    
+    for (ll p : testPrimes) {
+        bool canBe = canBeRepresentedAsTwoSquares(p);
+        Repr representation = {-1, -1};
+        
+        if (canBe) {
+            representation = findTwoSquaresEfficient(p);
+        }
+        
+        cout &lt;&lt; p &lt;&lt; '\t' &lt;&lt; (p % 4 == 1 ? "是" : "否") &lt;&lt; "\t\t"
+             &lt;&lt; (canBe ? "是" : "否") &lt;&lt; "\t\t\t";
+        if (representation.a &gt;= 0) {
+            cout &lt;&lt; representation.a &lt;&lt; "² + " &lt;&lt; representation.b &lt;&lt; "²";
+        } else {
+            cout &lt;&lt; "无";
+        }
+        cout &lt;&lt; '\n';
+    }
+    
+    // 验证布拉马古普塔-斐波那契恒等式
+    cout &lt;&lt; "\n=== 布拉马古普塔-斐波那契恒等式验证 ===\n";
+    
+    // 测试几个例子
+    brahmaguptaFibonacci(1, 2, 2, 3);  // (1²+2²)×(2²+3²) = 5×13 = 65
+    brahmaguptaFibonacci(2, 3, 1, 4);  // (2²+3²)×(1²+4²) = 13×17 = 221
+    brahmaguptaFibonacci(3, 4, 2, 5);  // (3²+4²)×(2²+5²) = 25×29 = 725
+    
+    // 合数的二平方和表示
+    cout &lt;&lt; "\n=== 合数的二平方和表示 ===\n";
+    
+    vector&lt;ll&gt; compositeNumbers = {10, 25, 50, 65, 85, 100};
+    for (ll n : compositeNumbers) {
+        vector&lt;Repr&gt; reps = findTwoSquaresForComposite(n);
+        cout &lt;&lt; n &lt;&lt; " 的二平方和表示:\n";
+        if (!reps.empty()) {
+            for (const Repr&amp; rep : reps) {
+                cout &lt;&lt; "  " &lt;&lt; rep.a &lt;&lt; "² + " &lt;&lt; rep.b &lt;&lt; "²\n";
+            }
+        } else {
+            cout &lt;&lt; "  无（注意：有些数如6, 14等不能表示为二平方和）\n";
+        }
+    }
+    
+    // 高斯整数环上的应用
+    cout &lt;&lt; "\n=== 高斯整数环上的应用 ===\n";
+    
+    vector&lt;ll&gt; gaussianPrimes = {2, 3, 5, 7, 11, 13, 17, 19};
+    for (ll p : gaussianPrimes) {
+        bool reducible = isPrimeInGaussianIntegers(p);
+        cout &lt;&lt; p &lt;&lt; " 在 Z[i] 中" &lt;&lt; (reducible ? "可约" : "不可约（是素元）") &lt;&lt; '\n';
+    }
+    
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

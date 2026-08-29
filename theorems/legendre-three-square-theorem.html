@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>勒让德三平方和定理 - 数论百科</title>
+    <title>勒让德三平方和定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -195,48 +195,45 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 判断一个数是否是形如 4^a(8b+7) 的数
-function isOfForm4a8b7(n) {
-    let m = n;
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+// 判断一个数是否是形如 4^a(8b+7) 的数
+bool isOfForm4a8b7(long long n) {
+    long long m = n;
+    if (n <= 0) return false; // 0 和负数不是 4^a(8b+7) 的形式
     // 除以4直到不能再除
-    while (m % 4 === 0) {
+    while (m % 4 == 0) {
         m /= 4;
     }
     // 检查是否满足 m ≡ 7 (mod 8)
-    return m % 8 === 7;
+    return m % 8 == 7;
 }
 
 // 判断一个数是否可以表示为三个平方和（根据勒让德定理）
-function canBeThreeSquaresByLegendre(n) {
-    if (n < 0) return false;
+bool canBeThreeSquaresByLegendre(long long n) {
+    if (n &lt; 0) return false;
     return !isOfForm4a8b7(n);
 }
 
 // 暴力搜索三个平方和表示（用于验证，仅适用于较小n）
-function findThreeSquaresRepresentation(n) {
+vector&lt;long long&gt; findThreeSquaresRepresentation(long long n) {
     if (!canBeThreeSquaresByLegendre(n)) {
-        return null; // 根据定理，不可能
+        return {}; // 根据定理，不可能
     }
-    
-    const limit = Math.floor(Math.sqrt(n)) + 1;
-    for (let x = 0; x <= limit; x++) {
-        for (let y = x; y <= limit; y++) {
-            for (let z = y; z <= limit; z++) {
-                if (x*x + y*y + z*z === n) {
-                    return [x, y, z];
+
+    long long limit = (long long)floor(sqrt((double)n)) + 1;
+    for (long long x = 0; x &lt;= limit; x++) {
+        for (long long y = x; y &lt;= limit; y++) {
+            for (long long z = y; z &lt;= limit; z++) {
+                if (x*x + y*y + z*z == n) {
+                    return {x, y, z};
                 }
             }
         }
@@ -244,186 +241,218 @@ function findThreeSquaresRepresentation(n) {
     // 理论上不会到达这里，因为定理保证存在表示
     // 但可能表示中包含负数，而我们的搜索只用了非负数
     // 扩展搜索到负数（通过绝对值）
-    for (let x = -limit; x <= limit; x++) {
-        for (let y = -limit; y <= limit; y++) {
-            for (let z = -limit; z <= limit; z++) {
-                if (x*x + y*y + z*z === n) {
-                    return [x, y, z];
+    for (long long x = -limit; x &lt;= limit; x++) {
+        for (long long y = -limit; y &lt;= limit; y++) {
+            for (long long z = -limit; z &lt;= limit; z++) {
+                if (x*x + y*y + z*z == n) {
+                    return {x, y, z};
                 }
             }
         }
     }
-    return null;
+    return {};
 }
 
 // 生成所有不能表示为三个平方和的数（形如 4^a(8b+7)）
-function generateNumbersNotThreeSquares(limit) {
-    const result = [];
-    for (let n = 0; n <= limit; n++) {
+vector&lt;long long&gt; generateNumbersNotThreeSquares(long long limit) {
+    vector&lt;long long&gt; result;
+    for (long long n = 0; n &lt;= limit; n++) {
         if (isOfForm4a8b7(n)) {
-            result.push(n);
+            result.push_back(n);
         }
     }
     return result;
 }
 
 // 验证勒让德定理：对于所有n，定理判断与暴力搜索一致
-function verifyLegendreTheorem(limit) {
-    console.log(`验证勒让德定理，n从0到${limit}:`);
-    let passed = 0;
-    let failed = 0;
-    
-    for (let n = 0; n <= limit; n++) {
-        const byTheorem = canBeThreeSquaresByLegendre(n);
-        const byBruteForce = findThreeSquaresRepresentation(n) !== null;
-        
-        if (byTheorem === byBruteForce) {
+bool verifyLegendreTheorem(long long limit) {
+    cout &lt;&lt; "验证勒让德定理，n从0到" &lt;&lt; limit &lt;&lt; ":\n";
+    long long passed = 0;
+    long long failed = 0;
+
+    for (long long n = 0; n &lt;= limit; n++) {
+        bool byTheorem = canBeThreeSquaresByLegendre(n);
+        bool byBruteForce = !findThreeSquaresRepresentation(n).empty();
+
+        if (byTheorem == byBruteForce) {
             passed++;
         } else {
             failed++;
-            console.log(`矛盾：n=${n}, 定理判断=${byTheorem}, 暴力搜索=${byBruteForce}`);
+            cout &lt;&lt; "矛盾：n=" &lt;&lt; n &lt;&lt; ", 定理判断=" &lt;&lt; (byTheorem ? "true" : "false")
+                 &lt;&lt; ", 暴力搜索=" &lt;&lt; (byBruteForce ? "true" : "false") &lt;&lt; "\n";
         }
     }
-    
-    console.log(`验证完成：通过 ${passed} 个，失败 ${failed} 个`);
-    return failed === 0;
-}
 
-// 示例使用
-console.log("=== 勒让德三平方和定理示例 ===");
-
-// 示例1：检查特定数字
-const testNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 28, 29, 30, 31, 32];
-console.log("\n1. 检查特定数字是否可以表示为三个平方和：");
-for (const n of testNumbers) {
-    const canBe = canBeThreeSquaresByLegendre(n);
-    const representation = findThreeSquaresRepresentation(n);
-    console.log(`n=${n}: 定理判断=${canBe}, 表示=${representation ? representation.join(', ') : '无'}`);
-}
-
-// 示例2：生成不能表示为三个平方和的数
-console.log("\n2. 不能表示为三个平方和的数（不超过100）：");
-const notThreeSquares = generateNumbersNotThreeSquares(100);
-console.log(notThreeSquares.join(', '));
-console.log(`个数：${notThreeSquares.length}`);
-
-// 示例3：验证定理
-console.log("\n3. 验证定理（n不超过50）：");
-verifyLegendreTheorem(50);
-
-// 示例4：寻找大数的表示
-console.log("\n4. 寻找大数的三个平方和表示：");
-const largeNumbers = [100, 101, 102, 103, 104, 105, 106, 107];
-for (const n of largeNumbers) {
-    const canBe = canBeThreeSquaresByLegendre(n);
-    console.log(`n=${n}: 可表示为三个平方和？${canBe}`);
-    if (canBe) {
-        // 对于大数，暴力搜索效率低，使用优化方法
-        // 这里使用一个简单的优化：先找到可能的平方根范围
-        const representation = findThreeSquaresRepresentation(n);
-        if (representation) {
-            console.log(`  表示：${n} = ${representation[0]}^2 + ${representation[1]}^2 + ${representation[2]}^2`);
-        } else {
-            console.log(`  未找到表示（可能搜索范围不够）`);
-        }
-    }
+    cout &lt;&lt; "验证完成：通过 " &lt;&lt; passed &lt;&lt; " 个，失败 " &lt;&lt; failed &lt;&lt; " 个\n";
+    return failed == 0;
 }
 
 // 优化算法：使用数论性质更高效地寻找表示
-function findThreeSquaresEfficient(n) {
+vector&lt;long long&gt; findThreeSquaresEfficient(long long n) {
     if (!canBeThreeSquaresByLegendre(n)) {
-        return null;
+        return {};
     }
-    
-    // 方法：先尝试找到两个平方和，然后检查剩余是否为平方数
-    const sqrtN = Math.floor(Math.sqrt(n));
-    
-    // 尝试所有可能的x
-    for (let x = 0; x <= sqrtN; x++) {
-        const remaining = n - x * x;
-        if (remaining < 0) break;
-        
-        // 在剩余数中寻找两个平方和
-        const sqrtRemaining = Math.floor(Math.sqrt(remaining));
-        for (let y = 0; y <= sqrtRemaining; y++) {
-            const z2 = remaining - y * y;
-            if (z2 < 0) break;
-            
-            const z = Math.sqrt(z2);
-            if (Number.isInteger(z)) {
-                return [x, y, z];
-            }
-        }
-    }
-    
-    // 如果没找到，尝试负数
-    for (let x = -sqrtN; x <= sqrtN; x++) {
-        const remaining = n - x * x;
-        if (remaining < 0) continue;
-        
-        const sqrtRemaining = Math.floor(Math.sqrt(remaining));
-        for (let y = -sqrtRemaining; y <= sqrtRemaining; y++) {
-            const z2 = remaining - y * y;
-            if (z2 < 0) continue;
-            
-            const z = Math.sqrt(z2);
-            if (Number.isInteger(z)) {
-                return [x, y, z];
-            }
-        }
-    }
-    
-    return null;
-}
 
-console.log("\n5. 使用优化算法寻找表示：");
-for (const n of [100, 101, 102, 103, 104, 105]) {
-    const representation = findThreeSquaresEfficient(n);
-    console.log(`n=${n}: ${representation ? `表示：${representation.join(', ')}` : '无表示'}`);
+    // 方法：先尝试找到两个平方和，然后检查剩余是否为平方数
+    long long sqrtN = (long long)floor(sqrt((double)n));
+
+    // 尝试所有可能的x
+    for (long long x = 0; x &lt;= sqrtN; x++) {
+        long long remaining = n - x * x;
+        if (remaining &lt; 0) break;
+
+        // 在剩余数中寻找两个平方和
+        long long sqrtRemaining = (long long)floor(sqrt((double)remaining));
+        for (long long y = 0; y &lt;= sqrtRemaining; y++) {
+            long long z2 = remaining - y * y;
+            if (z2 &lt; 0) break;
+
+            long long z = (long long)round(sqrt((double)z2));
+            if (z * z == z2) {
+                return {x, y, z};
+            }
+        }
+    }
+
+    // 如果没找到，尝试负数
+    for (long long x = -sqrtN; x &lt;= sqrtN; x++) {
+        long long remaining = n - x * x;
+        if (remaining &lt; 0) continue;
+
+        long long sqrtRemaining = (long long)floor(sqrt((double)remaining));
+        for (long long y = -sqrtRemaining; y &lt;= sqrtRemaining; y++) {
+            long long z2 = remaining - y * y;
+            if (z2 &lt; 0) continue;
+
+            long long z = (long long)round(sqrt((double)z2));
+            if (z * z == z2) {
+                return {x, y, z};
+            }
+        }
+    }
+
+    return {};
 }
 
 // 统计性质：计算在给定范围内可表示为三个平方和的数的比例
-function statisticsThreeSquares(limit) {
-    let countCanBe = 0;
-    for (let n = 0; n <= limit; n++) {
+void statisticsThreeSquares(long long limit) {
+    long long countCanBe = 0;
+    for (long long n = 0; n &lt;= limit; n++) {
         if (canBeThreeSquaresByLegendre(n)) {
             countCanBe++;
         }
     }
-    const proportion = countCanBe / (limit + 1);
-    console.log(`\n6. 统计（0-${limit}）：`);
-    console.log(`可表示为三个平方和的数：${countCanBe} 个`);
-    console.log(`比例：${(proportion * 100).toFixed(2)}%`);
-    console.log(`不能表示的：${limit + 1 - countCanBe} 个`);
+    double proportion = (double)countCanBe / (double)(limit + 1);
+    cout &lt;&lt; "\n6. 统计（0-" &lt;&lt; limit &lt;&lt; "）：\n";
+    cout &lt;&lt; "可表示为三个平方和的数：" &lt;&lt; countCanBe &lt;&lt; " 个\n";
+    cout &lt;&lt; "比例：" &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; (proportion * 100.0) &lt;&lt; "%\n";
+    cout &lt;&lt; "不能表示的：" &lt;&lt; (limit + 1 - countCanBe) &lt;&lt; " 个\n";
 }
 
-statisticsThreeSquares(1000);
-
 // 与四平方和定理的关系：所有自然数都可以表示为四个平方和
-function findFourSquaresRepresentation(n) {
+vector&lt;long long&gt; findFourSquaresRepresentation(long long n) {
     // 简单暴力搜索，仅用于演示
-    const limit = Math.floor(Math.sqrt(n)) + 1;
-    for (let a = 0; a <= limit; a++) {
-        for (let b = a; b <= limit; b++) {
-            for (let c = b; c <= limit; c++) {
-                for (let d = c; d <= limit; d++) {
-                    if (a*a + b*b + c*c + d*d === n) {
-                        return [a, b, c, d];
+    long long limit = (long long)floor(sqrt((double)n)) + 1;
+    for (long long a = 0; a &lt;= limit; a++) {
+        for (long long b = a; b &lt;= limit; b++) {
+            for (long long c = b; c &lt;= limit; c++) {
+                for (long long d = c; d &lt;= limit; d++) {
+                    if (a*a + b*b + c*c + d*d == n) {
+                        return {a, b, c, d};
                     }
                 }
             }
         }
     }
-    return null;
+    return {};
 }
 
-console.log("\n7. 与拉格朗日四平方定理比较：");
-for (const n of [7, 15, 23, 28, 31]) {
-    const threeSquares = canBeThreeSquaresByLegendre(n);
-    const fourSquares = findFourSquaresRepresentation(n);
-    console.log(`n=${n}: 三平方和？${threeSquares}, 四平方和表示：${fourSquares ? fourSquares.join(', ') : '无'}`);
-}</code>
-            </pre>
+int main() {
+    cout &lt;&lt; "=== 勒让德三平方和定理示例 ===\n";
+
+    // 示例1：检查特定数字
+    vector&lt;long long&gt; testNumbers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 28, 29, 30, 31, 32};
+    cout &lt;&lt; "\n1. 检查特定数字是否可以表示为三个平方和：\n";
+    for (long long n : testNumbers) {
+        bool canBe = canBeThreeSquaresByLegendre(n);
+        vector&lt;long long&gt; representation = findThreeSquaresRepresentation(n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": 定理判断=" &lt;&lt; (canBe ? "true" : "false") &lt;&lt; ", 表示=";
+        if (representation.empty()) {
+            cout &lt;&lt; "无";
+        } else {
+            for (size_t i = 0; i &lt; representation.size(); i++) {
+                if (i &gt; 0) cout &lt;&lt; ", ";
+                cout &lt;&lt; representation[i];
+            }
+        }
+        cout &lt;&lt; "\n";
+    }
+
+    // 示例2：生成不能表示为三个平方和的数
+    cout &lt;&lt; "\n2. 不能表示为三个平方和的数（不超过100）：\n";
+    vector&lt;long long&gt; notThreeSquares = generateNumbersNotThreeSquares(100);
+    for (size_t i = 0; i &lt; notThreeSquares.size(); i++) {
+        if (i &gt; 0) cout &lt;&lt; ", ";
+        cout &lt;&lt; notThreeSquares[i];
+    }
+    cout &lt;&lt; "\n个数：" &lt;&lt; notThreeSquares.size() &lt;&lt; "\n";
+
+    // 示例3：验证定理
+    cout &lt;&lt; "\n3. 验证定理（n不超过50）：\n";
+    verifyLegendreTheorem(50);
+
+    // 示例4：寻找大数的表示
+    cout &lt;&lt; "\n4. 寻找大数的三个平方和表示：\n";
+    vector&lt;long long&gt; largeNumbers = {100, 101, 102, 103, 104, 105, 106, 107};
+    for (long long n : largeNumbers) {
+        bool canBe = canBeThreeSquaresByLegendre(n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": 可表示为三个平方和？" &lt;&lt; (canBe ? "true" : "false") &lt;&lt; "\n";
+        if (canBe) {
+            vector&lt;long long&gt; representation = findThreeSquaresRepresentation(n);
+            if (!representation.empty()) {
+                cout &lt;&lt; "  表示：" &lt;&lt; n &lt;&lt; " = " &lt;&lt; representation[0] &lt;&lt; "^2 + "
+                     &lt;&lt; representation[1] &lt;&lt; "^2 + " &lt;&lt; representation[2] &lt;&lt; "^2\n";
+            } else {
+                cout &lt;&lt; "  未找到表示（可能搜索范围不够）\n";
+            }
+        }
+    }
+
+    cout &lt;&lt; "\n5. 使用优化算法寻找表示：\n";
+    vector&lt;long long&gt; efficientNumbers = {100, 101, 102, 103, 104, 105};
+    for (long long n : efficientNumbers) {
+        vector&lt;long long&gt; representation = findThreeSquaresEfficient(n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": ";
+        if (representation.empty()) {
+            cout &lt;&lt; "无表示";
+        } else {
+            cout &lt;&lt; "表示：" &lt;&lt; representation[0] &lt;&lt; ", " &lt;&lt; representation[1] &lt;&lt; ", " &lt;&lt; representation[2];
+        }
+        cout &lt;&lt; "\n";
+    }
+
+    statisticsThreeSquares(1000);
+
+    cout &lt;&lt; "\n7. 与拉格朗日四平方定理比较：\n";
+    vector&lt;long long&gt; fourSquaresTest = {7, 15, 23, 28, 31};
+    for (long long n : fourSquaresTest) {
+        bool threeSquares = canBeThreeSquaresByLegendre(n);
+        vector&lt;long long&gt; fourSquares = findFourSquaresRepresentation(n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": 三平方和？" &lt;&lt; (threeSquares ? "true" : "false") &lt;&lt; ", 四平方和表示：";
+        if (fourSquares.empty()) {
+            cout &lt;&lt; "无";
+        } else {
+            for (size_t i = 0; i &lt; fourSquares.size(); i++) {
+                if (i &gt; 0) cout &lt;&lt; ", ";
+                cout &lt;&lt; fourSquares[i];
+            }
+        }
+        cout &lt;&lt; "\n";
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 
@@ -514,7 +543,7 @@ for (const n of [7, 15, 23, 28, 31]) {
                 1. 定理中的整数包括零和负整数，但由于平方的非负性，通常只需考虑非负整数解。<br>
                 2. 形如 $4^a(8b+7)$ 的数不能表示为三个平方和，但总可以表示为四个平方和（拉格朗日定理）。<br>
                 3. 定理的逆否命题：如果 $n$ 可以表示为三个平方和，则 $n \neq 4^a(8b+7)$。<br>
-                4. 对于 $n=0$，有 $0=0^2+0^2+0^2$，且 $0$ 不是形如 $4^a(8b+7)$ 的数（因为 $7>0$），所以定理成立。<br>
+                4. 对于 $n=0$，有 $0=0^2+0^2+0^2$，且 $0$ 不是形如 $4^a(8b+7)$ 的数（因为 $7\gt0$），所以定理成立。<br>
                 5. 定理在计算机科学中可用于优化算法，避免不必要的搜索。
             </p>
             

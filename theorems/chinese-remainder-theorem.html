@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>中国剩余定理 - 数论百科</title>
+    <title>中国剩余定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -179,100 +179,85 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #f5f5f5; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3>代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #2d2d2d; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 扩展欧几里得算法求逆元
-function modInverse(a, m) {
-    let [old_r, r] = [a, m];
-    let [old_s, s] = [1, 0];
-    let [old_t, t] = [0, 1];
-    
-    while (r !== 0) {
-        const quotient = Math.floor(old_r / r);
-        [old_r, r] = [r, old_r - quotient * r];
-        [old_s, s] = [s, old_s - quotient * s];
-        [old_t, t] = [t, old_t - quotient * t];
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note"><strong>算法复杂度：</strong> 设模数的个数为 $k$，最大模数为 $m_{\text{max}}$，则时间复杂度为 $O(k \log m_{\text{max}})$（主要开销在于求逆元的扩展欧几里得算法），空间复杂度为 $O(k)$（存储中间计算结果）。</p>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// 扩展欧几里得算法求逆元
+long long modInverse(long long a, long long m) {
+    long long old_r = a, r = m;
+    long long old_s = 1, s = 0;
+    while (r != 0) {
+        long long quotient = old_r / r;
+        long long tmp_r = old_r - quotient * r;
+        old_r = r;
+        r = tmp_r;
+        long long tmp_s = old_s - quotient * s;
+        old_s = s;
+        s = tmp_s;
     }
-    
     // 确保逆元是正数
     return (old_s % m + m) % m;
 }
 
 // 中国剩余定理实现
-function chineseRemainderTheorem(congruences) {
-    // congruences: [{a: 余数, m: 模数}, ...]
-    const n = congruences.length;
-    
-    // 计算M = m1 * m2 * ... * mk
-    let M = 1;
-    for (const cong of congruences) {
-        M *= cong.m;
+long long chineseRemainderTheorem(const vector&lt;pair&lt;long long, long long&gt;&gt;&amp; congruences) {
+    // congruences: (余数 a, 模数 m)
+    // 计算 M = m1 * m2 * ... * mk
+    long long M = 1;
+    for (auto cong : congruences) {
+        M *= cong.second;
     }
-    
-    let solution = 0;
-    for (const cong of congruences) {
-        const a_i = cong.a;
-        const m_i = cong.m;
-        const M_i = M / m_i;
-        
-        // 求M_i在模m_i下的逆元
-        const t_i = modInverse(M_i, m_i);
-        
+
+    long long solution = 0;
+    for (auto cong : congruences) {
+        long long a_i = cong.first;
+        long long m_i = cong.second;
+        long long M_i = M / m_i;
+
+        // 求 M_i 在模 m_i 下的逆元
+        long long t_i = modInverse(M_i, m_i);
+
         // 累加
         solution += a_i * M_i * t_i;
     }
-    
-    // 取模M得到最小非负解
+
+    // 取模 M 得到最小非负解
     return ((solution % M) + M) % M;
 }
 
-// 示例使用
-const congruences = [
-    { a: 2, m: 3 },
-    { a: 3, m: 5 },
-    { a: 2, m: 7 }
-];
+int main() {
+    // 示例使用
+    vector&lt;pair&lt;long long, long long&gt;&gt; congruences = {
+        {2, 3}, {3, 5}, {2, 7}
+    };
 
-const result = chineseRemainderTheorem(congruences);
-console.log(`解为: x ≡ ${result} (mod 105)`);  // 输出: 解为: x ≡ 23 (mod 105)
+    long long result = chineseRemainderTheorem(congruences);
+    cout &lt;&lt; "解为: x ≡ " &lt;&lt; result &lt;&lt; " (mod 105)\n";  // 输出: 解为: x ≡ 23 (mod 105)
 
-// 验证
-console.log(`验证:`);
-for (const cong of congruences) {
-    const remainder = result % cong.m;
-    console.log(`${result} ≡ ${remainder} (mod ${cong.m})，要求 ${cong.a}，${remainder === cong.a ? '✓' : '✗'}`);
+    // 验证
+    cout &lt;&lt; "验证:\n";
+    for (auto cong : congruences) {
+        long long remainder = result % cong.second;
+        cout &lt;&lt; result &lt;&lt; " ≡ " &lt;&lt; remainder &lt;&lt; " (mod " &lt;&lt; cong.second
+             &lt;&lt; ")，要求 " &lt;&lt; cong.first &lt;&lt; "，"
+             &lt;&lt; (remainder == cong.first ? "✓" : "✗") &lt;&lt; "\n";
+    }
+
+    // 更复杂的例子
+    vector&lt;pair&lt;long long, long long&gt;&gt; example2 = {
+        {1, 2}, {2, 3}, {3, 5}, {4, 7}
+    };
+    cout &lt;&lt; "第二个例子解为: " &lt;&lt; chineseRemainderTheorem(example2) &lt;&lt; "\n";
+
+    return 0;
 }
-
-// 更复杂的例子
-const example2 = [
-    { a: 1, m: 2 },
-    { a: 2, m: 3 },
-    { a: 3, m: 5 },
-    { a: 4, m: 7 }
-];
-
-console.log(`第二个例子解为: ${chineseRemainderTheorem(example2)}`);</code>
-            </pre>
-            
-            <p style="margin-top: 15px;">
-                <strong>算法复杂度：</strong>
-                设模数的个数为 $k$，最大模数为 $m_{\text{max}}$，则：
-                <ul>
-                    <li>时间复杂度：$O(k \log m_{\text{max}})$，主要开销在于求逆元的扩展欧几里得算法。</li>
-                    <li>空间复杂度：$O(k)$，存储中间计算结果。</li>
-                </ul>
-            </p>
+</code></pre>
         </section>
 
         <section class="applications" 

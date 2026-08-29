@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Tonelli-Shanks算法 - 数论百科</title>
+    <title>Tonelli-Shanks算法 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -77,7 +77,7 @@
             
             <ol style="line-height: 1.6;">
                 <li>
-                    <strong>输入：</strong>奇素数 $p$ 和整数 $a$（$0 \leq a < p$），且 $a$ 是模 $p$ 的二次剩余。
+                    <strong>输入：</strong>奇素数 $p$ 和整数 $a$（$0 \leq a \lt p$），且 $a$ 是模 $p$ 的二次剩余。
                 </li>
                 
                 <li>
@@ -113,7 +113,7 @@
                     <strong>迭代修正：</strong>
                     当 $t \not\equiv 1 \pmod{p}$ 时循环：
                     <ol type="a">
-                        <li>找到最小的 $i$（$1 \leq i < m$），使得 $t^{2^i} \equiv 1 \pmod{p}$。</li>
+                        <li>找到最小的 $i$（$1 \leq i \lt m$），使得 $t^{2^i} \equiv 1 \pmod{p}$。</li>
                         <li>计算 $b \equiv c^{2^{m-i-1}} \bmod p$（修正因子）</li>
                         <li>更新 $r \equiv r \cdot b \bmod p$</li>
                         <li>更新 $t \equiv t \cdot b^2 \bmod p$</li>
@@ -174,7 +174,7 @@
                             <li>$m = 2$</li>
                         </ul>
                         <ul>
-                            <li>$t = 32$，计算 $t^{2^1}=32^2=1024\equiv 40$，$t^{2^2}=40^2=1600\equiv 1$，所以 $i=2$，但 $i$ 需小于 $m=2$，因此 $i$ 不存在？实际上算法会继续，此时 $i=m$，意味着 $t$ 的阶恰好是 $2^m$，应该已经结束？但 $t$ 还不是1，所以需要继续：因为 $t^{2^{m-1}} \equiv 40 \not\equiv 1$，而 $t^{2^m} \equiv 1$，说明 $t$ 的阶是 $2^m$，此时应该继续修正，但公式要求 $i < m$。如果 $i = m$，说明 $t$ 的阶是 $2^m$，那么根据算法，我们实际上已经完成了？实际上算法会在 $t=1$ 时终止，这里 $t=32 \neq 1$，所以还需要找 $i$，但 $i$ 应该是最小使得 $t^{2^i} \equiv 1$ 的指数，而 $t^{2^2} \equiv 1$，所以 $i=2$，但 $m=2$，$i$ 不小于 $m$，这违反了 $i < m$ 的条件，因此算法进入异常？这表示我们计算有误，因为正确的平方根应该是 $13$ 或 $28$。正确的迭代过程应更简洁，这里仅作示例，实际实现会正确收敛。</li>
+                            <li>$t = 32$，计算 $t^{2^1}=32^2=1024\equiv 40$，$t^{2^2}=40^2=1600\equiv 1$，所以 $i=2$，但 $i$ 需小于 $m=2$，因此 $i$ 不存在？实际上算法会继续，此时 $i=m$，意味着 $t$ 的阶恰好是 $2^m$，应该已经结束？但 $t$ 还不是1，所以需要继续：因为 $t^{2^{m-1}} \equiv 40 \not\equiv 1$，而 $t^{2^m} \equiv 1$，说明 $t$ 的阶是 $2^m$，此时应该继续修正，但公式要求 $i \lt m$。如果 $i = m$，说明 $t$ 的阶是 $2^m$，那么根据算法，我们实际上已经完成了？实际上算法会在 $t=1$ 时终止，这里 $t=32 \neq 1$，所以还需要找 $i$，但 $i$ 应该是最小使得 $t^{2^i} \equiv 1$ 的指数，而 $t^{2^2} \equiv 1$，所以 $i=2$，但 $m=2$，$i$ 不小于 $m$，这违反了 $i \lt m$ 的条件，因此算法进入异常？这表示我们计算有误，因为正确的平方根应该是 $13$ 或 $28$。正确的迭代过程应更简洁，这里仅作示例，实际实现会正确收敛。</li>
                         </ul>
                     </li>
                     <li>正确的结果是 $x=13$ 或 $x=28$，因为 $13^2=169\equiv 5$，$28^2=784\equiv 5$。上述计算过程需要更仔细的跟踪，但算法思路已展示。</li>
@@ -210,189 +210,200 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算勒让德符号 (a|p)
-function legendreSymbol(a, p) {
-    // 使用欧拉判别法：a^((p-1)/2) mod p = 1 表示二次剩余，-1 表示二次非剩余
-    const result = modPow(a, (p - 1) / 2, p);
-    return result === p - 1 ? -1 : result;
-}
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;chrono&gt;
+
+using namespace std;
 
 // 快速幂模运算
-function modPow(base, exp, mod) {
-    let result = 1n;
-    let b = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    let m = BigInt(mod);
-    
-    while (e > 0n) {
-        if (e & 1n) {
-            result = (result * b) % m;
+long long modPow(long long base, long long exp, long long mod) {
+    long long result = 1;
+    long long b = base % mod;
+    long long e = exp;
+    while (e &gt; 0) {
+        if (e &amp; 1) {
+            result = (__int128)result * b % mod;
         }
-        b = (b * b) % m;
-        e >>= 1n;
+        b = (__int128)b * b % mod;
+        e &gt;&gt;= 1;
     }
-    return Number(result);
+    return result;
+}
+
+// 计算勒让德符号 (a|p)
+long long legendreSymbol(long long a, long long p) {
+    // 使用欧拉判别法：a^((p-1)/2) mod p = 1 表示二次剩余，-1 表示二次非剩余
+    long long result = modPow(a, (p - 1) / 2, p);
+    return result == p - 1 ? -1 : result;
 }
 
 // Tonelli-Shanks 算法求模平方根
-function tonelliShanks(a, p) {
+long long tonelliShanks(long long a, long long p) {
+    a %= p;
     // 处理特殊情况
-    if (a === 0) return 0;
-    if (p === 2) return a; // 模2时平方根就是本身
-    
+    if (a == 0) return 0;
+    if (p == 2) return a; // 模2时平方根就是本身
+
     // 检查是否存在平方根
-    if (legendreSymbol(a, p) !== 1) {
-        return null; // 不是二次剩余，无解
+    if (legendreSymbol(a, p) != 1) {
+        return -1; // 不是二次剩余，无解
     }
-    
+
     // 情况1：p ≡ 3 (mod 4)，使用简单公式
-    if (p % 4 === 3) {
+    if (p % 4 == 3) {
         return modPow(a, (p + 1) / 4, p);
     }
-    
+
     // 情况2：p ≡ 1 (mod 4)，使用 Tonelli-Shanks
     // 分解 p-1 = 2^s * q，q 为奇数
-    let q = p - 1;
-    let s = 0;
-    while (q % 2 === 0) {
+    long long q = p - 1;
+    int s = 0;
+    while (q % 2 == 0) {
         q /= 2;
         s++;
     }
-    
+
     // 寻找一个二次非剩余 z
-    let z = 2;
-    while (legendreSymbol(z, p) !== -1) {
+    long long z = 2;
+    while (legendreSymbol(z, p) != -1) {
         z++;
     }
-    
+
     // 初始化变量
-    let c = modPow(z, q, p);
-    let r = modPow(a, (q + 1) / 2, p);
-    let t = modPow(a, q, p);
-    let m = s;
-    
+    long long c = modPow(z, q, p);
+    long long r = modPow(a, (q + 1) / 2, p);
+    long long t = modPow(a, q, p);
+    int m = s;
+
     // 迭代修正
-    while (t !== 1) {
-        // 寻找最小的 i (1 ≤ i < m) 使得 t^(2^i) ≡ 1 mod p
-        let i = 1;
-        let t2i = modPow(t, Math.pow(2, i), p);
-        while (t2i !== 1 && i < m) {
+    while (t != 1) {
+        // 寻找最小的 i (0 ≤ i &lt; m) 使得 t^(2^i) ≡ 1 mod p
+        long long t2i = t;
+        int i = 0;
+        while (t2i != 1) {
+            t2i = (__int128)t2i * t2i % p;
             i++;
-            t2i = modPow(t, Math.pow(2, i), p);
         }
-        
-        if (i === m) {
+        if (i == m) {
             // 理论上不应发生，若发生说明算法失败
-            return null;
+            return -1;
         }
-        
+
         // 计算修正因子 b = c^(2^(m-i-1))
-        let exponent = Math.pow(2, m - i - 1);
-        let b = modPow(c, exponent, p);
-        
+        long long b = modPow(c, 1LL &lt;&lt; (m - i - 1), p);
+
         // 更新变量
-        r = (r * b) % p;
-        c = (b * b) % p;
-        t = (t * c) % p;
+        r = (__int128)r * b % p;
+        c = (__int128)b * b % p;
+        t = (__int128)t * c % p;
         m = i;
     }
-    
+
     return r;
 }
 
-// 示例使用
-console.log("=== Tonelli-Shanks 算法示例 ===");
-
-// 测试用例
-const testCases = [
-    { a: 5, p: 41, desc: "x² ≡ 5 (mod 41)" },
-    { a: 10, p: 13, desc: "x² ≡ 10 (mod 13)" },
-    { a: 2, p: 7, desc: "x² ≡ 2 (mod 7)" },
-    { a: 3, p: 11, desc: "x² ≡ 3 (mod 11)" },
-    { a: 2, p: 23, desc: "x² ≡ 2 (mod 23)" },
-    { a: 5, p: 29, desc: "x² ≡ 5 (mod 29)" }
-];
-
-for (const tc of testCases) {
-    console.log(`\n求解 ${tc.desc}`);
-    
-    const root = tonelliShanks(tc.a, tc.p);
-    
-    if (root === null) {
-        console.log(`无解（${tc.a} 不是模 ${tc.p} 的二次剩余）`);
-    } else {
-        const otherRoot = tc.p - root;
-        console.log(`解为: x ≡ ${root} 或 ${otherRoot} (mod ${tc.p})`);
-        
-        // 验证
-        const v1 = (root * root) % tc.p;
-        const v2 = (otherRoot * otherRoot) % tc.p;
-        console.log(`验证: ${root}² = ${v1} ≡ ${tc.a}? ${v1 === tc.a}`);
-        console.log(`验证: ${otherRoot}² = ${v2} ≡ ${tc.a}? ${v2 === tc.a}`);
-    }
-}
-
-// 性能测试：大素数情况
-console.log("\n=== 性能测试 ===");
-const largeP = 1000000007; // 一个大的素数
-const largeA = 123456789;
-
-console.time("Tonelli-Shanks 大数计算");
-const largeRoot = tonelliShanks(largeA, largeP);
-console.timeEnd("Tonelli-Shanks 大数计算");
-
-if (largeRoot !== null) {
-    console.log(`解: ${largeRoot} (mod ${largeP})`);
-    console.log(`验证: ${largeRoot}² mod ${largeP} = ${(largeRoot * largeRoot) % largeP}`);
-} else {
-    console.log(`${largeA} 不是模 ${largeP} 的二次剩余`);
-}
-
-// 测试 p ≡ 3 mod 4 的情况（快速路径）
-console.log("\n=== 测试 p ≡ 3 mod 4 情况 ===");
-const p3mod4 = 19; // 19 ≡ 3 mod 4
-const a3 = 7;
-
-console.time("快速路径");
-const root3 = tonelliShanks(a3, p3mod4);
-console.timeEnd("快速路径");
-
-if (root3 !== null) {
-    console.log(`解: ${root3} (mod ${p3mod4})`);
-    console.log(`验证: ${root3}² mod ${p3mod4} = ${(root3 * root3) % p3mod4}`);
-}
-
-// 测试寻找二次非剩余的期望尝试次数
-console.log("\n=== 寻找二次非剩余的尝试次数 ===");
-function countAttempts(p) {
-    let z = 2;
-    let attempts = 0;
-    while (legendreSymbol(z, p) !== -1) {
+// 计算寻找二次非剩余需要的尝试次数
+int countAttempts(long long p) {
+    long long z = 2;
+    int attempts = 0;
+    while (legendreSymbol(z, p) != -1) {
         z++;
         attempts++;
     }
     return attempts;
 }
 
-const primes = [41, 13, 23, 29, 1009, 1013, 1019];
-for (const p of primes) {
-    const attempts = countAttempts(p);
-    console.log(`p=${p}，找到最小二次非剩余需要 ${attempts} 次尝试`);
-}</code>
-            </pre>
+int main() {
+    // 示例使用
+    cout &lt;&lt; "=== Tonelli-Shanks 算法示例 ===\n";
+
+    // 测试用例
+    struct TestCase {
+        long long a, p;
+        string desc;
+    };
+    vector&lt;TestCase&gt; testCases = {
+        {5, 41, "x² ≡ 5 (mod 41)"},
+        {10, 13, "x² ≡ 10 (mod 13)"},
+        {2, 7, "x² ≡ 2 (mod 7)"},
+        {3, 11, "x² ≡ 3 (mod 11)"},
+        {2, 23, "x² ≡ 2 (mod 23)"},
+        {5, 29, "x² ≡ 5 (mod 29)"}
+    };
+
+    for (const auto&amp; tc : testCases) {
+        cout &lt;&lt; "\n求解 " &lt;&lt; tc.desc &lt;&lt; '\n';
+
+        long long root = tonelliShanks(tc.a, tc.p);
+
+        if (root == -1) {
+            cout &lt;&lt; "无解（" &lt;&lt; tc.a &lt;&lt; " 不是模 " &lt;&lt; tc.p &lt;&lt; " 的二次剩余）\n";
+        } else {
+            long long otherRoot = tc.p - root;
+            cout &lt;&lt; "解为: x ≡ " &lt;&lt; root &lt;&lt; " 或 " &lt;&lt; otherRoot &lt;&lt; " (mod " &lt;&lt; tc.p &lt;&lt; ")\n";
+
+            // 验证
+            long long v1 = (long long)((__int128)root * root % tc.p);
+            long long v2 = (long long)((__int128)otherRoot * otherRoot % tc.p);
+            cout &lt;&lt; "验证: " &lt;&lt; root &lt;&lt; "² = " &lt;&lt; v1 &lt;&lt; " ≡ " &lt;&lt; tc.a &lt;&lt; "? "
+                 &lt;&lt; (v1 == tc.a ? "true" : "false") &lt;&lt; '\n';
+            cout &lt;&lt; "验证: " &lt;&lt; otherRoot &lt;&lt; "² = " &lt;&lt; v2 &lt;&lt; " ≡ " &lt;&lt; tc.a &lt;&lt; "? "
+                 &lt;&lt; (v2 == tc.a ? "true" : "false") &lt;&lt; '\n';
+        }
+    }
+
+    // 性能测试：大素数情况
+    cout &lt;&lt; "\n=== 性能测试 ===\n";
+    const long long largeP = 1000000007; // 一个大的素数
+    const long long largeA = 123456789;
+
+    auto start = chrono::steady_clock::now();
+    long long largeRoot = tonelliShanks(largeA, largeP);
+    auto finish = chrono::steady_clock::now();
+    double elapsed = chrono::duration&lt;double&gt;(finish - start).count();
+    cout &lt;&lt; "Tonelli-Shanks 大数计算耗时: " &lt;&lt; elapsed &lt;&lt; " 秒\n";
+
+    if (largeRoot != -1) {
+        cout &lt;&lt; "解: " &lt;&lt; largeRoot &lt;&lt; " (mod " &lt;&lt; largeP &lt;&lt; ")\n";
+        cout &lt;&lt; "验证: " &lt;&lt; largeRoot &lt;&lt; "² mod " &lt;&lt; largeP &lt;&lt; " = "
+             &lt;&lt; (long long)((__int128)largeRoot * largeRoot % largeP) &lt;&lt; '\n';
+    } else {
+        cout &lt;&lt; largeA &lt;&lt; " 不是模 " &lt;&lt; largeP &lt;&lt; " 的二次剩余\n";
+    }
+
+    // 测试 p ≡ 3 mod 4 的情况（快速路径）
+    cout &lt;&lt; "\n=== 测试 p ≡ 3 mod 4 情况 ===\n";
+    const long long p3mod4 = 19; // 19 ≡ 3 mod 4
+    const long long a3 = 7;
+
+    auto start2 = chrono::steady_clock::now();
+    long long root3 = tonelliShanks(a3, p3mod4);
+    auto finish2 = chrono::steady_clock::now();
+    double elapsed2 = chrono::duration&lt;double&gt;(finish2 - start2).count();
+    cout &lt;&lt; "快速路径耗时: " &lt;&lt; elapsed2 &lt;&lt; " 秒\n";
+
+    if (root3 != -1) {
+        cout &lt;&lt; "解: " &lt;&lt; root3 &lt;&lt; " (mod " &lt;&lt; p3mod4 &lt;&lt; ")\n";
+        cout &lt;&lt; "验证: " &lt;&lt; root3 &lt;&lt; "² mod " &lt;&lt; p3mod4 &lt;&lt; " = "
+             &lt;&lt; (long long)((__int128)root3 * root3 % p3mod4) &lt;&lt; '\n';
+    }
+
+    // 测试寻找二次非剩余的期望尝试次数
+    cout &lt;&lt; "\n=== 寻找二次非剩余的尝试次数 ===\n";
+    vector&lt;long long&gt; primes = {41, 13, 23, 29, 1009, 1013, 1019};
+    for (long long p : primes) {
+        int attempts = countAttempts(p);
+        cout &lt;&lt; "p=" &lt;&lt; p &lt;&lt; "，找到最小二次非剩余需要 " &lt;&lt; attempts &lt;&lt; " 次尝试\n";
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>狄利克雷定理 - 数论百科</title>
+    <title>狄利克雷定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -74,7 +74,7 @@
             <ol style="line-height: 1.6;">
                 <li>
                     <strong>互质条件的必要性：</strong>
-                    如果 $\gcd(a, d) > 1$，那么数列中的每一项都能被 $\gcd(a, d)$ 整除，
+                    如果 $\gcd(a, d) \gt 1$，那么数列中的每一项都能被 $\gcd(a, d)$ 整除，
                     因此最多只能有一个素数（当 $\gcd(a, d)$ 本身是素数且等于数列中的某一项时）。
                 </li>
                 
@@ -202,194 +202,191 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：验证狄利克雷定理</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算欧拉函数 φ(n)
-function eulerPhi(n) {
-    let result = n;
-    let temp = n;
-    
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
-            while (temp % p === 0) {
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+#include &lt;cstdlib&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// 计算欧拉函数 φ(n)
+long long eulerPhi(long long n) {
+    long long result = n;
+    long long temp = n;
+
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
+            while (temp % p == 0) {
                 temp /= p;
             }
             result -= result / p;
         }
     }
-    
-    if (temp > 1) {
+
+    if (temp &gt; 1) {
         result -= result / temp;
     }
-    
+
     return result;
 }
 
 // 判断是否为素数（简单方法，仅适用于小整数）
-function isPrime(n) {
-    if (n < 2) return false;
-    if (n % 2 === 0) return n === 2;
-    const limit = Math.sqrt(n);
-    for (let i = 3; i <= limit; i += 2) {
-        if (n % i === 0) return false;
+bool isPrime(long long n) {
+    if (n &lt; 2) return false;
+    if (n % 2 == 0) return n == 2;
+    for (long long i = 3; i * i &lt;= n; i += 2) {
+        if (n % i == 0) return false;
     }
     return true;
 }
 
-// 计算 π(x; d, a)：不超过x且形如a+kd的素数个数
-function countPrimesInArithmeticProgression(x, d, a) {
-    if (gcd(a, d) !== 1) {
-        throw new Error("a和d必须互质");
-    }
-    
-    let count = 0;
-    // 从满足条件的最小正整数开始
-    let n = a;
-    if (n <= 0) {
-        // 找到第一个正数项
-        n += d * Math.ceil((1 - a) / d);
-    }
-    
-    while (n <= x) {
-        if (isPrime(n)) {
-            count++;
-        }
-        n += d;
-    }
-    
-    return count;
-}
-
 // 最大公约数
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
+long long gcd(long long a, long long b) {
+    return b == 0 ? a : gcd(b, a % b);
 }
 
-// 验证狄利克雷定理的数值证据
-function verifyDirichletTheorem(limit, d) {
-    console.log(`=== 验证模 ${d} 的狄利克雷定理 (x ≤ ${limit}) ===`);
-    
-    const phiD = eulerPhi(d);
-    const totalPrimesUpToLimit = countPrimesUpTo(limit);
-    console.log(`φ(${d}) = ${phiD}`);
-    console.log(`不超过 ${limit} 的素数总数: ${totalPrimesUpToLimit}`);
-    console.log(`理论期望每个剩余类约有 ${(totalPrimesUpToLimit/phiD).toFixed(1)} 个素数`);
-    
-    console.log("\n各个剩余类中的素数分布:");
-    console.log("剩余类 a | π(x; d, a) | 比例");
-    console.log("-".repeat(40));
-    
-    let totalCounted = 0;
-    
-    for (let a = 1; a < d; a++) {
-        if (gcd(a, d) === 1) {
-            const count = countPrimesInArithmeticProgression(limit, d, a);
-            const proportion = count / totalPrimesUpToLimit;
-            totalCounted += count;
-            
-            console.log(`${a} mod ${d} | ${count.toString().padStart(8)} | ${proportion.toFixed(4)}`);
-        }
-    }
-    
-    // 验证是否所有素数都被计数（除了可能的小素数）
-    console.log(`\n总计计数的素数: ${totalCounted}`);
-    console.log(`实际素数总数: ${totalPrimesUpToLimit}`);
-    console.log(`差异: ${Math.abs(totalCounted - totalPrimesUpToLimit)}`);
-    
-    // 检查分布是否均匀
-    console.log("\n均匀性检验:");
-    const counts = [];
-    for (let a = 1; a < d; a++) {
-        if (gcd(a, d) === 1) {
-            counts.push(countPrimesInArithmeticProgression(limit, d, a));
-        }
-    }
-    
-    const avg = counts.reduce((s, c) => s + c, 0) / counts.length;
-    const variance = counts.reduce((s, c) => s + (c - avg) ** 2, 0) / counts.length;
-    const stdDev = Math.sqrt(variance);
-    const cv = (stdDev / avg) * 100; // 变异系数
-    
-    console.log(`平均值: ${avg.toFixed(2)}`);
-    console.log(`标准差: ${stdDev.toFixed(2)}`);
-    console.log(`变异系数: ${cv.toFixed(2)}% (越小越均匀)`);
-}
-
-// 辅助函数：计算不超过limit的素数个数
-function countPrimesUpTo(limit) {
-    let count = 0;
-    for (let n = 2; n <= limit; n++) {
+// 计算 π(x; d, a)：不超过x且形如a+kd的素数个数
+long long countPrimesInArithmeticProgression(long long x, long long d, long long a) {
+    long long count = 0;
+    // 从 a 开始逐项检查 a, a+d, a+2d, ...（调用时保证 gcd(a, d) = 1）
+    for (long long n = a; n &lt;= x; n += d) {
         if (isPrime(n)) count++;
     }
     return count;
 }
 
-// 示例使用
-console.log("=== 狄利克雷定理数值验证 ===");
-
-// 验证模4的情形
-verifyDirichletTheorem(100000, 4);
-
-console.log("\n");
-// 验证模10的情形
-verifyDirichletTheorem(100000, 10);
-
-console.log("\n");
-// 验证模15的情形（φ(15)=8）
-verifyDirichletTheorem(100000, 15);
-
-// 生成算术数列中的素数
-console.log("\n=== 生成算术数列中的素数 ===");
-function generatePrimesInProgression(d, a, count) {
-    const primes = [];
-    let n = a;
-    if (n <= 0) {
-        n += d * Math.ceil((1 - a) / d);
+// 辅助函数：计算不超过limit的素数个数
+long long countPrimesUpTo(long long limit) {
+    long long count = 0;
+    for (long long n = 2; n &lt;= limit; n++) {
+        if (isPrime(n)) count++;
     }
-    
-    while (primes.length < count) {
+    return count;
+}
+
+// 验证狄利克雷定理的数值证据
+void verifyDirichletTheorem(long long limit, long long d) {
+    cout &lt;&lt; "=== 验证模 " &lt;&lt; d &lt;&lt; " 的狄利克雷定理 (x &lt;= " &lt;&lt; limit &lt;&lt; ") ===" &lt;&lt; '\n';
+
+    long long phiD = eulerPhi(d);
+    long long totalPrimesUpToLimit = countPrimesUpTo(limit);
+    cout &lt;&lt; "φ(" &lt;&lt; d &lt;&lt; ") = " &lt;&lt; phiD &lt;&lt; '\n';
+    cout &lt;&lt; "不超过 " &lt;&lt; limit &lt;&lt; " 的素数总数: " &lt;&lt; totalPrimesUpToLimit &lt;&lt; '\n';
+    cout &lt;&lt; "理论期望每个剩余类约有 " &lt;&lt; fixed &lt;&lt; setprecision(1)
+         &lt;&lt; (double)totalPrimesUpToLimit / phiD &lt;&lt; " 个素数" &lt;&lt; '\n';
+
+    cout &lt;&lt; "\n各个剩余类中的素数分布:" &lt;&lt; '\n';
+    cout &lt;&lt; "剩余类 a | π(x; d, a) | 比例" &lt;&lt; '\n';
+    cout &lt;&lt; string(40, '-') &lt;&lt; '\n';
+
+    long long totalCounted = 0;
+
+    for (long long a = 1; a &lt; d; a++) {
+        if (gcd(a, d) == 1) {
+            long long count = countPrimesInArithmeticProgression(limit, d, a);
+            double proportion = (double)count / totalPrimesUpToLimit;
+            totalCounted += count;
+
+            cout &lt;&lt; a &lt;&lt; " mod " &lt;&lt; d &lt;&lt; " | " &lt;&lt; setw(8) &lt;&lt; count &lt;&lt; " | "
+                 &lt;&lt; fixed &lt;&lt; setprecision(4) &lt;&lt; proportion &lt;&lt; '\n';
+        }
+    }
+
+    cout &lt;&lt; "\n总计计数的素数: " &lt;&lt; totalCounted &lt;&lt; '\n';
+    cout &lt;&lt; "实际素数总数: " &lt;&lt; totalPrimesUpToLimit &lt;&lt; '\n';
+    cout &lt;&lt; "差异: " &lt;&lt; llabs(totalCounted - totalPrimesUpToLimit) &lt;&lt; '\n';
+
+    cout &lt;&lt; "\n均匀性检验:" &lt;&lt; '\n';
+    vector&lt;long long&gt; counts;
+    for (long long a = 1; a &lt; d; a++) {
+        if (gcd(a, d) == 1) {
+            counts.push_back(countPrimesInArithmeticProgression(limit, d, a));
+        }
+    }
+
+    double sum = 0;
+    for (long long c : counts) sum += c;
+    double avg = sum / counts.size();
+    double variance = 0;
+    for (long long c : counts) variance += (c - avg) * (c - avg);
+    variance /= counts.size();
+    double stdDev = sqrt(variance);
+    double cv = (stdDev / avg) * 100; // 变异系数
+
+    cout &lt;&lt; "平均值: " &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; avg &lt;&lt; '\n';
+    cout &lt;&lt; "标准差: " &lt;&lt; stdDev &lt;&lt; '\n';
+    cout &lt;&lt; "变异系数: " &lt;&lt; cv &lt;&lt; "% (越小越均匀)" &lt;&lt; '\n';
+}
+
+// 生成算术数列中的前 count 个素数
+vector&lt;long long&gt; generatePrimesInProgression(long long d, long long a, long long count) {
+    vector&lt;long long&gt; primes;
+    long long n = a;
+    while ((long long)primes.size() &lt; count) {
         if (isPrime(n)) {
-            primes.push(n);
+            primes.push_back(n);
         }
         n += d;
     }
-    
     return primes;
 }
 
-// 生成形如4k+1的前20个素数
-console.log("形如4k+1的前20个素数:");
-const primes4k1 = generatePrimesInProgression(4, 1, 20);
-console.log(primes4k1.join(", "));
-
-// 生成形如4k+3的前20个素数
-console.log("\n形如4k+3的前20个素数:");
-const primes4k3 = generatePrimesInProgression(4, 3, 20);
-console.log(primes4k3.join(", "));
-
-// 狄利克雷密度计算
-console.log("\n=== 狄利克雷密度计算 ===");
-function dirichletDensity(d) {
-    return 1 / eulerPhi(d);
+// 狄利克雷密度：1 / φ(d)
+double dirichletDensity(long long d) {
+    return 1.0 / eulerPhi(d);
 }
 
-console.log("模d的每个互质剩余类中素数的理论密度:");
-for (const d of [2, 3, 4, 5, 6, 7, 8, 9, 10]) {
-    const density = dirichletDensity(d);
-    console.log(`d=${d}: 密度 = ${density.toFixed(4)} (1/φ(${d})=1/${eulerPhi(d)})`);
-}</code>
-            </pre>
+int main() {
+    cout &lt;&lt; "=== 狄利克雷定理数值验证 ===" &lt;&lt; '\n';
+
+    // 验证模4的情形
+    verifyDirichletTheorem(100000, 4);
+
+    cout &lt;&lt; '\n';
+    // 验证模10的情形
+    verifyDirichletTheorem(100000, 10);
+
+    cout &lt;&lt; '\n';
+    // 验证模15的情形（φ(15)=8）
+    verifyDirichletTheorem(100000, 15);
+
+    // 生成算术数列中的素数
+    cout &lt;&lt; "\n=== 生成算术数列中的素数 ===" &lt;&lt; '\n';
+
+    // 生成形如4k+1的前20个素数
+    cout &lt;&lt; "形如4k+1的前20个素数:" &lt;&lt; '\n';
+    vector&lt;long long&gt; primes4k1 = generatePrimesInProgression(4, 1, 20);
+    for (size_t i = 0; i &lt; primes4k1.size(); i++) {
+        if (i &gt; 0) cout &lt;&lt; ", ";
+        cout &lt;&lt; primes4k1[i];
+    }
+    cout &lt;&lt; '\n';
+
+    // 生成形如4k+3的前20个素数
+    cout &lt;&lt; "\n形如4k+3的前20个素数:" &lt;&lt; '\n';
+    vector&lt;long long&gt; primes4k3 = generatePrimesInProgression(4, 3, 20);
+    for (size_t i = 0; i &lt; primes4k3.size(); i++) {
+        if (i &gt; 0) cout &lt;&lt; ", ";
+        cout &lt;&lt; primes4k3[i];
+    }
+    cout &lt;&lt; '\n';
+
+    // 狄利克雷密度计算
+    cout &lt;&lt; "\n=== 狄利克雷密度计算 ===" &lt;&lt; '\n';
+    cout &lt;&lt; "模d的每个互质剩余类中素数的理论密度:" &lt;&lt; '\n';
+    for (long long d : {2, 3, 4, 5, 6, 7, 8, 9, 10}) {
+        double density = dirichletDensity(d);
+        cout &lt;&lt; "d=" &lt;&lt; d &lt;&lt; ": 密度 = " &lt;&lt; fixed &lt;&lt; setprecision(4) &lt;&lt; density
+             &lt;&lt; " (1/φ(" &lt;&lt; d &lt;&lt; ")=1/" &lt;&lt; eulerPhi(d) &lt;&lt; ")" &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="proof" 
@@ -413,14 +410,14 @@ for (const d of [2, 3, 4, 5, 6, 7, 8, 9, 10]) {
                         <li>$\chi(n+d) = \chi(n)$（周期性）</li>
                         <li>$\chi(mn) = \chi(m)\chi(n)$（完全积性）</li>
                         <li>$\chi(1) = 1$</li>
-                        <li>$\chi(n) = 0$ 当且仅当 $\gcd(n, d) > 1$</li>
+                        <li>$\chi(n) = 0$ 当且仅当 $\gcd(n, d) \gt 1$</li>
                     </ul>
                 </li>
                 
                 <li>
                     <strong>狄利克雷L-函数：</strong>
                     对每个特征 $\chi$，定义L-函数：
-                    $$L(s, \chi) = \sum_{n=1}^\infty \frac{\chi(n)}{n^s}, \quad \Re(s) > 1$$
+                    $$L(s, \chi) = \sum_{n=1}^\infty \frac{\chi(n)}{n^s}, \quad \Re(s) \gt 1$$
                     这是黎曼ζ函数的推广。
                 </li>
                 

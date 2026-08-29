@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>费马大定理 - 数论百科</title>
+    <title>费马大定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -49,13 +49,13 @@
             
             <strong>定理内容：</strong>
             <p>
-                当整数 $n > 2$ 时，关于 $x, y, z$ 的不定方程：
+                当整数 $n \gt 2$ 时，关于 $x, y, z$ 的不定方程：
                 $$x^n + y^n = z^n$$
                 没有正整数解。
             </p>
             
             <p>
-                即：不存在正整数 $x, y, z$ 满足 $x^n + y^n = z^n$（$n > 2$）。
+                即：不存在正整数 $x, y, z$ 满足 $x^n + y^n = z^n$（$n \gt 2$）。
             </p>
             
             <p>
@@ -63,7 +63,7 @@
                 <ul>
                     <li>当 $n = 1$ 时，方程 $x + y = z$ 显然有无穷多组正整数解。</li>
                     <li>当 $n = 2$ 时，方程 $x^2 + y^2 = z^2$ 有无穷多组正整数解，即勾股数。</li>
-                    <li>当 $n > 2$ 时，费马断言没有正整数解，这就是费马大定理。</li>
+                    <li>当 $n \gt 2$ 时，费马断言没有正整数解，这就是费马大定理。</li>
                 </ul>
             </p>
             
@@ -203,142 +203,165 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 费马大定理验证（小范围暴力搜索）
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+// 费马大定理验证（小范围暴力搜索）
 // 注意：这只能验证小范围的数，不能作为证明
-function fermatLastTheoremCheck(n, limit) {
-    console.log(`检查 n=${n}, x,y,z ≤ ${limit}:`);
-    
-    let counter = 0;
-    const solutions = [];
-    
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;array&gt;
+using namespace std;
+
+using ll = long long;
+
+ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
+
+// 整数幂：a^n
+ll ipow(ll a, int n) {
+    ll r = 1;
+    for (int i = 0; i &lt; n; i++) r *= a;
+    return r;
+}
+
+// 返回 sum 的 n 次方根的整数部分（向下取整）
+ll nthRoot(ll sum, int n) {
+    ll z = 1;
+    while (ipow(z + 1, n) &lt;= sum) z++;
+    return z;
+}
+
+// 验证 x^n + y^n = z^n 在 x, y, z &lt;= limit 范围内是否有解
+// 返回找到的所有解（每组为 {x, y, z}）
+vector&lt;array&lt;ll, 3&gt;&gt; fermatLastTheoremCheck(int n, ll limit) {
+    cout &lt;&lt; "检查 n=" &lt;&lt; n &lt;&lt; ", x,y,z ≤ " &lt;&lt; limit &lt;&lt; ":\n";
+
+    vector&lt;array&lt;ll, 3&gt;&gt; solutions;
+
     // 暴力搜索，但需要优化以避免过多循环
-    for (let x = 1; x <= limit; x++) {
-        const xn = Math.pow(x, n);
-        if (xn > Math.pow(limit, n) * 2) break; // 优化：如果x^n已经太大
-        
-        for (let y = x; y <= limit; y++) { // 令 y ≥ x 以避免重复
-            const yn = Math.pow(y, n);
-            const sum = xn + yn;
-            
+    for (ll x = 1; x &lt;= limit; x++) {
+        ll xn = ipow(x, n);
+        if (xn &gt; ipow(limit, n) * 2) break; // 优化：如果x^n已经太大
+
+        for (ll y = x; y &lt;= limit; y++) { // 令 y ≥ x 以避免重复
+            ll yn = ipow(y, n);
+            ll sum = xn + yn;
+
             // 检查sum是否是某个整数的n次幂
-            const z = Math.round(Math.pow(sum, 1/n));
-            
-            if (z <= limit && Math.abs(Math.pow(z, n) - sum) < 1e-10) {
-                solutions.push([x, y, z]);
-                counter++;
+            ll z = nthRoot(sum, n);
+
+            if (z &lt;= limit &amp;&amp; ipow(z, n) == sum) {
+                solutions.push_back({x, y, z});
             }
         }
     }
-    
-    if (solutions.length === 0) {
-        console.log(`  在范围 ${limit} 内未找到解`);
+
+    if (solutions.empty()) {
+        cout &lt;&lt; "  在范围 " &lt;&lt; limit &lt;&lt; " 内未找到解\n";
     } else {
-        console.log(`  找到 ${solutions.length} 个解:`);
-        for (const [x, y, z] of solutions) {
-            console.log(`  ${x}^${n} + ${y}^${n} = ${z}^${n}`);
-            console.log(`  ${Math.pow(x, n)} + ${Math.pow(y, n)} = ${Math.pow(z, n)}`);
+        cout &lt;&lt; "  找到 " &lt;&lt; solutions.size() &lt;&lt; " 个解:\n";
+        for (auto sol : solutions) {
+            ll x = sol[0], y = sol[1], z = sol[2];
+            cout &lt;&lt; "  " &lt;&lt; x &lt;&lt; "^" &lt;&lt; n &lt;&lt; " + " &lt;&lt; y &lt;&lt; "^" &lt;&lt; n &lt;&lt; " = " &lt;&lt; z &lt;&lt; "^" &lt;&lt; n &lt;&lt; "\n";
+            cout &lt;&lt; "  " &lt;&lt; ipow(x, n) &lt;&lt; " + " &lt;&lt; ipow(y, n) &lt;&lt; " = " &lt;&lt; ipow(z, n) &lt;&lt; "\n";
         }
     }
-    
+
     return solutions;
 }
-
-// 验证n=2的情况（应找到许多勾股数）
-console.log("=== 验证 n=2 (勾股数) ===");
-const pythagoreanTriples = fermatLastTheoremCheck(2, 50);
-console.log(`共找到 ${pythagoreanTriples.length} 组勾股数`);
-
-// 验证n=3的情况（应无解）
-console.log("\n=== 验证 n=3 ===");
-const n3solutions = fermatLastTheoremCheck(3, 100);
-console.log(`结论: ${n3solutions.length === 0 ? '在范围内无解，符合费马大定理' : '找到解！'}`);
-
-// 验证n=4的情况（应无解）
-console.log("\n=== 验证 n=4 ===");
-const n4solutions = fermatLastTheoremCheck(4, 50);
-console.log(`结论: ${n4solutions.length === 0 ? '在范围内无解，符合费马大定理' : '找到解！'}`);
-
-// 验证n=5的情况（应无解）
-console.log("\n=== 验证 n=5 ===");
-const n5solutions = fermatLastTheoremCheck(5, 30);
-console.log(`结论: ${n5solutions.length === 0 ? '在范围内无解，符合费马大定理' : '找到解！'}`);
-
-// 费马大定理的等价形式
-console.log("\n=== 费马大定理的等价形式 ===");
-console.log("1. 对于任何奇素数p，方程 x^p + y^p = z^p 无正整数解。");
-console.log("2. 方程 x^4 + y^4 = z^4 无正整数解（费马本人证明）。");
-console.log("3. 方程 x^n + y^n = z^n 对于n>2无正整数解。");
-
-// 费马大定理的相关猜想
-console.log("\n=== 相关猜想 ===");
-console.log("1. 欧拉猜想：对于n>2，方程 x1^n + x2^n + ... + x_{n-1}^n = z^n 无正整数解。");
-console.log("   但被推翻：例如 27^5 + 84^5 + 110^5 + 133^5 = 144^5 (1966年发现)。");
-console.log("2. 比尔猜想：若 a^x + b^y = c^z，且a,b,c互质，则x,y,z不能全大于2。");
-console.log("   仍未解决，悬赏100万美元。");
-
-// 计算费马数：F_n = 2^(2^n) + 1
-console.log("\n=== 费马数 ===");
-console.log("费马曾猜想所有形如 F_n = 2^(2^n) + 1 的数都是素数。");
-console.log("但后来发现：");
-console.log("F0 = 3 (素数)");
-console.log("F1 = 5 (素数)");
-console.log("F2 = 17 (素数)");
-console.log("F3 = 257 (素数)");
-console.log("F4 = 65537 (素数)");
-console.log("F5 = 4294967297 = 641 × 6700417 (合数，欧拉证明)");
-console.log("目前已知的费马素数只有以上5个。");
-
-// 费马大定理在数学中的意义
-console.log("\n=== 费马大定理的意义 ===");
-console.log("1. 促进了数论的发展，特别是代数数论和模形式理论。");
-console.log("2. 谷山-志村猜想的证明连接了椭圆曲线和模形式两个重要领域。");
-console.log("3. 展示了数学中不同分支之间的深刻联系。");
-console.log("4. 激励了无数数学家的工作，推动了数学的进步。");
 
 // 比尔猜想的简单验证（小范围）
-console.log("\n=== 比尔猜想的小范围验证 ===");
-function bealConjectureCheck(limit) {
-    const solutions = [];
-    
-    for (let a = 2; a <= limit; a++) {
-        for (let b = 2; b <= limit; b++) {
-            if (gcd(a, b) !== 1) continue;
-            
-            const a2 = a * a;
-            const b2 = b * b;
-            const sum = a2 + b2;
-            
+// 返回找到的互质解（每组为 {a, b, c, x, y, z}）
+vector&lt;array&lt;ll, 6&gt;&gt; bealConjectureCheck(ll limit) {
+    vector&lt;array&lt;ll, 6&gt;&gt; solutions;
+
+    for (ll a = 2; a &lt;= limit; a++) {
+        for (ll b = 2; b &lt;= limit; b++) {
+            if (gcd(a, b) != 1) continue;
+
+            ll a2 = a * a;
+            ll b2 = b * b;
+            ll sum = a2 + b2;
+
             // 检查sum是否是完全平方数
-            const c = Math.round(Math.sqrt(sum));
-            if (c * c === sum && gcd(gcd(a, b), c) === 1) {
-                solutions.push([a, b, c, 2, 2, 2]);
+            ll c = nthRoot(sum, 2);
+            if (c * c == sum &amp;&amp; gcd(gcd(a, b), c) == 1) {
+                solutions.push_back({a, b, c, 2, 2, 2});
             }
         }
     }
-    
+
     return solutions;
 }
 
-const bealSolutions = bealConjectureCheck(20);
-console.log(`比尔猜想：若a^x + b^y = c^z，且a,b,c互质，则x,y,z不能全大于2。`);
-console.log(`在a,b≤20范围内，找到${bealSolutions.length}组互质的解，但指数都是2:`);
-for (const [a, b, c, x, y, z] of bealSolutions.slice(0, 5)) {
-    console.log(`  ${a}^${x} + ${b}^${y} = ${c}^${z} (${a**x} + ${b**y} = ${c**z})`);
-}</code>
-            </pre>
+int main() {
+    // 验证n=2的情况（应找到许多勾股数）
+    cout &lt;&lt; "=== 验证 n=2 (勾股数) ===\n";
+    vector&lt;array&lt;ll, 3&gt;&gt; pythagoreanTriples = fermatLastTheoremCheck(2, 50);
+    cout &lt;&lt; "共找到 " &lt;&lt; pythagoreanTriples.size() &lt;&lt; " 组勾股数\n";
+
+    // 验证n=3的情况（应无解）
+    cout &lt;&lt; "\n=== 验证 n=3 ===\n";
+    vector&lt;array&lt;ll, 3&gt;&gt; n3solutions = fermatLastTheoremCheck(3, 100);
+    cout &lt;&lt; "结论: " &lt;&lt; (n3solutions.empty() ? "在范围内无解，符合费马大定理" : "找到解！") &lt;&lt; "\n";
+
+    // 验证n=4的情况（应无解）
+    cout &lt;&lt; "\n=== 验证 n=4 ===\n";
+    vector&lt;array&lt;ll, 3&gt;&gt; n4solutions = fermatLastTheoremCheck(4, 50);
+    cout &lt;&lt; "结论: " &lt;&lt; (n4solutions.empty() ? "在范围内无解，符合费马大定理" : "找到解！") &lt;&lt; "\n";
+
+    // 验证n=5的情况（应无解）
+    cout &lt;&lt; "\n=== 验证 n=5 ===\n";
+    vector&lt;array&lt;ll, 3&gt;&gt; n5solutions = fermatLastTheoremCheck(5, 30);
+    cout &lt;&lt; "结论: " &lt;&lt; (n5solutions.empty() ? "在范围内无解，符合费马大定理" : "找到解！") &lt;&lt; "\n";
+
+    // 费马大定理的等价形式
+    cout &lt;&lt; "\n=== 费马大定理的等价形式 ===\n";
+    cout &lt;&lt; "1. 对于任何奇素数p，方程 x^p + y^p = z^p 无正整数解。\n";
+    cout &lt;&lt; "2. 方程 x^4 + y^4 = z^4 无正整数解（费马本人证明）。\n";
+    cout &lt;&lt; "3. 方程 x^n + y^n = z^n 对于n&gt;2无正整数解。\n";
+
+    // 费马大定理的相关猜想
+    cout &lt;&lt; "\n=== 相关猜想 ===\n";
+    cout &lt;&lt; "1. 欧拉猜想：对于n&gt;2，方程 x1^n + x2^n + ... + x_{n-1}^n = z^n 无正整数解。\n";
+    cout &lt;&lt; "   但被推翻：例如 27^5 + 84^5 + 110^5 + 133^5 = 144^5 (1966年发现)。\n";
+    cout &lt;&lt; "2. 比尔猜想：若 a^x + b^y = c^z，且a,b,c互质，则x,y,z不能全大于2。\n";
+    cout &lt;&lt; "   仍未解决，悬赏100万美元。\n";
+
+    // 计算费马数：F_n = 2^(2^n) + 1
+    cout &lt;&lt; "\n=== 费马数 ===\n";
+    cout &lt;&lt; "费马曾猜想所有形如 F_n = 2^(2^n) + 1 的数都是素数。\n";
+    cout &lt;&lt; "但后来发现：\n";
+    cout &lt;&lt; "F0 = 3 (素数)\n";
+    cout &lt;&lt; "F1 = 5 (素数)\n";
+    cout &lt;&lt; "F2 = 17 (素数)\n";
+    cout &lt;&lt; "F3 = 257 (素数)\n";
+    cout &lt;&lt; "F4 = 65537 (素数)\n";
+    cout &lt;&lt; "F5 = 4294967297 = 641 × 6700417 (合数，欧拉证明)\n";
+    cout &lt;&lt; "目前已知的费马素数只有以上5个。\n";
+
+    // 费马大定理在数学中的意义
+    cout &lt;&lt; "\n=== 费马大定理的意义 ===\n";
+    cout &lt;&lt; "1. 促进了数论的发展，特别是代数数论和模形式理论。\n";
+    cout &lt;&lt; "2. 谷山-志村猜想的证明连接了椭圆曲线和模形式两个重要领域。\n";
+    cout &lt;&lt; "3. 展示了数学中不同分支之间的深刻联系。\n";
+    cout &lt;&lt; "4. 激励了无数数学家的工作，推动了数学的进步。\n";
+
+    // 比尔猜想的简单验证（小范围）
+    cout &lt;&lt; "\n=== 比尔猜想的小范围验证 ===\n";
+    vector&lt;array&lt;ll, 6&gt;&gt; bealSolutions = bealConjectureCheck(20);
+    cout &lt;&lt; "比尔猜想：若a^x + b^y = c^z，且a,b,c互质，则x,y,z不能全大于2。\n";
+    cout &lt;&lt; "在a,b≤20范围内，找到" &lt;&lt; bealSolutions.size() &lt;&lt; "组互质的解，但指数都是2:\n";
+    for (size_t i = 0; i &lt; bealSolutions.size() &amp;&amp; i &lt; 5; i++) {
+        ll a = bealSolutions[i][0], b = bealSolutions[i][1], c = bealSolutions[i][2];
+        ll x = bealSolutions[i][3], y = bealSolutions[i][4], z = bealSolutions[i][5];
+        cout &lt;&lt; "  " &lt;&lt; a &lt;&lt; "^" &lt;&lt; x &lt;&lt; " + " &lt;&lt; b &lt;&lt; "^" &lt;&lt; y &lt;&lt; " = " &lt;&lt; c &lt;&lt; "^" &lt;&lt; z
+             &lt;&lt; " (" &lt;&lt; ipow(a, (int)x) &lt;&lt; " + " &lt;&lt; ipow(b, (int)y) &lt;&lt; " = " &lt;&lt; ipow(c, (int)z) &lt;&lt; ")\n";
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="significance" 
@@ -432,7 +455,7 @@ for (const [a, b, c, x, y, z] of bealSolutions.slice(0, 5)) {
                 
                 <li>
                     <strong>欧拉猜想：</strong>
-                    对于 $n > 2$，$n-1$ 个 $n$ 次幂之和不可能等于一个 $n$ 次幂。
+                    对于 $n \gt 2$，$n-1$ 个 $n$ 次幂之和不可能等于一个 $n$ 次幂。
                     已被证明是错误的（反例：$27^5 + 84^5 + 110^5 + 133^5 = 144^5$）。
                 </li>
                 

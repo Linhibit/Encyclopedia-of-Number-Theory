@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>数论变换 (NTT) - 数论百科</title>
+    <title>数论变换 (NTT) - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -212,308 +212,181 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 常用NTT模数
-const NTT_MOD = 998244353n; // 119 * 2^23 + 1
-const NTT_ROOT = 3n; // 原根
-const NTT_ROOT_INV = 332748118n; // 3^{-1} mod MOD
-const NTT_MAX_BIT = 23; // 最大2的幂次
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;cstdint&gt;
+#include &lt;random&gt;
+using namespace std;
 
-// 快速幂算法（模意义下）
-function modPow(base, exp, mod) {
-    base = BigInt(base) % mod;
-    let result = 1n;
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % mod;
-        }
-        base = (base * base) % mod;
-        e >>= 1n;
+using ll = long long;
+
+// 快速幂（模意义下）
+ll modPow(ll base, ll exp, ll mod) {
+    base %= mod;
+    ll result = 1;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = result * base % mod;
+        base = base * base % mod;
+        exp &gt;&gt;= 1;
     }
     return result;
 }
 
-// 扩展欧几里得算法求逆元
-function modInv(a, mod) {
-    let [old_r, r] = [BigInt(a) % mod, mod];
-    let [old_s, s] = [1n, 0n];
-    let [old_t, t] = [0n, 1n];
-    
-    while (r !== 0n) {
-        const quotient = old_r / r;
-        [old_r, r] = [r, old_r - quotient * r];
-        [old_s, s] = [s, old_s - quotient * s];
-        [old_t, t] = [t, old_t - quotient * t];
+// 扩展欧几里得求逆元
+ll modInv(ll a, ll mod) {
+    ll old_r = a % mod, r = mod;
+    ll old_s = 1, s = 0;
+    while (r != 0) {
+        ll q = old_r / r;
+        ll tr = r;         r = old_r - q * r;         old_r = tr;
+        ll ts = s;         s = old_s - q * s;         old_s = ts;
     }
-    
-    // 确保结果为正
     return (old_s % mod + mod) % mod;
 }
 
-// 预计算原根的幂次（用于加速）
-function precomputeRoots(maxLen, mod, root) {
-    const roots = new Array(maxLen + 1);
-    const invRoots = new Array(maxLen + 1);
-    
-    // 计算单位根
-    roots[maxLen] = modPow(root, (mod - 1n) / BigInt(1 << maxLen), mod);
-    invRoots[maxLen] = modInv(roots[maxLen], mod);
-    
-    // 递推计算各级单位根
-    for (let i = maxLen - 1; i >= 0; i--) {
-        roots[i] = (roots[i + 1] * roots[i + 1]) % mod;
-        invRoots[i] = (invRoots[i + 1] * invRoots[i + 1]) % mod;
-    }
-    
-    return { roots, invRoots };
-}
-
 // 迭代版NTT（原地计算，位逆序置换）
-function ntt(a, invert = false) {
-    const n = a.length;
-    
+void ntt(vector&lt;ll&gt;&amp; a, bool invert, ll mod, ll root) {
+    int n = a.size();
+
     // 位逆序置换
-    for (let i = 1, j = 0; i < n; i++) {
-        let bit = n >> 1;
-        for (; j & bit; bit >>= 1) {
-            j ^= bit;
-        }
+    for (int i = 1, j = 0; i &lt; n; i++) {
+        int bit = n &gt;&gt; 1;
+        for (; j &amp; bit; bit &gt;&gt;= 1) j ^= bit;
         j ^= bit;
-        
-        if (i < j) {
-            [a[i], a[j]] = [a[j], a[i]];
-        }
+        if (i &lt; j) swap(a[i], a[j]);
     }
-    
-    // 预计算单位根
-    const maxBit = Math.log2(n);
-    const { roots, invRoots } = precomputeRoots(maxBit, NTT_MOD, NTT_ROOT);
-    
+
     // 蝴蝶操作
-    for (let len = 2; len <= n; len <<= 1) {
-        const wlen = invert ? invRoots[Math.log2(len)] : roots[Math.log2(len)];
-        
-        for (let i = 0; i < n; i += len) {
-            let w = 1n;
-            const halfLen = len >> 1;
-            
-            for (let j = 0; j < halfLen; j++) {
-                const u = a[i + j];
-                const v = (BigInt(a[i + j + halfLen]) * w) % NTT_MOD;
-                
-                a[i + j] = Number((BigInt(u) + v) % NTT_MOD);
-                a[i + j + halfLen] = Number((BigInt(u) - v + NTT_MOD) % NTT_MOD);
-                
-                w = (w * wlen) % NTT_MOD;
+    for (int len = 2; len &lt;= n; len &lt;&lt;= 1) {
+        ll wlen = modPow(root, (mod - 1) / len, mod);
+        if (invert) wlen = modInv(wlen, mod);
+        for (int i = 0; i &lt; n; i += len) {
+            ll w = 1;
+            int half = len &gt;&gt; 1;
+            for (int j = 0; j &lt; half; j++) {
+                ll u = a[i + j];
+                ll v = a[i + j + half] * w % mod;
+                a[i + j] = (u + v) % mod;
+                a[i + j + half] = (u - v + mod) % mod;
+                w = w * wlen % mod;
             }
         }
     }
-    
-    // 如果是逆变换，需要乘以 n^{-1}
+
+    // 逆变换乘以 n^{-1}
     if (invert) {
-        const nInv = modInv(BigInt(n), NTT_MOD);
-        for (let i = 0; i < n; i++) {
-            a[i] = Number((BigInt(a[i]) * nInv) % NTT_MOD);
-        }
+        ll nInv = modInv(n, mod);
+        for (ll&amp; x : a) x = x * nInv % mod;
     }
-    
-    return a;
 }
+
+const ll MOD1 = 998244353;    // 119 * 2^23 + 1，原根 3
+const ll MOD2 = 1004535809;   // 479 * 2^21 + 1，原根 3
+const ll ROOT = 3;
 
 // 多项式乘法（使用NTT）
-function polyMultiply(a, b) {
-    // 确定变换长度（大于等于 a.length + b.length - 1 的最小2的幂）
-    let n = 1;
-    const targetLen = a.length + b.length - 1;
-    while (n < targetLen) {
-        n <<= 1;
-    }
-    
-    // 补零
-    const fa = new Array(n).fill(0);
-    const fb = new Array(n).fill(0);
-    for (let i = 0; i < a.length; i++) fa[i] = a[i];
-    for (let i = 0; i < b.length; i++) fb[i] = b[i];
-    
-    // 正向NTT
-    ntt(fa, false);
-    ntt(fb, false);
-    
-    // 频域相乘
-    for (let i = 0; i < n; i++) {
-        fa[i] = Number((BigInt(fa[i]) * BigInt(fb[i])) % NTT_MOD);
-    }
-    
-    // 逆向NTT
-    ntt(fa, true);
-    
-    // 返回结果（去除可能的多余零）
-    return fa.slice(0, targetLen);
+vector&lt;ll&gt; polyMultiply(const vector&lt;ll&gt;&amp; a, const vector&lt;ll&gt;&amp; b, ll mod = MOD1) {
+    int need = (int)a.size() + (int)b.size() - 1;
+    int n = 1;
+    while (n &lt; need) n &lt;&lt;= 1;
+
+    vector&lt;ll&gt; fa(n, 0), fb(n, 0);
+    for (size_t i = 0; i &lt; a.size(); i++) fa[i] = a[i] % mod;
+    for (size_t i = 0; i &lt; b.size(); i++) fb[i] = b[i] % mod;
+
+    ntt(fa, false, mod, ROOT);
+    ntt(fb, false, mod, ROOT);
+    for (int i = 0; i &lt; n; i++) fa[i] = fa[i] * fb[i] % mod;
+    ntt(fa, true, mod, ROOT);
+
+    fa.resize(need);
+    return fa;
 }
 
-// 示例使用
-console.log("=== 数论变换 (NTT) 示例 ===");
-
-// 示例1：简单多项式乘法
-const polyA = [1, 2, 3]; // 1 + 2x + 3x^2
-const polyB = [4, 5, 6]; // 4 + 5x + 6x^2
-
-console.log("多项式 A:", polyA);
-console.log("多项式 B:", polyB);
-
-const result = polyMultiply(polyA, polyB);
-console.log("乘积 (使用NTT):", result);
-console.log("预期结果: [4, 13, 28, 27, 18]");
-
-// 验证直接计算
-function directConvolution(a, b) {
-    const result = new Array(a.length + b.length - 1).fill(0);
-    for (let i = 0; i < a.length; i++) {
-        for (let j = 0; j < b.length; j++) {
+// 直接卷积验证
+vector&lt;ll&gt; directConvolution(const vector&lt;ll&gt;&amp; a, const vector&lt;ll&gt;&amp; b) {
+    vector&lt;ll&gt; result(a.size() + b.size() - 1);
+    for (size_t i = 0; i &lt; a.size(); i++)
+        for (size_t j = 0; j &lt; b.size(); j++)
             result[i + j] += a[i] * b[j];
-        }
-    }
     return result;
 }
 
-console.log("直接卷积结果:", directConvolution(polyA, polyB));
-
-// 示例2：大系数多项式（模意义下）
-const bigPolyA = [123456789, 987654321, 555555555];
-const bigPolyB = [111111111, 222222222, 333333333];
-
-console.log("\n大系数多项式乘法:");
-console.log("A:", bigPolyA);
-console.log("B:", bigPolyB);
-
-const bigResult = polyMultiply(bigPolyA, bigPolyB);
-console.log("乘积 (模 998244353):", bigResult);
-
-// 验证模意义下的正确性
-function modConvolution(a, b, mod) {
-    const result = new Array(a.length + b.length - 1).fill(0);
-    for (let i = 0; i < a.length; i++) {
-        for (let j = 0; j < b.length; j++) {
+// 直接模卷积验证
+vector&lt;ll&gt; modConvolution(const vector&lt;ll&gt;&amp; a, const vector&lt;ll&gt;&amp; b, ll mod) {
+    vector&lt;ll&gt; result(a.size() + b.size() - 1);
+    for (size_t i = 0; i &lt; a.size(); i++)
+        for (size_t j = 0; j &lt; b.size(); j++)
             result[i + j] = (result[i + j] + a[i] * b[j]) % mod;
-        }
-    }
     return result;
 }
 
-const mod = Number(NTT_MOD);
-const directModResult = modConvolution(bigPolyA.map(x => x % mod), bigPolyB.map(x => x % mod), mod);
-console.log("直接模卷积:", directModResult);
-console.log("结果一致?", JSON.stringify(bigResult) === JSON.stringify(directModResult));
-
-// 示例3：长多项式乘法（性能测试）
-console.log("\n=== 性能测试 ===");
-const len = 1 << 16; // 65536
-console.log(`生成两个长度为 ${len} 的多项式...`);
-const longA = new Array(len).fill(0).map(() => Math.floor(Math.random() * 1000));
-const longB = new Array(len).fill(0).map(() => Math.floor(Math.random() * 1000));
-
-console.time("NTT乘法");
-const longResult = polyMultiply(longA, longB);
-console.timeEnd("NTT乘法");
-console.log(`结果长度: ${longResult.length}`);
-
-// 示例4：使用不同的NTT友好模数
-console.log("\n=== 使用不同模数的NTT ===");
-
-// 另一个常用模数：1004535809 = 479 * 2^21 + 1
-const MOD2 = 1004535809n;
-const ROOT2 = 3n;
-
-function nttWithMod(a, mod, root, invert = false) {
-    const n = a.length;
-    
-    // 位逆序置换
-    for (let i = 1, j = 0; i < n; i++) {
-        let bit = n >> 1;
-        for (; j & bit; bit >>= 1) {
-            j ^= bit;
-        }
-        j ^= bit;
-        
-        if (i < j) {
-            [a[i], a[j]] = [a[j], a[i]];
-        }
+void printPoly(const string&amp; name, const vector&lt;ll&gt;&amp; a) {
+    cout &lt;&lt; name &lt;&lt; ": [";
+    for (size_t i = 0; i &lt; a.size(); i++) {
+        if (i) cout &lt;&lt; ", ";
+        cout &lt;&lt; a[i];
     }
-    
-    // 计算单位根
-    const maxBit = Math.log2(n);
-    const wlen = invert ? 
-        modPow(root, (mod - 1n) / BigInt(n), mod) :
-        modPow(root, (mod - 1n) / BigInt(n), mod);
-    const invWlen = modInv(wlen, mod);
-    
-    // 蝴蝶操作
-    for (let len = 2; len <= n; len <<= 1) {
-        const w = invert ? invWlen : wlen;
-        const step = modPow(w, n / len, mod);
-        
-        for (let i = 0; i < n; i += len) {
-            let wi = 1n;
-            const halfLen = len >> 1;
-            
-            for (let j = 0; j < halfLen; j++) {
-                const u = BigInt(a[i + j]);
-                const v = (BigInt(a[i + j + halfLen]) * wi) % mod;
-                
-                a[i + j] = Number((u + v) % mod);
-                a[i + j + halfLen] = Number((u - v + mod) % mod);
-                
-                wi = (wi * step) % mod;
-            }
-        }
-    }
-    
-    if (invert) {
-        const nInv = modInv(BigInt(n), mod);
-        for (let i = 0; i < n; i++) {
-            a[i] = Number((BigInt(a[i]) * nInv) % mod);
-        }
-    }
-    
-    return a;
+    cout &lt;&lt; "]\n";
 }
 
-// 测试不同模数
-const testA = [1, 2, 3, 4];
-const testB = [5, 6, 7, 8];
-const testResult1 = polyMultiply(testA, testB); // 使用998244353
+int main() {
+    cout &lt;&lt; "=== 数论变换 (NTT) 示例 ===\n";
 
-// 使用第二个模数
-let n = 1;
-while (n < testA.length + testB.length - 1) n <<= 1;
-const fa = [...testA, ...new Array(n - testA.length).fill(0)];
-const fb = [...testB, ...new Array(n - testB.length).fill(0)];
+    // 示例1：简单多项式乘法
+    vector&lt;ll&gt; polyA = {1, 2, 3}; // 1 + 2x + 3x^2
+    vector&lt;ll&gt; polyB = {4, 5, 6}; // 4 + 5x + 6x^2
+    printPoly("多项式 A", polyA);
+    printPoly("多项式 B", polyB);
 
-nttWithMod(fa, MOD2, ROOT2, false);
-nttWithMod(fb, MOD2, ROOT2, false);
-for (let i = 0; i < n; i++) {
-    fa[i] = Number((BigInt(fa[i]) * BigInt(fb[i])) % MOD2);
+    vector&lt;ll&gt; result = polyMultiply(polyA, polyB);
+    printPoly("乘积 (使用NTT)", result);
+    cout &lt;&lt; "预期结果: [4, 13, 28, 27, 18]\n";
+    printPoly("直接卷积结果", directConvolution(polyA, polyB));
+
+    // 示例2：大系数多项式（模意义下）
+    vector&lt;ll&gt; bigPolyA = {123456789, 987654321, 555555555};
+    vector&lt;ll&gt; bigPolyB = {111111111, 222222222, 333333333};
+    cout &lt;&lt; "\n大系数多项式乘法:\n";
+    printPoly("A", bigPolyA);
+    printPoly("B", bigPolyB);
+
+    vector&lt;ll&gt; bigResult = polyMultiply(bigPolyA, bigPolyB);
+    printPoly("乘积 (模 998244353)", bigResult);
+    vector&lt;ll&gt; directMod = modConvolution(bigPolyA, bigPolyB, MOD1);
+    printPoly("直接模卷积", directMod);
+    cout &lt;&lt; "结果一致? " &lt;&lt; (bigResult == directMod ? "true" : "false") &lt;&lt; "\n";
+
+    // 示例3：使用不同的NTT友好模数
+    vector&lt;ll&gt; testA = {1, 2, 3, 4};
+    vector&lt;ll&gt; testB = {5, 6, 7, 8};
+    cout &lt;&lt; "\n=== 使用不同模数的NTT ===\n";
+    printPoly("使用模数 998244353", polyMultiply(testA, testB));
+    printPoly("使用模数 1004535809", polyMultiply(testA, testB, MOD2));
+    cout &lt;&lt; "两个结果在各自模数下都正确\n";
+
+    // 示例4：长多项式乘法（性能测试）
+    cout &lt;&lt; "\n=== 性能测试 ===\n";
+    int len = 1 &lt;&lt; 16; // 65536
+    cout &lt;&lt; "生成两个长度为 " &lt;&lt; len &lt;&lt; " 的多项式...\n";
+    mt19937 rng(12345); // 固定种子便于复现
+    uniform_int_distribution&lt;int&gt; dist(0, 999);
+    vector&lt;ll&gt; longA(len), longB(len);
+    for (int i = 0; i &lt; len; i++) {
+        longA[i] = dist(rng);
+        longB[i] = dist(rng);
+    }
+    vector&lt;ll&gt; longResult = polyMultiply(longA, longB);
+    cout &lt;&lt; "结果长度: " &lt;&lt; longResult.size() &lt;&lt; "\n";
+
+    return 0;
 }
-nttWithMod(fa, MOD2, ROOT2, true);
-const testResult2 = fa.slice(0, testA.length + testB.length - 1);
 
-console.log("使用模数 998244353:", testResult1);
-console.log("使用模数 1004535809:", testResult2);
-console.log("两个结果在各自模数下都正确");</code>
-            </pre>
+</code></pre>
         </section>
 
         <section class="applications" 

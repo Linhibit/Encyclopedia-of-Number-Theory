@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>欧拉函数公式 - 数论百科</title>
+    <title>欧拉函数公式 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -50,7 +50,7 @@
             <strong>定义与公式：</strong>
             <p>
                 <strong>欧拉函数</strong> $\varphi(n)$ 定义为小于 $n$ 且与 $n$ 互质的正整数的个数：
-                $$\varphi(n) = \#\{k \in \mathbb{N} : 1 \leq k < n, \gcd(k, n) = 1\}$$
+                $$\varphi(n) = \#\{k \in \mathbb{N} : 1 \leq k \lt n, \gcd(k, n) = 1\}$$
             </p>
             
             <p>
@@ -106,7 +106,7 @@
                 
                 <li>
                     <strong>生成函数：</strong>
-                    $$\sum_{n=1}^\infty \frac{\varphi(n)}{n^s} = \frac{\zeta(s-1)}{\zeta(s)} \quad (\text{对于 } \Re(s) > 2)$$
+                    $$\sum_{n=1}^\infty \frac{\varphi(n)}{n^s} = \frac{\zeta(s-1)}{\zeta(s)} \quad (\text{对于 } \Re(s) \gt 2)$$
                     其中 $\zeta(s)$ 是黎曼ζ函数。
                 </li>
             </ol>
@@ -165,207 +165,201 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 方法1：直接使用公式计算 φ(n)
-function eulerPhiFormula(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    let result = n;
-    let temp = n;
-    
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;numeric&gt;
+using namespace std;
+
+// 欧几里得算法求最大公约数（C++14 标准库无 std::gcd）
+long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
+
+// 方法1：直接使用公式计算 φ(n)
+long long eulerPhiFormula(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    long long result = n;
+    long long temp = n;
+
     // 处理因子2
-    if (temp % 2 === 0) {
+    if (temp % 2 == 0) {
         result -= result / 2;
-        while (temp % 2 === 0) {
+        while (temp % 2 == 0) {
             temp /= 2;
         }
     }
-    
+
     // 处理奇数因子
-    for (let p = 3; p * p <= temp; p += 2) {
-        if (temp % p === 0) {
+    for (long long p = 3; p * p &lt;= temp; p += 2) {
+        if (temp % p == 0) {
             result -= result / p;
-            while (temp % p === 0) {
+            while (temp % p == 0) {
                 temp /= p;
             }
         }
     }
-    
+
     // 处理剩余的质因子（大于sqrt(n)）
-    if (temp > 1) {
+    if (temp &gt; 1) {
         result -= result / temp;
     }
-    
+
     return result;
 }
 
 // 方法2：使用质因数分解
-function eulerPhiFactorization(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    // 质因数分解
-    const factors = {};
-    let temp = n;
-    
-    while (temp % 2 === 0) {
-        factors[2] = (factors[2] || 0) + 1;
-        temp /= 2;
+long long eulerPhiFactorization(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    long long result = n;
+    long long temp = n;
+
+    // 处理因子2
+    if (temp % 2 == 0) {
+        result -= result / 2;
+        while (temp % 2 == 0) temp /= 2;
     }
-    
-    for (let i = 3; i * i <= temp; i += 2) {
-        while (temp % i === 0) {
-            factors[i] = (factors[i] || 0) + 1;
-            temp /= i;
+
+    // 处理奇数因子
+    for (long long i = 3; i * i &lt;= temp; i += 2) {
+        if (temp % i == 0) {
+            result -= result / i;
+            while (temp % i == 0) temp /= i;
         }
     }
-    
-    if (temp > 1) {
-        factors[temp] = (factors[temp] || 0) + 1;
+
+    // 处理剩余的质因子
+    if (temp &gt; 1) {
+        result -= result / temp;
     }
-    
-    // 应用公式：φ(n) = n ∏ (1 - 1/p)
-    let result = n;
-    for (const p of Object.keys(factors)) {
-        result *= (1 - 1 / Number(p));
-    }
-    
-    return Math.round(result); // 由于浮点运算，需要四舍五入
+
+    return result;
 }
 
 // 方法3：筛法计算1到n的所有φ值
-function eulerPhiSieve(n) {
-    const phi = new Array(n + 1);
-    
+vector&lt;long long&gt; eulerPhiSieve(int n) {
+    vector&lt;long long&gt; phi(n + 1);
+
     // 初始化
-    for (let i = 0; i <= n; i++) {
+    for (int i = 0; i &lt;= n; i++) {
         phi[i] = i;
     }
-    
+
     // 筛法计算
-    for (let i = 2; i <= n; i++) {
-        if (phi[i] === i) { // i是质数
-            for (let j = i; j <= n; j += i) {
+    for (int i = 2; i &lt;= n; i++) {
+        if (phi[i] == i) { // i是质数
+            for (int j = i; j &lt;= n; j += i) {
                 phi[j] -= phi[j] / i;
             }
         }
     }
-    
+
     return phi;
 }
 
+// 快速幂取模
+long long modPow(long long base, long long exp, long long mod) {
+    if (mod == 1) return 0;
+    long long result = 1;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        exp &gt;&gt;= 1;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
 // 验证约数和公式
-function verifySumFormula(limit) {
-    console.log("验证 ∑_{d|n} φ(d) = n:");
-    
-    for (let n = 1; n <= limit; n++) {
-        let sum = 0;
-        
+bool verifySumFormula(int limit) {
+    cout &lt;&lt; "验证 ∑_{d|n} φ(d) = n:\n";
+
+    for (int n = 1; n &lt;= limit; n++) {
+        long long sum = 0;
+
         // 找出所有约数
-        for (let d = 1; d * d <= n; d++) {
-            if (n % d === 0) {
+        for (int d = 1; d * d &lt;= n; d++) {
+            if (n % d == 0) {
                 sum += eulerPhiFormula(d);
-                if (d !== n / d) {
+                if (d != n / d) {
                     sum += eulerPhiFormula(n / d);
                 }
             }
         }
-        
-        if (sum !== n) {
-            console.log(`错误：n=${n}，∑φ(d)=${sum} ≠ ${n}`);
+
+        if (sum != n) {
+            cout &lt;&lt; "错误：n=" &lt;&lt; n &lt;&lt; "，∑φ(d)=" &lt;&lt; sum &lt;&lt; " ≠ " &lt;&lt; n &lt;&lt; '\n';
             return false;
         }
     }
-    
-    console.log(`所有 1 到 ${limit} 的整数都满足公式`);
+
+    cout &lt;&lt; "所有 1 到 " &lt;&lt; limit &lt;&lt; " 的整数都满足公式\n";
     return true;
 }
 
-// 示例使用
-console.log("=== 欧拉函数计算 ===");
-
-// 计算一些值的欧拉函数
-const testNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 100, 360];
-console.log("n\tφ(n)");
-for (const n of testNumbers) {
-    console.log(`${n}\t${eulerPhiFormula(n)}`);
-}
-
-// 验证两种方法的一致性
-console.log("\n=== 方法验证 ===");
-for (let n = 1; n <= 100; n++) {
-    const phi1 = eulerPhiFormula(n);
-    const phi2 = eulerPhiFactorization(n);
-    if (phi1 !== phi2) {
-        console.log(`不一致：n=${n}，公式法=${phi1}，分解法=${phi2}`);
-    }
-}
-console.log("1到100验证完成");
-
-// 验证约数和公式
-console.log("\n=== 约数和公式验证 ===");
-verifySumFormula(100);
-
-// 使用筛法计算
-console.log("\n=== 筛法计算 φ(1) 到 φ(20) ===");
-const phiValues = eulerPhiSieve(20);
-for (let i = 1; i <= 20; i++) {
-    process.stdout.write(`φ(${i})=${phiValues[i]}\t`);
-    if (i % 5 === 0) console.log();
-}
-
 // 欧拉定理验证
-console.log("\n=== 欧拉定理验证 ===");
-function verifyEulerTheorem(a, n) {
-    if (gcd(a, n) !== 1) {
-        console.log(`a=${a} 和 n=${n} 不互质，欧拉定理不适用`);
+void verifyEulerTheorem(long long a, long long n) {
+    if (gcd(a, n) != 1) {
+        cout &lt;&lt; "a=" &lt;&lt; a &lt;&lt; " 和 n=" &lt;&lt; n &lt;&lt; " 不互质，欧拉定理不适用\n";
         return;
     }
-    
-    const phiN = eulerPhiFormula(n);
-    const left = modPow(a, phiN, n);
-    
-    console.log(`验证 ${a}^φ(${n})=${a}^${phiN} ≡ 1 mod ${n}`);
-    console.log(`计算结果: ${left} ${left === 1 ? '≡ 1 ✓' : '≠ 1 ✗'}`);
+
+    long long phiN = eulerPhiFormula(n);
+    long long left = modPow(a, phiN, n);
+
+    cout &lt;&lt; "验证 " &lt;&lt; a &lt;&lt; "^φ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; a &lt;&lt; "^" &lt;&lt; phiN &lt;&lt; " ≡ 1 mod " &lt;&lt; n &lt;&lt; '\n';
+    cout &lt;&lt; "计算结果: " &lt;&lt; left &lt;&lt; (left == 1 ? " ≡ 1 ✓" : " ≠ 1 ✗") &lt;&lt; '\n';
 }
 
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
+int main() {
+    // 示例使用
+    cout &lt;&lt; "=== 欧拉函数计算 ===\n";
 
-function modPow(base, exp, mod) {
-    if (mod === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        e >>= 1n;
-        base = (base * base) % BigInt(mod);
+    // 计算一些值的欧拉函数
+    vector&lt;long long&gt; testNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 100, 360};
+    cout &lt;&lt; "n\tφ(n)\n";
+    for (long long n : testNumbers) {
+        cout &lt;&lt; n &lt;&lt; "\t" &lt;&lt; eulerPhiFormula(n) &lt;&lt; '\n';
     }
-    return Number(result);
-}
 
-// 验证几个例子
-verifyEulerTheorem(3, 7);
-verifyEulerTheorem(2, 15);
-verifyEulerTheorem(7, 12);</code>
-            </pre>
+    // 验证两种方法的一致性
+    cout &lt;&lt; "\n=== 方法验证 ===\n";
+    for (int n = 1; n &lt;= 100; n++) {
+        long long phi1 = eulerPhiFormula(n);
+        long long phi2 = eulerPhiFactorization(n);
+        if (phi1 != phi2) {
+            cout &lt;&lt; "不一致：n=" &lt;&lt; n &lt;&lt; "，公式法=" &lt;&lt; phi1 &lt;&lt; "，分解法=" &lt;&lt; phi2 &lt;&lt; '\n';
+        }
+    }
+    cout &lt;&lt; "1到100验证完成\n";
+
+    // 验证约数和公式
+    cout &lt;&lt; "\n=== 约数和公式验证 ===\n";
+    verifySumFormula(100);
+
+    // 使用筛法计算
+    cout &lt;&lt; "\n=== 筛法计算 φ(1) 到 φ(20) ===\n";
+    vector&lt;long long&gt; phiValues = eulerPhiSieve(20);
+    for (int i = 1; i &lt;= 20; i++) {
+        cout &lt;&lt; "φ(" &lt;&lt; i &lt;&lt; ")=" &lt;&lt; phiValues[i] &lt;&lt; "\t";
+        if (i % 5 == 0) cout &lt;&lt; '\n';
+    }
+
+    // 欧拉定理验证
+    cout &lt;&lt; "\n=== 欧拉定理验证 ===\n";
+    verifyEulerTheorem(3, 7);
+    verifyEulerTheorem(2, 15);
+    verifyEulerTheorem(7, 12);
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

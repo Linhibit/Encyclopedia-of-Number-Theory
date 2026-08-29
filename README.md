@@ -1,157 +1,107 @@
-# 数论百科
+# 算法竞赛数论百科
 
-欢迎来到 **数论百科** 项目！这是一个全面的数论概念、算法和实现的集合。我们致力于为数学爱好者、学生和研究者提供高质量的学习资源，探索整数的性质及奥秘。
+欢迎来到 **算法竞赛数论百科**！这是一个面向算法竞赛（信息学奥林匹克竞赛等）的数论知识库，系统整理了竞赛中常用的数论定理、算法与 C++ 实现，帮助你快速查阅、理解和掌握数论知识。
 
 ---
 
 ## 功能与用途
 
-- **全面的资源**：涵盖从基础到高级的数论概念。
-- **实用的示例**：编写并展示了常见数论算法的具体实现。
-- **助力学习**：帮助学习者更好地理解数论的基本思想及实际应用。
-
-这个项目专为那些对数论感兴趣、想要学习其理论与算法的人们提供支持和帮助。无论你是初学者还是专家，这里都能为你提供有价值的内容。
+- **全面的资源**：覆盖从基础定理（费马小定理、中国剩余定理等）到高阶算法（Miller-Rabin、Pollard-Rho、NTT、杜教筛等）。
+- **实用的 C++ 实现**：每个算法/定理条目都配有可直接编译运行的 **C++14** 示例代码（不使用万能头 `bits/stdc++.h`）。
+- **助力竞赛**：以“定理 + 证明 + 复杂度分析 + 代码”的结构组织内容，便于在赛前复习与赛时快速查证。
 
 ---
 
 ## 示例
 
-以下是本项目中部分的代码示例：
+以下是本项目中部分代码示例（均为 C++14，使用显式标准头文件）：
 
-### 1. **求最大公约数——欧几里得算法**
+### 1. 求最大公约数——欧几里得算法
 
-快速计算两个整数的最大公约数 (GCD)：
+```cpp
+#include <iostream>
+using namespace std;
 
-```python
-def gcd(a, b):
-    while b:
-        a, b = b, a % b
-    return a
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
 
-# 示例:
-print(gcd(48, 18))  # 输出: 6
+int main() {
+    cout << gcd(48, 18) << '\n';   // 输出: 6
+    cout << gcd(1071, 462) << '\n';// 输出: 21
+    return 0;
+}
+```
+
+### 2. 素数筛选法（埃拉托斯特尼筛法）
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> sieveOfEratosthenes(int n) {
+    vector<bool> isPrime(n + 1, true);
+    isPrime[0] = isPrime[1] = false;
+    for (int p = 2; p * p <= n; ++p) {
+        if (isPrime[p]) {
+            for (int k = p * p; k <= n; k += p) {
+                isPrime[k] = false;
+            }
+        }
+    }
+    vector<int> primes;
+    for (int i = 2; i <= n; ++i) {
+        if (isPrime[i]) primes.push_back(i);
+    }
+    return primes;
+}
+
+int main() {
+    vector<int> primes = sieveOfEratosthenes(30);
+    for (int p : primes) cout << p << ' '; // 2 3 5 7 11 13 17 19 23 29
+    cout << '\n';
+    return 0;
+}
+```
+
+### 3. 快速幂（模幂运算）
+
+```cpp
+#include <iostream>
+using namespace std;
+
+long long modPow(long long base, long long exp, long long mod) {
+    long long result = 1 % mod;
+    base %= mod;
+    while (exp > 0) {
+        if (exp & 1) result = result * base % mod;
+        base = base * base % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+int main() {
+    cout << modPow(2, 10, 1000) << '\n'; // 输出: 24
+    return 0;
+}
 ```
 
 ---
 
-### 2. **素数筛选法（埃拉托斯特尼筛法）**
+## 项目结构
 
-生成一个范围内的所有素数：
+- `index.html` — 首页（搜索 + 质数分布可视化图表）。
+- `algorithms/` — 数论算法条目页。
+- `theorems/` — 数论定理条目页。
+- `theorems.json` — 首页卡片数据源。
+- `style.css` / `script.js` / `chart.js` — 全局样式、搜索逻辑与质数分布图表。
 
-```python
-def sieve_of_eratosthenes(n):
-    primes = [True] * (n + 1)
-    p = 2
-    while (p * p <= n):
-        if primes[p]:
-            for i in range(p * p, n + 1, p):
-                primes[i] = False
-        p += 1
-    return [p for p in range(2, n + 1) if primes[p]]
-
-# 示例:
-print(sieve_of_eratosthenes(30))  # 输出: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-```
+通过探索本项目，你将掌握算法竞赛中常用数论算法的思想与实现。
 
 ---
 
-### 3. **模幂运算**
+# Number Theory Encyclopedia for Competitive Programming
 
-使用模运算高效计算 `(base^exponent) % mod`：
-
-```python
-def modular_exponentiation(base, exponent, mod):
-    result = 1
-    base = base % mod
-    while exponent > 0:
-        if (exponent % 2) == 1:
-            result = (result * base) % mod
-        exponent = exponent >> 1
-        base = (base * base) % mod
-    return result
-
-# 示例:
-print(modular_exponentiation(2, 10, 1000))  # 输出: 24
-```
-
-通过探索本项目，您将了解更多数论中的迷人算法和概念！
-
----
-
-# Encyclopedia of Number Theory
-
-Welcome to the **Encyclopedia of Number Theory**! This project is a comprehensive collection of number theory concepts, algorithms, and implementations. We aim to provide high-quality learning resources for mathematicians, students, and researchers to explore the properties and wonders of integers.
-
----
-
-## Features and Purpose
-
-- **Comprehensive Resource**: A wide range of number theory concepts, from basic to advanced level.
-- **Practical Examples**: Demonstrates common number-theoretic algorithms with concrete examples and implementations.
-- **Learning Support**: Helps learners to better understand the fundamental ideas and practical applications of number theory.
-
-This project is designed for anyone interested in learning about number theory, from beginners to experts.
-
----
-
-## Examples
-
-Here are some examples from this project:
-
-### 1. **Euclidean Algorithm for GCD**
-
-Quickly compute the greatest common divisor (GCD) of two integers:
-
-```python
-def gcd(a, b):
-    while b:
-        a, b = b, a % b
-    return a
-
-# Example usage:
-print(gcd(48, 18))  # Output: 6
-```
-
----
-
-### 2. **Prime Number Sieve (Sieve of Eratosthenes)**
-
-Generate all prime numbers within a given range:
-
-```python
-def sieve_of_eratosthenes(n):
-    primes = [True] * (n + 1)
-    p = 2
-    while (p * p <= n):
-        if primes[p]:
-            for i in range(p * p, n + 1, p):
-                primes[i] = False
-        p += 1
-    return [p for p in range(2, n + 1) if primes[p]]
-
-# Example usage:
-print(sieve_of_eratosthenes(30))  # Output: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-```
-
----
-
-### 3. **Modular Exponentiation**
-
-Efficiently compute `(base^exponent) % mod` using modular arithmetic:
-
-```python
-def modular_exponentiation(base, exponent, mod):
-    result = 1
-    base = base % mod
-    while exponent > 0:
-        if (exponent % 2) == 1:
-            result = (result * base) % mod
-        exponent = exponent >> 1
-        base = (base * base) % mod
-    return result
-
-# Example usage:
-print(modular_exponentiation(2, 10, 1000))  # Output: 24
-```
-
-Explore more in this repository and discover fascinating number theory algorithms and concepts!
+A Chinese knowledge base of number theory for competitive programming (informatics olympiad), organized as "theorem + proof + complexity + C++14 implementation". All code examples use explicit standard headers and compile with `g++ -std=c++14`.

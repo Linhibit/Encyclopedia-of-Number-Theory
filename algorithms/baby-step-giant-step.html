@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>大步小步算法 - 数论百科</title>
+    <title>大步小步算法 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -51,7 +51,7 @@
             <p>
                 求解离散对数问题：给定素数 $p$，生成元 $g$（或一般的循环群元素），和目标值 $h$，求整数 $x$ 使得：
                 $$g^x \equiv h \pmod{p}$$
-                其中 $0 \leq x < p-1$。
+                其中 $0 \leq x \lt p-1$。
             </p>
             
             <p>
@@ -94,7 +94,7 @@
             
             <div style="background: #f0f8ff; padding: 15px; margin: 15px 0; border-radius: 5px;">
                 <strong>算法原理：</strong>
-                设 $x = im + j$，其中 $0 \leq j < m$，$i$ 和 $j$ 是待求整数。
+                设 $x = im + j$，其中 $0 \leq j \lt m$，$i$ 和 $j$ 是待求整数。
                 则原方程变为：
                 $$g^{im+j} \equiv h \pmod{p}$$
                 两边乘以 $g^{-im}$ 得：
@@ -147,157 +147,155 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 大步小步算法求解离散对数
-function babyStepGiantStep(g, h, p) {
-    // 辅助函数：快速幂
-    function modPow(base, exp, mod) {
-        if (mod === 1) return 0;
-        let result = 1n;
-        base = BigInt(base) % BigInt(mod);
-        let e = BigInt(exp);
-        while (e > 0n) {
-            if (e % 2n === 1n) {
-                result = (result * base) % BigInt(mod);
-            }
-            e >>= 1n;
-            base = (base * base) % BigInt(mod);
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+// 大步小步算法求解离散对数
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;map&gt;
+#include &lt;random&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+// 辅助函数：快速幂
+long long modPow(long long base, long long exp, long long mod) {
+    if (mod == 1) return 0;
+    long long result = 1 % mod;
+    base %= mod;
+    if (base &lt; 0) base += mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) {
+            result = (__int128)result * base % mod;
         }
-        return Number(result);
+        exp &gt;&gt;= 1;
+        base = (__int128)base * base % mod;
     }
-    
-    // 辅助函数：扩展欧几里得求逆元
-    function modInverse(a, mod) {
-        a = ((a % mod) + mod) % mod;
-        let [old_r, r] = [a, mod];
-        let [old_s, s] = [1, 0];
-        
-        while (r !== 0) {
-            const quotient = Math.floor(old_r / r);
-            [old_r, r] = [r, old_r - quotient * r];
-            [old_s, s] = [s, old_s - quotient * s];
-        }
-        
-        if (old_r !== 1) {
-            throw new Error("逆元不存在");
-        }
-        
-        return ((old_s % mod) + mod) % mod;
+    return result;
+}
+
+// 辅助函数：扩展欧几里得求逆元
+long long modInverse(long long a, long long mod) {
+    a = ((a % mod) + mod) % mod;
+    long long old_r = a, r = mod;
+    long long old_s = 1, s = 0;
+    while (r != 0) {
+        long long quotient = old_r / r;
+        long long tmp_r = r; r = old_r - quotient * r; old_r = tmp_r;
+        long long tmp_s = s; s = old_s - quotient * s; old_s = tmp_s;
     }
-    
+    if (old_r != 1) {
+        throw runtime_error("逆元不存在");
+    }
+    return ((old_s % mod) + mod) % mod;
+}
+
+// 大步小步算法：求 g^x ≡ h (mod p) 的最小非负解
+long long babyStepGiantStep(long long g, long long h, long long p) {
     // 边界情况处理
-    if (h === 1) return 0;
-    if (g === 0) {
-        if (h === 0) return 1;
-        throw new Error("无解");
+    if (h % p == 1) return 0;
+    if (g % p == 0) {
+        if (h % p == 0) return 1;
+        throw runtime_error("无解");
     }
-    
-    const m = Math.ceil(Math.sqrt(p - 1));
-    
+
+    long long m = (long long)ceil(sqrt((double)(p - 1)));
+
     // 小步：预计算 g^j mod p
-    const babySteps = new Map();
-    let current = 1;
-    for (let j = 0; j < m; j++) {
-        if (!babySteps.has(current)) {
-            babySteps.set(current, j);
+    map&lt;long long, long long&gt; babySteps;
+    long long current = 1 % p;
+    for (long long j = 0; j &lt; m; j++) {
+        if (!babySteps.count(current)) {
+            babySteps[current] = j;
         }
-        current = (current * g) % p;
+        current = (__int128)current * g % p;
     }
-    
+
     // 计算大步因子 g^{-m} mod p
-    const gm = modPow(g, m, p);
-    const gmInv = modInverse(gm, p);
-    
+    long long gm = modPow(g, m, p);
+    long long gmInv = modInverse(gm, p);
+
     // 大步：枚举 i
-    let gamma = h % p;
-    for (let i = 0; i < m; i++) {
-        if (babySteps.has(gamma)) {
-            const j = babySteps.get(gamma);
-            const x = i * m + j;
+    long long gamma = h % p;
+    for (long long i = 0; i &lt;= m; i++) {
+        auto it = babySteps.find(gamma);
+        if (it != babySteps.end()) {
+            long long j = it-&gt;second;
+            long long x = i * m + j;
             // 验证解
-            if (modPow(g, x, p) === h % p) {
+            if (modPow(g, x, p) == h % p) {
                 return x;
             }
         }
-        gamma = (gamma * gmInv) % p;
+        gamma = (__int128)gamma * gmInv % p;
     }
-    
-    throw new Error("离散对数无解");
+
+    throw runtime_error("离散对数无解");
 }
 
-// 示例使用
-console.log("=== 大步小步算法示例 ===");
+int main() {
+    cout &lt;&lt; "=== 大步小步算法示例 ===" &lt;&lt; '\n';
 
-// 示例1：2^x ≡ 9 mod 11
-try {
-    const solution1 = babyStepGiantStep(2, 9, 11);
-    console.log(`方程 2^x ≡ 9 mod 11 的解: x = ${solution1}`);
-    console.log(`验证: 2^${solution1} mod 11 = ${Math.pow(2, solution1) % 11}`);
-} catch (e) {
-    console.log(`错误: ${e.message}`);
-}
-
-// 示例2：3^x ≡ 7 mod 13
-try {
-    const solution2 = babyStepGiantStep(3, 7, 13);
-    console.log(`\n方程 3^x ≡ 7 mod 13 的解: x = ${solution2}`);
-    console.log(`验证: 3^${solution2} mod 13 = ${Math.pow(3, solution2) % 13}`);
-} catch (e) {
-    console.log(`错误: ${e.message}`);
-}
-
-// 性能测试
-console.log("\n=== 性能测试 ===");
-console.time("BSGS计算");
-const bigSolution = babyStepGiantStep(5, 123456, 1000003);
-console.timeEnd("BSGS计算");
-console.log(`方程 5^x ≡ 123456 mod 1000003 的解: x = ${bigSolution}`);
-
-// 验证随机测试
-console.log("\n=== 随机测试验证 ===");
-const testCount = 10;
-let passed = 0;
-for (let i = 0; i < testCount; i++) {
-    const p = 10007; // 素数
-    const g = 5; // 原根
-    const x = Math.floor(Math.random() * (p-2)) + 1; // 随机指数
-    const h = Math.pow(g, x) % p;
-    
+    // 示例1：2^x ≡ 9 mod 11
     try {
-        const calculatedX = babyStepGiantStep(g, h, p);
-        if (Math.pow(g, calculatedX) % p === h) {
-            passed++;
-        } else {
-            console.log(`测试 ${i+1} 失败: 计算值不正确`);
-        }
-    } catch (e) {
-        console.log(`测试 ${i+1} 失败: ${e.message}`);
+        long long solution1 = babyStepGiantStep(2, 9, 11);
+        cout &lt;&lt; "方程 2^x ≡ 9 mod 11 的解: x = " &lt;&lt; solution1 &lt;&lt; '\n';
+        cout &lt;&lt; "验证: 2^" &lt;&lt; solution1 &lt;&lt; " mod 11 = " &lt;&lt; modPow(2, solution1, 11) &lt;&lt; '\n';
+    } catch (const exception&amp; e) {
+        cout &lt;&lt; "错误: " &lt;&lt; e.what() &lt;&lt; '\n';
     }
-}
-console.log(`随机测试通过: ${passed}/${testCount}`);
 
-// 处理无解情况
-console.log("\n=== 无解情况测试 ===");
-try {
-    // 3不是模11的原根，但这里测试无解情况
-    babyStepGiantStep(3, 2, 7); // 3^x ≡ 2 mod 7 可能有解
-    console.log("有解");
-} catch (e) {
-    console.log(`无解: ${e.message}`);
-}</code>
-            </pre>
+    // 示例2：3^x ≡ 7 mod 13
+    try {
+        long long solution2 = babyStepGiantStep(3, 7, 13);
+        cout &lt;&lt; "\n方程 3^x ≡ 7 mod 13 的解: x = " &lt;&lt; solution2 &lt;&lt; '\n';
+        cout &lt;&lt; "验证: 3^" &lt;&lt; solution2 &lt;&lt; " mod 13 = " &lt;&lt; modPow(3, solution2, 13) &lt;&lt; '\n';
+    } catch (const exception&amp; e) {
+        cout &lt;&lt; "错误: " &lt;&lt; e.what() &lt;&lt; '\n';
+    }
+
+    // 性能测试
+    cout &lt;&lt; "\n=== 性能测试 ===" &lt;&lt; '\n';
+    long long bigSolution = babyStepGiantStep(5, 123456, 1000003);
+    cout &lt;&lt; "方程 5^x ≡ 123456 mod 1000003 的解: x = " &lt;&lt; bigSolution &lt;&lt; '\n';
+
+    // 验证随机测试
+    cout &lt;&lt; "\n=== 随机测试验证 ===" &lt;&lt; '\n';
+    const int testCount = 10;
+    int passed = 0;
+    mt19937 rng(12345); // 固定种子，保证可重现
+    for (int i = 0; i &lt; testCount; i++) {
+        const long long p = 10007; // 素数
+        const long long g = 5; // 原根
+        long long x = (long long)(rng() % (p - 2)) + 1; // 随机指数
+        long long h = modPow(g, x, p);
+
+        try {
+            long long calculatedX = babyStepGiantStep(g, h, p);
+            if (modPow(g, calculatedX, p) == h) {
+                passed++;
+            } else {
+                cout &lt;&lt; "测试 " &lt;&lt; i + 1 &lt;&lt; " 失败: 计算值不正确" &lt;&lt; '\n';
+            }
+        } catch (const exception&amp; e) {
+            cout &lt;&lt; "测试 " &lt;&lt; i + 1 &lt;&lt; " 失败: " &lt;&lt; e.what() &lt;&lt; '\n';
+        }
+    }
+    cout &lt;&lt; "随机测试通过: " &lt;&lt; passed &lt;&lt; "/" &lt;&lt; testCount &lt;&lt; '\n';
+
+    // 处理无解情况
+    cout &lt;&lt; "\n=== 无解情况测试 ===" &lt;&lt; '\n';
+    try {
+        // 3不是模11的原根，但这里测试无解情况
+        babyStepGiantStep(3, 2, 7); // 3^x ≡ 2 mod 7 可能有解
+        cout &lt;&lt; "有解" &lt;&lt; '\n';
+    } catch (const exception&amp; e) {
+        cout &lt;&lt; "无解: " &lt;&lt; e.what() &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="variants" 

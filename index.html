@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数论百科 | Encyclopedia of Number Theory</title>
+    <title>算法竞赛数论百科 | Number Theory for Competitive Programming</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script>
     window.MathJax = {
         tex: {
@@ -13,7 +12,7 @@
             displayMath: [['$$', '$$'], ['\\[', '\\]']]
         },
         options: {
-            processHtmlClass: 'theorem-card' 
+            processHtmlClass: 'theorem-card'
         }
     };
     </script>
@@ -21,8 +20,9 @@
 </head>
 <body>
     <header>
-        <h1>数论百科</h1>
-        <p>探索整数的奥秘</p>
+        <h1>算法竞赛数论百科</h1>
+        <p class="tagline">从经典定理到高效算法，构建竞赛级数论知识体系</p>
+        <p class="subtitle">Number Theory for Competitive Programming</p>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="搜索定理、术语或公式...">
         </div>
@@ -30,16 +30,39 @@
     </header>
 
     <main>
-    <section class="theorem-grid" id="theoremGrid">
-        <p style="text-align:center; grid-column: 1/-1;">正在加载定理库...</p>
-    </section>
+        <section class="chart-section" aria-labelledby="chartTitle">
+            <h2 id="chartTitle">质数分布可视化</h2>
+            <p class="chart-desc">
+                观察不超过 <b>N</b> 的质数个数 <b>π(N)</b> 随 N 的增长，并与渐近线 <b>N / ln N</b>（素数定理）对比。
+                拖动滑块可调整范围上限 N。
+            </p>
+
+            <div class="chart-controls">
+                <label for="primeRange">范围上限 N：<span id="primeRangeValue">1000</span></label>
+                <input type="range" id="primeRange" min="100" max="1000000" step="100" value="1000">
+                <button type="button" id="resetChart">重置</button>
+            </div>
+
+            <div class="chart-legend" aria-hidden="true">
+                <span class="legend-item"><span class="legend-swatch" style="background:#d32f2f;"></span>π(N)（质数个数）</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#007bff;"></span>N / ln N（素数定理渐近线）</span>
+            </div>
+
+            <canvas id="primeChart" width="900" height="360" aria-label="质数分布图表"></canvas>
+
+            <div class="chart-stats" id="chartStats"></div>
+        </section>
+
+        <section class="theorem-grid" id="theoremGrid">
+            <p style="text-align:center; grid-column: 1/-1;">正在加载定理库...</p>
+        </section>
     </main>
 
     <footer>
-        <p>© 2026 数论百科项目 | 构建于 GitHub Pages</p>
+        <p>© 2026 算法竞赛数论百科 | 构建于 GitHub Pages</p>
     </footer>
 
     <script src="script.js"></script>
+    <script src="chart.js"></script>
 </body>
-
 </html>

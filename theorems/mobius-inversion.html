@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>莫比乌斯反演公式 - 数论百科</title>
+    <title>莫比乌斯反演公式 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -117,7 +117,7 @@
                 $$\sum_{d \mid n} \mu(d) =
                 \begin{cases}
                 1 & \text{如果 } n = 1 \\
-                0 & \text{如果 } n > 1
+                0 & \text{如果 } n \gt 1
                 \end{cases}$$
                 这个性质是莫比乌斯反演的核心。
             </p>
@@ -188,7 +188,7 @@
                 $$\varepsilon(n) = 
                 \begin{cases}
                 1 & \text{如果 } n = 1 \\
-                0 & \text{如果 } n > 1
+                0 & \text{如果 } n \gt 1
                 \end{cases}$$
                 
                 那么对于任意数论函数 $f$，有：
@@ -213,79 +213,76 @@
                 
                 考虑 $n = p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k}$，要计算与 $n$ 互质的数的个数 $\varphi(n)$。
                 设 $A_i$ 表示能被 $p_i$ 整除的数的集合，则：
-                $$\varphi(n) = n - \sum_i \frac{n}{p_i} + \sum_{i<j} \frac{n}{p_i p_j} - \sum_{i<j<k} \frac{n}{p_i p_j p_k} + \cdots$$
+                $$\varphi(n) = n - \sum_i \frac{n}{p_i} + \sum_{i\lt j} \frac{n}{p_i p_j} - \sum_{i\lt j\lt k} \frac{n}{p_i p_j p_k} + \cdots$$
                 
                 这正是莫比乌斯反演公式：
                 $$\varphi(n) = \sum_{d \mid n} \mu(d) \frac{n}{d}$$
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算莫比乌斯函数 μ(n)
-function mobius(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    let primeCount = 0;
-    let temp = n;
-    
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note"><strong>算法说明：</strong> 代码实现了莫比乌斯函数的计算（单个值和筛法）、莫比乌斯反演公式，并验证了欧拉函数公式等经典例子。线性筛法可以在 $O(n)$ 时间内计算 $1$ 到 $n$ 的所有莫比乌斯函数值。</p>
+            <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+using namespace std;
+
+// 计算莫比乌斯函数 μ(n)
+long long mobius(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    long long primeCount = 0;
+    long long temp = n;
+
     // 检查平方因子
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
             primeCount++;
             temp /= p;
-            
+
             // 检查p²是否整除n
-            if (temp % p === 0) {
+            if (temp % p == 0) {
                 return 0; // 有平方因子
             }
         }
     }
-    
+
     // 处理剩余的质因子
-    if (temp > 1) {
+    if (temp &gt; 1) {
         primeCount++;
     }
-    
+
     // 根据质因子个数的奇偶性返回±1
-    return primeCount % 2 === 0 ? 1 : -1;
+    return primeCount % 2 == 0 ? 1 : -1;
 }
 
 // 预计算莫比乌斯函数表（筛法）
-function mobiusSieve(n) {
-    const mu = new Array(n + 1).fill(1);
-    const isPrime = new Array(n + 1).fill(true);
-    const primes = [];
-    
+vector&lt;long long&gt; mobiusSieve(int n) {
+    vector&lt;long long&gt; mu(n + 1, 1);
+    vector&lt;bool&gt; isPrime(n + 1, true);
+    vector&lt;int&gt; primes;
+
     // 初始化
     mu[0] = 0;
-    if (n >= 1) mu[1] = 1;
-    
+    if (n &gt;= 1) mu[1] = 1;
+
     // 线性筛法计算莫比乌斯函数
-    for (let i = 2; i <= n; i++) {
+    for (int i = 2; i &lt;= n; i++) {
         if (isPrime[i]) {
-            primes.push(i);
+            primes.push_back(i);
             mu[i] = -1; // 单个质数
         }
-        
-        for (const p of primes) {
-            if (i * p > n) break;
-            
+
+        for (int p : primes) {
+            if (i * p &gt; n) break;
+
             isPrime[i * p] = false;
-            
-            if (i % p === 0) {
+
+            if (i % p == 0) {
                 mu[i * p] = 0; // p²整除i*p
                 break;
             } else {
@@ -293,129 +290,134 @@ function mobiusSieve(n) {
             }
         }
     }
-    
+
     return mu;
 }
 
-// 莫比乌斯反演：从f(n)=Σg(d)计算g(n)
-function mobiusInversionSumOverDivisors(f, n) {
-    let result = 0;
-    
-    // 遍历n的所有约数
-    const divisors = getDivisors(n);
-    
-    for (const d of divisors) {
-        result += mobius(d) * f(n / d);
-    }
-    
-    return result;
-}
-
 // 辅助函数：获取所有正约数
-function getDivisors(n) {
-    const divisors = [];
-    const sqrtN = Math.sqrt(n);
-    
-    for (let i = 1; i <= sqrtN; i++) {
-        if (n % i === 0) {
-            divisors.push(i);
-            if (i !== n / i) {
-                divisors.push(n / i);
+vector&lt;long long&gt; getDivisors(long long n) {
+    vector&lt;long long&gt; divisors;
+    long long sqrtN = (long long)sqrt(n);
+
+    for (long long i = 1; i &lt;= sqrtN; i++) {
+        if (n % i == 0) {
+            divisors.push_back(i);
+            if (i != n / i) {
+                divisors.push_back(n / i);
             }
         }
     }
-    
-    return divisors.sort((a, b) => a - b);
+
+    sort(divisors.begin(), divisors.end());
+    return divisors;
 }
 
-// 示例1：验证欧拉函数公式
-console.log("=== 验证欧拉函数公式 ===");
-function eulerPhi(n) {
-    let result = n;
-    let temp = n;
-    
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
-            while (temp % p === 0) {
+// 莫比乌斯反演：从f(n)=Σg(d)计算g(n)
+long long mobiusInversionSumOverDivisors(function&lt;long long(long long)&gt; f, long long n) {
+    long long result = 0;
+
+    // 遍历n的所有约数
+    vector&lt;long long&gt; divisors = getDivisors(n);
+
+    for (long long d : divisors) {
+        result += mobius(d) * f(n / d);
+    }
+
+    return result;
+}
+
+// 欧拉函数 φ(n)
+long long eulerPhi(long long n) {
+    long long result = n;
+    long long temp = n;
+
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
+            while (temp % p == 0) {
                 temp /= p;
             }
             result -= result / p;
         }
     }
-    
-    if (temp > 1) {
+
+    if (temp &gt; 1) {
         result -= result / temp;
     }
-    
+
     return result;
 }
 
 // 定义 f(n) = n = Σ φ(d)
-function f(n) {
+long long f(long long n) {
     return n;
 }
 
-for (let n = 1; n <= 20; n++) {
-    const phiFromInversion = mobiusInversionSumOverDivisors(f, n);
-    const phiDirect = eulerPhi(n);
-    console.log(`n=${n}: φ(n)=${phiDirect}, 反演得到=${phiFromInversion}, ${phiDirect === phiFromInversion ? '✓' : '✗'}`);
-}
-
-// 示例2：自定义函数验证
-console.log("\n=== 自定义函数验证 ===");
-
 // 定义 g(n) = n²
-function g(n) {
+long long g(long long n) {
     return n * n;
 }
 
 // 计算 f(n) = Σ g(d)
-function computeF(n) {
-    let sum = 0;
-    const divisors = getDivisors(n);
-    for (const d of divisors) {
+long long computeF(long long n) {
+    long long sum = 0;
+    vector&lt;long long&gt; divisors = getDivisors(n);
+    for (long long d : divisors) {
         sum += g(d);
     }
     return sum;
 }
 
-// 验证反演公式
-for (let n = 1; n <= 10; n++) {
-    const fValue = computeF(n);
-    
-    // 从f反演回g
-    const gFromInversion = mobiusInversionSumOverDivisors(computeF, n);
-    
-    console.log(`n=${n}: g(n)=${g(n)}, f(n)=${fValue}, 反演得g=${gFromInversion}, ${g(n) === gFromInversion ? '✓' : '✗'}`);
-}
+int main() {
+    // 示例1：验证欧拉函数公式
+    cout &lt;&lt; "=== 验证欧拉函数公式 ===\n";
 
-// 示例3：计算莫比乌斯函数表
-console.log("\n=== 莫比乌斯函数值 μ(n) (n=1..30) ===");
-const mu = mobiusSieve(30);
-for (let n = 1; n <= 30; n++) {
-    process.stdout.write(`μ(${n})=${mu[n]}\t`);
-    if (n % 5 === 0) console.log();
-}
-
-// 示例4：验证莫比乌斯函数的性质 Σ μ(d) = [n=1]
-console.log("\n=== 验证 Σ μ(d) = [n=1] ===");
-for (let n = 1; n <= 10; n++) {
-    let sum = 0;
-    const divisors = getDivisors(n);
-    for (const d of divisors) {
-        sum += mobius(d);
+    for (int n = 1; n &lt;= 20; n++) {
+        long long phiFromInversion = mobiusInversionSumOverDivisors(f, n);
+        long long phiDirect = eulerPhi(n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": φ(n)=" &lt;&lt; phiDirect
+             &lt;&lt; ", 反演得到=" &lt;&lt; phiFromInversion &lt;&lt; ", "
+             &lt;&lt; (phiDirect == phiFromInversion ? "✓" : "✗") &lt;&lt; '\n';
     }
-    const expected = n === 1 ? 1 : 0;
-    console.log(`n=${n}: Σ μ(d)=${sum}, 期望=${expected}, ${sum === expected ? '✓' : '✗'}`);
-}</code>
-            </pre>
-            
-            <p style="margin-top: 15px; color: #f8f8f2;">
-                <strong>算法说明：</strong>
-                代码实现了莫比乌斯函数的计算（单个值和筛法）、莫比乌斯反演公式，
-                并验证了欧拉函数公式等经典例子。
-                线性筛法可以在 $O(n)$ 时间内计算 $1$ 到 $n$ 的所有莫比乌斯函数值。
-            </p>
+
+    // 示例2：自定义函数验证
+    cout &lt;&lt; "\n=== 自定义函数验证 ===\n";
+
+    // 验证反演公式
+    for (int n = 1; n &lt;= 10; n++) {
+        long long fValue = computeF(n);
+
+        // 从f反演回g
+        long long gFromInversion = mobiusInversionSumOverDivisors(computeF, n);
+
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": g(n)=" &lt;&lt; g(n) &lt;&lt; ", f(n)=" &lt;&lt; fValue
+             &lt;&lt; ", 反演得g=" &lt;&lt; gFromInversion &lt;&lt; ", "
+             &lt;&lt; (g(n) == gFromInversion ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    // 示例3：计算莫比乌斯函数表
+    cout &lt;&lt; "\n=== 莫比乌斯函数值 μ(n) (n=1..30) ===\n";
+    vector&lt;long long&gt; mu = mobiusSieve(30);
+    for (int n = 1; n &lt;= 30; n++) {
+        cout &lt;&lt; "μ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; mu[n] &lt;&lt; '\t';
+        if (n % 5 == 0) cout &lt;&lt; '\n';
+    }
+
+    // 示例4：验证莫比乌斯函数的性质 Σ μ(d) = [n=1]
+    cout &lt;&lt; "\n=== 验证 Σ μ(d) = [n=1] ===\n";
+    for (int n = 1; n &lt;= 10; n++) {
+        long long sum = 0;
+        vector&lt;long long&gt; divisors = getDivisors(n);
+        for (long long d : divisors) {
+            sum += mobius(d);
+        }
+        long long expected = n == 1 ? 1 : 0;
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": Σ μ(d)=" &lt;&lt; sum &lt;&lt; ", 期望=" &lt;&lt; expected &lt;&lt; ", "
+             &lt;&lt; (sum == expected ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 
@@ -485,7 +487,7 @@ for (let n = 1; n <= 10; n++) {
                 <tbody>
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ccc;">单位函数 $\varepsilon$</td>
-                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon(1)=1$, $\varepsilon(n)=0$ ($n>1$)</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon(1)=1$, $\varepsilon(n)=0$ ($n\gt1$)</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon = \mu * 1$</td>
                     </tr>
                     <tr>

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>模逆元 - 数论百科</title>
+    <title>模逆元 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -49,7 +49,7 @@
             
             <strong>定义与存在条件：</strong>
             <p>
-                设 $a$ 和 $m$ 为整数，$m > 0$。如果存在整数 $x$ 使得：
+                设 $a$ 和 $m$ 为整数，$m \gt 0$。如果存在整数 $x$ 使得：
                 $$ax \equiv 1 \pmod{m}$$
                 则称 $x$ 为 $a$ 模 $m$ 的逆元，记作 $a^{-1} \pmod{m}$。
             </p>
@@ -60,7 +60,7 @@
             </p>
             
             <p>
-                当逆元存在时，在模 $m$ 意义下是唯一的（通常取 $0 \leq x < m$ 的那个）。
+                当逆元存在时，在模 $m$ 意义下是唯一的（通常取 $0 \leq x \lt m$ 的那个）。
             </p>
         </section>
 
@@ -71,7 +71,7 @@
             <p>
                 要求 $ax \equiv 1 \pmod{m}$，等价于求方程 $ax + my = 1$ 的整数解 $x$。
                 使用扩展欧几里得算法可以求出 $\gcd(a, m)$ 以及满足 $ax + my = \gcd(a, m)$ 的 $x, y$。
-                当 $\gcd(a, m) = 1$ 时，得到的 $x$ 就是 $a$ 模 $m$ 的逆元（可能需要调整到 $0 \leq x < m$）。
+                当 $\gcd(a, m) = 1$ 时，得到的 $x$ 就是 $a$ 模 $m$ 的逆元（可能需要调整到 $0 \leq x \lt m$）。
             </p>
             
             <h4>方法二：快速幂法（费马小定理，仅当 $m$ 为质数）</h4>
@@ -99,121 +99,102 @@
             </div>
         </section>
 
-        <section class="code-example" 
-                 style="background: #f5f5f5; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3>代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #2d2d2d; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 方法1：扩展欧几里得算法求逆元（通用）
-function modInverseExtendedEuclidean(a, m) {
-    // 扩展欧几里得算法
-    function extendedGcd(a, b) {
-        if (b === 0) {
-            return { gcd: a, x: 1, y: 0 };
-        }
-        const result = extendedGcd(b, a % b);
-        const { gcd, x: x1, y: y1 } = result;
-        const x = y1;
-        const y = x1 - Math.floor(a / b) * y1;
-        return { gcd, x, y };
-    }
-    
-    const { gcd, x } = extendedGcd(a, m);
-    
-    // 如果gcd不为1，则逆元不存在
-    if (gcd !== 1) {
-        throw new Error(`逆元不存在：gcd(${a}, ${m}) = ${gcd} ≠ 1`);
-    }
-    
-    // 调整x到[0, m)范围内
-    return ((x % m) + m) % m;
-}
-
-// 方法2：快速幂法求逆元（仅当m为质数）
-function modInverseFermat(a, m) {
-    // 快速幂算法
-    function fastPow(base, exp, mod) {
-        if (mod === 1) return 0;
-        let result = 1;
-        base = base % mod;
-        while (exp > 0) {
-            if (exp % 2 === 1) {
-                result = (result * base) % mod;
-            }
-            exp = Math.floor(exp / 2);
-            base = (base * base) % mod;
-        }
-        return result;
-    }
-    
-    // 假设m是质数，根据费马小定理
-    return fastPow(a, m - 2, m);
-}
-
-// 方法3：预计算逆元（线性求逆元，适用于求1到n的所有逆元）
-function modInverseLinear(n, mod) {
-    if (mod <= n) {
-        throw new Error("模数必须大于n");
-    }
-    
-    const inv = new Array(n + 1);
-    inv[1] = 1;
-    
-    for (let i = 2; i <= n; i++) {
-        // 公式：inv[i] = mod - mod / i * inv[mod % i] % mod
-        inv[i] = mod - Math.floor(mod / i) * inv[mod % i] % mod;
-    }
-    
-    return inv;
-}
-
-// 示例使用
-console.log("=== 扩展欧几里得算法求逆元 ===");
-console.log(`5 模 11 的逆元: ${modInverseExtendedEuclidean(5, 11)}`); // 9，因为5*9=45≡1 mod 11
-console.log(`7 模 13 的逆元: ${modInverseExtendedEuclidean(7, 13)}`); // 2，因为7*2=14≡1 mod 13
-
-try {
-    console.log(`6 模 8 的逆元: ${modInverseExtendedEuclidean(6, 8)}`);
-} catch (e) {
-    console.log(e.message); // 逆元不存在：gcd(6, 8) = 2 ≠ 1
-}
-
-console.log("\n=== 费马小定理求逆元（模为质数） ===");
-console.log(`5 模 11 的逆元: ${modInverseFermat(5, 11)}`); // 9
-console.log(`7 模 13 的逆元: ${modInverseFermat(7, 13)}`); // 2
-
-console.log("\n=== 线性求逆元（求1到5模7的逆元） ===");
-const inv = modInverseLinear(5, 7);
-for (let i = 1; i <= 5; i++) {
-    console.log(`${i} 模 7 的逆元: ${inv[i]}`);
-}
-// 输出：
-// 1 模 7 的逆元: 1
-// 2 模 7 的逆元: 4
-// 3 模 7 的逆元: 5
-// 4 模 7 的逆元: 2
-// 5 模 7 的逆元: 3
-
-// 验证线性求逆元公式：对于i=4，inv[4] = 7 - floor(7/4)*inv[7%4] % 7 = 7 - 1*inv[3] % 7 = 7 - 5 = 2</code>
-            </pre>
-            
-            <p style="margin-top: 15px;">
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note">
                 <strong>线性求逆元原理：</strong><br>
-                对于质数模数 $p$，要求 $1$ 到 $n$（$n < p$）的所有逆元，可以使用递推公式：
+                对于质数模数 $p$，要求 $1$ 到 $n$（$n \lt p$）的所有逆元，可以使用递推公式：
                 $$\text{inv}[i] = p - \lfloor p/i \rfloor \times \text{inv}[p \bmod i] \bmod p$$
                 其中 $\text{inv}[1] = 1$。该公式基于以下推导：
                 $$p = \lfloor p/i \rfloor \times i + (p \bmod i) \equiv 0 \pmod{p}$$
                 所以 $\lfloor p/i \rfloor \times i \equiv -(p \bmod i) \pmod{p}$，
                 两边乘以 $\text{inv}[i] \times \text{inv}[p \bmod i]$ 即得递推式。
             </p>
+            <pre><code>
+// 模逆元示例：三种常用求逆元方法
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// 扩展欧几里得算法：求 ax + by = gcd(a, b) 的一组解
+long long extgcd(long long a, long long b, long long &amp;x, long long &amp;y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    long long x1, y1;
+    long long g = extgcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
+}
+
+// 方法1：扩展欧几里得算法求逆元（通用）
+long long modInverseExtendedEuclidean(long long a, long long m) {
+    long long x, y;
+    long long g = extgcd(a, m, x, y);
+    // 如果 gcd 不为 1，则逆元不存在
+    if (g != 1) return -1;
+    // 调整 x 到 [0, m) 范围内
+    return ((x % m) + m) % m;
+}
+
+// 快速幂算法
+long long fastPow(long long base, long long exp, long long mod) {
+    if (mod == 1) return 0;
+    long long result = 1;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = result * base % mod;
+        exp &gt;&gt;= 1;
+        base = base * base % mod;
+    }
+    return result;
+}
+
+// 方法2：快速幂法求逆元（仅当 m 为质数）
+long long modInverseFermat(long long a, long long m) {
+    // 假设 m 是质数，根据费马小定理
+    return fastPow(a, m - 2, m);
+}
+
+// 方法3：预计算逆元（线性求逆元，适用于求 1 到 n 的所有逆元）
+vector&lt;long long&gt; modInverseLinear(int n, long long mod) {
+    vector&lt;long long&gt; inv(n + 1);
+    inv[1] = 1;
+    for (int i = 2; i &lt;= n; i++) {
+        // 公式：inv[i] = mod - mod / i * inv[mod % i] % mod
+        inv[i] = mod - (mod / i) * inv[mod % i] % mod;
+    }
+    return inv;
+}
+
+int main() {
+    cout &lt;&lt; "=== 扩展欧几里得算法求逆元 ===" &lt;&lt; '\n';
+    cout &lt;&lt; "5 模 11 的逆元: " &lt;&lt; modInverseExtendedEuclidean(5, 11) &lt;&lt; '\n'; // 9，因为 5*9=45≡1 mod 11
+    cout &lt;&lt; "7 模 13 的逆元: " &lt;&lt; modInverseExtendedEuclidean(7, 13) &lt;&lt; '\n'; // 2，因为 7*2=14≡1 mod 13
+
+    long long inv68 = modInverseExtendedEuclidean(6, 8);
+    if (inv68 == -1) {
+        cout &lt;&lt; "逆元不存在：gcd(6, 8) = 2 ≠ 1" &lt;&lt; '\n';
+    } else {
+        cout &lt;&lt; "6 模 8 的逆元: " &lt;&lt; inv68 &lt;&lt; '\n';
+    }
+
+    cout &lt;&lt; '\n' &lt;&lt; "=== 费马小定理求逆元（模为质数） ===" &lt;&lt; '\n';
+    cout &lt;&lt; "5 模 11 的逆元: " &lt;&lt; modInverseFermat(5, 11) &lt;&lt; '\n'; // 9
+    cout &lt;&lt; "7 模 13 的逆元: " &lt;&lt; modInverseFermat(7, 13) &lt;&lt; '\n'; // 2
+
+    cout &lt;&lt; '\n' &lt;&lt; "=== 线性求逆元（求 1 到 5 模 7 的逆元） ===" &lt;&lt; '\n';
+    vector&lt;long long&gt; inv = modInverseLinear(5, 7);
+    for (int i = 1; i &lt;= 5; i++) {
+        cout &lt;&lt; i &lt;&lt; " 模 7 的逆元: " &lt;&lt; inv[i] &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="example" 

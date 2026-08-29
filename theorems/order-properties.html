@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>阶的性质定理 - 数论百科</title>
+    <title>阶的性质定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -173,236 +173,197 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算a模n的阶（直接方法）
-function orderDirect(a, n) {
-    if (gcd(a, n) !== 1) {
-        throw new Error("a和n必须互质");
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;utility&gt;
+using namespace std;
+
+// 最大公约数
+long long gcd_ll(long long a, long long b) {
+    while (b) {
+        long long t = a % b;
+        a = b;
+        b = t;
     }
-    
-    let result = 1;
-    let power = a % n;
-    
-    while (power !== 1) {
-        power = (power * a) % n;
-        result++;
-        
-        // 安全限制，避免无限循环
-        if (result > n * 2) {
-            throw new Error("计算阶时超出限制，可能出错");
-        }
+    return a;
+}
+
+// 快速幂：计算 (base^exp) % mod
+long long modPow(long long base, long long exp, long long mod) {
+    if (mod == 1) return 0;
+    long long result = 1 % mod;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = result * base % mod;
+        base = base * base % mod;
+        exp &gt;&gt;= 1;
     }
-    
     return result;
 }
 
-// 使用欧拉函数优化计算阶
-function orderUsingPhi(a, n) {
-    if (gcd(a, n) !== 1) {
-        throw new Error("a和n必须互质");
-    }
-    
-    const phiN = eulerPhi(n);
-    
-    // 找phiN的所有因子
-    const divisors = getDivisors(phiN);
-    
-    // 按从小到大排序
-    divisors.sort((x, y) => x - y);
-    
-    // 找最小的满足a^k ≡ 1 mod n的k
-    for (const k of divisors) {
-        if (modPow(a, k, n) === 1) {
-            return k;
-        }
-    }
-    
-    return phiN; // 根据欧拉定理，至少phiN满足条件
-}
-
 // 计算欧拉函数
-function eulerPhi(n) {
-    let result = n;
-    let temp = n;
-    
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
-            while (temp % p === 0) {
-                temp /= p;
-            }
+long long eulerPhi(long long n) {
+    long long result = n;
+    long long temp = n;
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
+            while (temp % p == 0) temp /= p;
             result -= result / p;
         }
     }
-    
-    if (temp > 1) {
-        result -= result / temp;
-    }
-    
+    if (temp &gt; 1) result -= result / temp;
     return result;
 }
 
 // 获取一个数的所有正因子
-function getDivisors(num) {
-    const divisors = [];
-    const sqrt = Math.sqrt(num);
-    
-    for (let i = 1; i <= sqrt; i++) {
-        if (num % i === 0) {
-            divisors.push(i);
-            if (i !== num / i) {
-                divisors.push(num / i);
-            }
+vector&lt;long long&gt; getDivisors(long long num) {
+    vector&lt;long long&gt; divisors;
+    for (long long i = 1; i * i &lt;= num; i++) {
+        if (num % i == 0) {
+            divisors.push_back(i);
+            if (i != num / i) divisors.push_back(num / i);
         }
     }
-    
+    sort(divisors.begin(), divisors.end());
     return divisors;
 }
 
-// 快速幂算法
-function modPow(base, exp, mod) {
-    if (mod === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        e >>= 1n;
-        base = (base * base) % BigInt(mod);
+// 计算a模n的阶（直接方法）
+long long orderDirect(long long a, long long n) {
+    if (gcd_ll(a, n) != 1) {
+        cerr &lt;&lt; "a和n必须互质\n";
+        return -1;
     }
-    return Number(result);
+    long long result = 1;
+    long long power = a % n;
+    while (power != 1) {
+        power = power * a % n;
+        result++;
+        if (result &gt; n * 2) {
+            cerr &lt;&lt; "计算阶时超出限制，可能出错\n";
+            return -1;
+        }
+    }
+    return result;
 }
 
-// 最大公约数
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
+// 使用欧拉函数优化计算阶
+long long orderUsingPhi(long long a, long long n) {
+    if (gcd_ll(a, n) != 1) {
+        cerr &lt;&lt; "a和n必须互质\n";
+        return -1;
+    }
+    long long phiN = eulerPhi(n);
+    vector&lt;long long&gt; divisors = getDivisors(phiN);
+    for (long long k : divisors) {
+        if (modPow(a, k, n) == 1) return k;
+    }
+    return phiN;
 }
 
 // 验证阶的性质
-function verifyOrderProperties(a, n) {
-    if (gcd(a, n) !== 1) {
-        console.log(`a=${a}和n=${n}不互质`);
+void verifyOrderProperties(long long a, long long n) {
+    if (gcd_ll(a, n) != 1) {
+        cout &lt;&lt; "a=" &lt;&lt; a &lt;&lt; "和n=" &lt;&lt; n &lt;&lt; "不互质\n";
         return;
     }
-    
-    const d = orderDirect(a, n);
-    const phi = eulerPhi(n);
-    
-    console.log(`\n=== 验证 a=${a} 模 n=${n} 的阶的性质 ==`);
-    console.log(`ord_${n}(${a}) = ${d}`);
-    console.log(`φ(${n}) = ${phi}`);
-    
+    long long d = orderDirect(a, n);
+    long long phi = eulerPhi(n);
+
+    cout &lt;&lt; "\n=== 验证 a=" &lt;&lt; a &lt;&lt; " 模 n=" &lt;&lt; n &lt;&lt; " 的阶的性质 ==\n";
+    cout &lt;&lt; "ord_" &lt;&lt; n &lt;&lt; "(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; d &lt;&lt; "\n";
+    cout &lt;&lt; "φ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; phi &lt;&lt; "\n";
+
     // 性质1：d整除任意满足a^m ≡ 1 mod n的m
-    console.log(`\n1. 验证性质1：d整除所有满足a^m ≡ 1 mod n的m`);
-    let testPass1 = true;
-    for (let m = 1; m <= phi * 2; m++) {
-        if (modPow(a, m, n) === 1) {
-            if (m % d !== 0) {
-                console.log(`  错误：a^${m} ≡ 1 mod ${n}，但${d}不整除${m}`);
+    cout &lt;&lt; "\n1. 验证性质1：d整除所有满足a^m ≡ 1 mod n的m\n";
+    bool testPass1 = true;
+    for (long long m = 1; m &lt;= phi * 2; m++) {
+        if (modPow(a, m, n) == 1) {
+            if (m % d != 0) {
+                cout &lt;&lt; "  错误：a^" &lt;&lt; m &lt;&lt; " ≡ 1 mod " &lt;&lt; n &lt;&lt; "，但" &lt;&lt; d &lt;&lt; "不整除" &lt;&lt; m &lt;&lt; "\n";
                 testPass1 = false;
             }
         }
     }
-    if (testPass1) {
-        console.log(`  性质1验证通过`);
-    }
-    
+    if (testPass1) cout &lt;&lt; "  性质1验证通过\n";
+
     // 性质2：d | φ(n)
-    console.log(`\n2. 验证性质2：d | φ(n)`);
-    if (phi % d === 0) {
-        console.log(`  ${d} 整除 φ(${n})=${phi}，商为${phi/d}`);
+    cout &lt;&lt; "\n2. 验证性质2：d | φ(n)\n";
+    if (phi % d == 0) {
+        cout &lt;&lt; "  " &lt;&lt; d &lt;&lt; " 整除 φ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; phi &lt;&lt; "，商为" &lt;&lt; phi / d &lt;&lt; "\n";
     } else {
-        console.log(`  错误：${d} 不整除 φ(${n})=${phi}`);
+        cout &lt;&lt; "  错误：" &lt;&lt; d &lt;&lt; " 不整除 φ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; phi &lt;&lt; "\n";
     }
-    
+
     // 性质3：幂的阶
-    console.log(`\n3. 验证性质3：ord(a^s) = d / gcd(d, s)`);
-    for (let s = 1; s <= 10; s++) {
-        const expected = d / gcd(d, s);
-        const actual = orderDirect(modPow(a, s, n), n);
-        
-        if (Math.abs(expected - actual) > 0.001) {
-            console.log(`  错误：ord(${a}^${s})，期望=${expected}，实际=${actual}`);
+    cout &lt;&lt; "\n3. 验证性质3：ord(a^s) = d / gcd(d, s)\n";
+    for (long long s = 1; s &lt;= 10; s++) {
+        long long expected = d / gcd_ll(d, s);
+        long long actual = orderDirect(modPow(a, s, n), n);
+        if (expected != actual) {
+            cout &lt;&lt; "  错误：ord(" &lt;&lt; a &lt;&lt; "^" &lt;&lt; s &lt;&lt; ")，期望=" &lt;&lt; expected &lt;&lt; "，实际=" &lt;&lt; actual &lt;&lt; "\n";
         }
     }
-    console.log(`  性质3验证通过（s=1..10）`);
-    
+    cout &lt;&lt; "  性质3验证通过（s=1..10）\n";
+
     // 性质4：原根的判定
-    console.log(`\n4. 原根判定：`);
-    if (d === phi) {
-        console.log(`  ${a}是模${n}的原根（因为ord=${d}=φ(${n})）`);
+    cout &lt;&lt; "\n4. 原根判定：\n";
+    if (d == phi) {
+        cout &lt;&lt; "  " &lt;&lt; a &lt;&lt; "是模" &lt;&lt; n &lt;&lt; "的原根（因为ord=" &lt;&lt; d &lt;&lt; "=φ(" &lt;&lt; n &lt;&lt; ")）\n";
     } else {
-        console.log(`  ${a}不是模${n}的原根（因为ord=${d}≠φ(${n})=${phi}）`);
-    }
-    
-    return d;
-}
-
-// 示例使用
-console.log("=== 阶的性质验证 ===");
-
-// 示例1：2模7
-verifyOrderProperties(2, 7);
-
-// 示例2：2模13（原根）
-verifyOrderProperties(2, 13);
-
-// 示例3：3模10
-verifyOrderProperties(3, 10);
-
-// 计算不同数的阶
-console.log("\n=== 计算不同数的阶 ===");
-const testCases = [
-    {a: 2, n: 7},
-    {a: 3, n: 7},
-    {a: 2, n: 9},
-    {a: 5, n: 12},
-    {a: 7, n: 15}
-];
-
-for (const test of testCases) {
-    try {
-        const ord = orderDirect(test.a, test.n);
-        const phi = eulerPhi(test.n);
-        console.log(`ord_${test.n}(${test.a}) = ${ord}, φ(${test.n}) = ${phi}, ${ord === phi ? '是原根' : '不是原根'}`);
-    } catch (e) {
-        console.log(`ord_${test.n}(${test.a})：${e.message}`);
+        cout &lt;&lt; "  " &lt;&lt; a &lt;&lt; "不是模" &lt;&lt; n &lt;&lt; "的原根（因为ord=" &lt;&lt; d &lt;&lt; "≠φ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; phi &lt;&lt; "）\n";
     }
 }
 
-// 验证阶的计算方法
-console.log("\n=== 对比两种计算阶的方法 ===");
-const a = 2, n = 17;
-const ord1 = orderDirect(a, n);
-const ord2 = orderUsingPhi(a, n);
-console.log(`ord_${n}(${a})：直接法=${ord1}，欧拉函数法=${ord2}，${ord1 === ord2 ? '一致' : '不一致'}`);
+int main() {
+    cout &lt;&lt; "=== 阶的性质验证 ===\n";
 
-// 验证幂的阶的性质
-console.log("\n=== 验证幂的阶的性质 ===");
-const base = 2, mod = 11;
-const baseOrder = orderDirect(base, mod);
-console.log(`ord_${mod}(${base}) = ${baseOrder}`);
+    verifyOrderProperties(2, 7);
+    verifyOrderProperties(2, 13);
+    verifyOrderProperties(3, 10);
 
-for (let s = 1; s <= baseOrder; s++) {
-    const power = modPow(base, s, mod);
-    const powerOrder = orderDirect(power, mod);
-    const expected = baseOrder / gcd(baseOrder, s);
-    console.log(`ord_${mod}(${base}^${s}=${power}) = ${powerOrder}，期望=${expected}，${powerOrder === expected ? '✓' : '✗'}`);
-}</code>
-            </pre>
+    cout &lt;&lt; "\n=== 计算不同数的阶 ===\n";
+    vector&lt;pair&lt;long long, long long&gt;&gt; testCases = {
+        {2, 7}, {3, 7}, {2, 9}, {5, 12}, {7, 15}
+    };
+    for (auto test : testCases) {
+        long long a = test.first, n = test.second;
+        if (gcd_ll(a, n) != 1) {
+            cout &lt;&lt; "ord_" &lt;&lt; n &lt;&lt; "(" &lt;&lt; a &lt;&lt; ")：a和n必须互质\n";
+        } else {
+            long long ord = orderDirect(a, n);
+            long long phi = eulerPhi(n);
+            cout &lt;&lt; "ord_" &lt;&lt; n &lt;&lt; "(" &lt;&lt; a &lt;&lt; ") = " &lt;&lt; ord &lt;&lt; ", φ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; phi &lt;&lt; ", "
+                 &lt;&lt; (ord == phi ? "是原根" : "不是原根") &lt;&lt; "\n";
+        }
+    }
+
+    cout &lt;&lt; "\n=== 对比两种计算阶的方法 ===\n";
+    long long a = 2, n = 17;
+    long long ord1 = orderDirect(a, n);
+    long long ord2 = orderUsingPhi(a, n);
+    cout &lt;&lt; "ord_" &lt;&lt; n &lt;&lt; "(" &lt;&lt; a &lt;&lt; ")：直接法=" &lt;&lt; ord1 &lt;&lt; "，欧拉函数法=" &lt;&lt; ord2 &lt;&lt; "，"
+         &lt;&lt; (ord1 == ord2 ? "一致" : "不一致") &lt;&lt; "\n";
+
+    cout &lt;&lt; "\n=== 验证幂的阶的性质 ===\n";
+    long long base = 2, mod = 11;
+    long long baseOrder = orderDirect(base, mod);
+    cout &lt;&lt; "ord_" &lt;&lt; mod &lt;&lt; "(" &lt;&lt; base &lt;&lt; ") = " &lt;&lt; baseOrder &lt;&lt; "\n";
+    for (long long s = 1; s &lt;= baseOrder; s++) {
+        long long power = modPow(base, s, mod);
+        long long powerOrder = orderDirect(power, mod);
+        long long expected = baseOrder / gcd_ll(baseOrder, s);
+        cout &lt;&lt; "ord_" &lt;&lt; mod &lt;&lt; "(" &lt;&lt; base &lt;&lt; "^" &lt;&lt; s &lt;&lt; "=" &lt;&lt; power &lt;&lt; ") = " &lt;&lt; powerOrder
+             &lt;&lt; "，期望=" &lt;&lt; expected &lt;&lt; "，" &lt;&lt; (powerOrder == expected ? "✓" : "✗") &lt;&lt; "\n";
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

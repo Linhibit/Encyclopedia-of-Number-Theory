@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>二次互反律 - 数论百科</title>
+    <title>二次互反律 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -178,137 +178,129 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 快速幂算法
-function modPow(base, exp, mod) {
-    if (mod === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        e >>= 1n;
-        base = (base * base) % BigInt(mod);
-    }
-    return Number(result);
-}
-
-// 判断是否为奇素数（简单版本）
-function isOddPrime(n) {
-    if (n <= 2) return false;
-    if (n % 2 === 0) return false;
-    for (let i = 3; i * i <= n; i += 2) {
-        if (n % i === 0) return false;
-    }
-    return true;
-}
-
-// 计算勒让德符号 (a/p) - 使用欧拉判别准则
-function legendreSymbolEuler(a, p) {
-    if (p <= 2 || p % 2 === 0) {
-        throw new Error("p必须是奇素数");
-    }
-    if (a % p === 0) return 0;
-    
-    const result = modPow(a, (p - 1) / 2, p);
-    return result === 1 ? 1 : -1;
-}
-
-// 计算勒让德符号 (a/p) - 使用二次互反律（递归）
-function legendreSymbolRecursive(a, p) {
-    if (a % p === 0) return 0;
-    if (a === 1) return 1;
-    if (a === 2) {
-        // 第二补充定律
-        const r = p % 8;
-        return (r === 1 || r === 7) ? 1 : -1;
-    }
-    if (a === -1) {
-        // 第一补充定律
-        return (p % 4 === 1) ? 1 : -1;
-    }
-    
-    // 如果a是负数，化为正数
-    if (a < 0) {
-        return legendreSymbolRecursive(-1, p) * legendseSymbolRecursive(-a, p);
-    }
-    
-    // 如果a是偶数，提取因子2
-    if (a % 2 === 0) {
-        return legendreSymbolRecursive(2, p) * legendreSymbolRecursive(a / 2, p);
-    }
-    
-    // 如果a不是素数，分解质因数
-    if (!isOddPrime(a)) {
-        // 简单分解：假设a是素数或已处理了2和-1
-        // 这里简化处理，实际应用需要完全分解
-        return legendreSymbolRecursive(a % p, p);
-    }
-    
-    // 现在a和p都是奇素数，应用二次互反律
-    const aMod4 = a % 4;
-    const pMod4 = p % 4;
-    
-    let factor = 1;
-    if (aMod4 === 3 && pMod4 === 3) {
-        factor = -1;
-    }
-    
-    return factor * legendreSymbolRecursive(p % a, a);
-}
-
-// 判断a是否为模p的二次剩余
-function isQuadraticResidue(a, p) {
-    const symbol = legendreSymbolEuler(a, p);
-    return symbol === 1;
-}
-
-// 示例使用
-console.log("=== 勒让德符号计算 ===");
-console.log(`(7/19) = ${legendreSymbolEuler(7, 19)}`); // 1
-console.log(`(5/13) = ${legendreSymbolEuler(5, 13)}`); // -1
-console.log(`(2/17) = ${legendreSymbolEuler(2, 17)}`); // 1
-console.log(`(-1/5) = ${legendreSymbolEuler(-1, 5)}`); // 1
-
-console.log("\n=== 递归方法验证 ===");
-console.log(`(7/19) = ${legendreSymbolRecursive(7, 19)}`); // 1
-console.log(`(5/13) = ${legendreSymbolRecursive(5, 13)}`); // -1
-
-console.log("\n=== 二次剩余判断 ===");
-console.log(`7是模19的二次剩余？ ${isQuadraticResidue(7, 19)}`); // true
-console.log(`5是模13的二次剩余？ ${isQuadraticResidue(5, 13)}`); // false
-
-// 验证第一补充定律
-console.log("\n=== 验证第一补充定律 ===");
-const primes = [5, 7, 13, 17];
-for (const p of primes) {
-    const expected = (p % 4 === 1) ? 1 : -1;
-    const computed = legendreSymbolEuler(-1, p);
-    console.log(`p=${p}: (-1/${p}) = ${computed}, 期望=${expected}, ${computed === expected ? '✓' : '✗'}`);
-}</code>
-            </pre>
-            
-            <p style="margin-top: 15px; color: #f8f8f2;">
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note">
                 <strong>算法说明：</strong>
                 代码实现了两种计算勒让德符号的方法：
                 1. 欧拉判别准则（直接计算 $a^{(p-1)/2} \bmod p$）
                 2. 递归方法（应用二次互反律及其补充定律）
                 实际应用中，递归方法在 $a$ 和 $p$ 较大时更高效。
             </p>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+// 快速幂算法（使用 __int128 避免中间结果溢出）
+long long modPow(long long base, long long exp, long long mod) {
+    if (mod == 1) return 0;
+    long long result = 1;
+    base %= mod;
+    if (base &lt; 0) base += mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) {
+            result = (long long)((__int128)result * base % mod);
+        }
+        exp &gt;&gt;= 1;
+        base = (long long)((__int128)base * base % mod);
+    }
+    return result;
+}
+
+// 判断是否为奇素数（简单版本）
+bool isOddPrime(long long n) {
+    if (n &lt;= 2) return false;
+    if (n % 2 == 0) return false;
+    for (long long i = 3; i * i &lt;= n; i += 2) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+// 计算勒让德符号 (a/p) - 使用欧拉判别准则
+long long legendreSymbolEuler(long long a, long long p) {
+    if (p &lt;= 2 || p % 2 == 0) {
+        throw runtime_error("p必须是奇素数");
+    }
+    if (a % p == 0) return 0;
+    long long result = modPow(a, (p - 1) / 2, p);
+    return result == 1 ? 1 : -1;
+}
+
+// 计算勒让德符号 (a/p) - 使用二次互反律（递归）
+long long legendreSymbolRecursive(long long a, long long p) {
+    if (a % p == 0) return 0;
+    if (a == 1) return 1;
+    if (a == 2) {
+        // 第二补充定律
+        long long r = p % 8;
+        return (r == 1 || r == 7) ? 1 : -1;
+    }
+    if (a == -1) {
+        // 第一补充定律
+        return (p % 4 == 1) ? 1 : -1;
+    }
+    // 如果a是负数，化为正数
+    if (a &lt; 0) {
+        return legendreSymbolRecursive(-1, p) * legendreSymbolRecursive(-a, p);
+    }
+    // 如果a是偶数，提取因子2
+    if (a % 2 == 0) {
+        return legendreSymbolRecursive(2, p) * legendreSymbolRecursive(a / 2, p);
+    }
+    // 如果a不是素数，分解质因数
+    if (!isOddPrime(a)) {
+        // 简单分解：假设a是素数或已处理了2和-1
+        // 这里简化处理，实际应用需要完全分解
+        return legendreSymbolRecursive(a % p, p);
+    }
+    // 现在a和p都是奇素数，应用二次互反律
+    long long aMod4 = a % 4;
+    long long pMod4 = p % 4;
+    long long factor = 1;
+    if (aMod4 == 3 &amp;&amp; pMod4 == 3) {
+        factor = -1;
+    }
+    return factor * legendreSymbolRecursive(p % a, a);
+}
+
+// 判断a是否为模p的二次剩余
+bool isQuadraticResidue(long long a, long long p) {
+    long long symbol = legendreSymbolEuler(a, p);
+    return symbol == 1;
+}
+
+// 示例使用
+int main() {
+    cout &lt;&lt; "=== 勒让德符号计算 ===" &lt;&lt; '\n';
+    cout &lt;&lt; "(7/19) = " &lt;&lt; legendreSymbolEuler(7, 19) &lt;&lt; '\n'; // 1
+    cout &lt;&lt; "(5/13) = " &lt;&lt; legendreSymbolEuler(5, 13) &lt;&lt; '\n'; // -1
+    cout &lt;&lt; "(2/17) = " &lt;&lt; legendreSymbolEuler(2, 17) &lt;&lt; '\n'; // 1
+    cout &lt;&lt; "(-1/5) = " &lt;&lt; legendreSymbolEuler(-1, 5) &lt;&lt; '\n'; // 1
+
+    cout &lt;&lt; "\n=== 递归方法验证 ===" &lt;&lt; '\n';
+    cout &lt;&lt; "(7/19) = " &lt;&lt; legendreSymbolRecursive(7, 19) &lt;&lt; '\n'; // 1
+    cout &lt;&lt; "(5/13) = " &lt;&lt; legendreSymbolRecursive(5, 13) &lt;&lt; '\n'; // -1
+
+    cout &lt;&lt; "\n=== 二次剩余判断 ===" &lt;&lt; '\n';
+    cout &lt;&lt; "7是模19的二次剩余？ " &lt;&lt; (isQuadraticResidue(7, 19) ? "true" : "false") &lt;&lt; '\n'; // true
+    cout &lt;&lt; "5是模13的二次剩余？ " &lt;&lt; (isQuadraticResidue(5, 13) ? "true" : "false") &lt;&lt; '\n'; // false
+
+    // 验证第一补充定律
+    cout &lt;&lt; "\n=== 验证第一补充定律 ===" &lt;&lt; '\n';
+    vector&lt;long long&gt; primes = {5, 7, 13, 17};
+    for (auto p : primes) {
+        long long expected = (p % 4 == 1) ? 1 : -1;
+        long long computed = legendreSymbolEuler(-1, p);
+        cout &lt;&lt; "p=" &lt;&lt; p &lt;&lt; ": (-1/" &lt;&lt; p &lt;&lt; ") = " &lt;&lt; computed
+             &lt;&lt; ", 期望=" &lt;&lt; expected &lt;&lt; ", "
+             &lt;&lt; (computed == expected ? "✓" : "✗") &lt;&lt; '\n';
+    }
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="history" 

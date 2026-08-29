@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>扩展欧几里得算法 - 数论百科</title>
+    <title>扩展欧几里得算法 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -97,82 +97,85 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #f5f5f5; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
             
-            <h3>代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #2d2d2d; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 扩展欧几里得算法（递归实现）
-function extendedGcd(a, b) {
-    if (b === 0) {
-        // 基础情况：gcd(a,0) = a = a*1 + 0*0
-        return { gcd: a, x: 1, y: 0 };
-    }
-    
-    // 递归计算
-    const result = extendedGcd(b, a % b);
-    const { gcd, x: x1, y: y1 } = result;
-    
-    // 计算当前系数
-    const x = y1;
-    const y = x1 - Math.floor(a / b) * y1;
-    
-    return { gcd, x, y };
-}
-
-// 扩展欧几里得算法（循环实现）
-function extendedGcdIterative(a, b) {
-    let x = 1, y = 0;
-    let x1 = 0, y1 = 1;
-    let a1 = a, b1 = b;
-    
-    while (b1 !== 0) {
-        const q = Math.floor(a1 / b1);
-        
-        // 更新a1, b1
-        const temp = b1;
-        b1 = a1 - q * b1;
-        a1 = temp;
-        
-        // 更新x, x1
-        const tempX = x1;
-        x1 = x - q * x1;
-        x = tempX;
-        
-        // 更新y, y1
-        const tempY = y1;
-        y1 = y - q * y1;
-        y = tempY;
-    }
-    
-    return { gcd: a1, x, y };
-}
-
-// 示例使用
-console.log(extendedGcd(48, 18));      // {gcd: 6, x: -1, y: 3}
-console.log(extendedGcd(1071, 462));   // {gcd: 21, x: -7, y: 16}
-console.log(extendedGcd(17, 13));      // {gcd: 1, x: -3, y: 4}
-
-// 验证：检查是否满足 ax + by = gcd
-function verify(a, b, result) {
-    const { gcd, x, y } = result;
-    return a * x + b * y === gcd;
-}</code>
-            </pre>
-            
-            <p style="margin-top: 15px;">
+            <p class="code-note">
                 <strong>应用：</strong>
                 扩展欧几里得算法在计算模逆元、求解线性同余方程 $ax \equiv 1 \pmod{m}$ 等问题中非常有用。
                 当 $\gcd(a,m) = 1$ 时，算法得到的 $x$ 就是 $a$ 在模 $m$ 下的逆元。
             </p>
+            
+            <pre><code>
+#include &lt;iostream&gt;
+using namespace std;
+
+struct EgcdResult { long long gcd, x, y; };
+
+// 扩展欧几里得算法（递归实现）
+EgcdResult extendedGcd(long long a, long long b) {
+    if (b == 0) {
+        // 基础情况：gcd(a,0) = a = a*1 + 0*0
+        return {a, 1, 0};
+    }
+    // 递归计算
+    EgcdResult r = extendedGcd(b, a % b);
+    // 计算当前系数
+    long long x = r.y;
+    long long y = r.x - (a / b) * r.y;
+    return {r.gcd, x, y};
+}
+
+// 扩展欧几里得算法（循环实现）
+EgcdResult extendedGcdIterative(long long a, long long b) {
+    long long x = 1, y = 0;
+    long long x1 = 0, y1 = 1;
+    long long a1 = a, b1 = b;
+    while (b1 != 0) {
+        long long q = a1 / b1;
+        // 更新a1, b1
+        long long temp = b1;
+        b1 = a1 - q * b1;
+        a1 = temp;
+        // 更新x, x1
+        long long tempX = x1;
+        x1 = x - q * x1;
+        x = tempX;
+        // 更新y, y1
+        long long tempY = y1;
+        y1 = y - q * y1;
+        y = tempY;
+    }
+    return {a1, x, y};
+}
+
+// 验证：检查是否满足 ax + by = gcd
+bool verify(long long a, long long b, const EgcdResult&amp; r) {
+    return a * r.x + b * r.y == r.gcd;
+}
+
+int main() {
+    // 示例使用
+    auto r1 = extendedGcd(48, 18);     // {gcd: 6, x: -1, y: 3}
+    auto r2 = extendedGcd(1071, 462);  // {gcd: 21, x: -3, y: 7}
+    auto r3 = extendedGcd(17, 13);     // {gcd: 1, x: -3, y: 4}
+
+    cout &lt;&lt; "extendedGcd(48, 18)   = {gcd: " &lt;&lt; r1.gcd &lt;&lt; ", x: " &lt;&lt; r1.x &lt;&lt; ", y: " &lt;&lt; r1.y &lt;&lt; "}\n";
+    cout &lt;&lt; "extendedGcd(1071, 462) = {gcd: " &lt;&lt; r2.gcd &lt;&lt; ", x: " &lt;&lt; r2.x &lt;&lt; ", y: " &lt;&lt; r2.y &lt;&lt; "}\n";
+    cout &lt;&lt; "extendedGcd(17, 13)    = {gcd: " &lt;&lt; r3.gcd &lt;&lt; ", x: " &lt;&lt; r3.x &lt;&lt; ", y: " &lt;&lt; r3.y &lt;&lt; "}\n";
+
+    // 验证：检查是否满足 ax + by = gcd
+    cout &lt;&lt; "verify(48, 18)   = " &lt;&lt; (verify(48, 18, r1) ? "true" : "false") &lt;&lt; '\n';
+    cout &lt;&lt; "verify(1071, 462) = " &lt;&lt; (verify(1071, 462, r2) ? "true" : "false") &lt;&lt; '\n';
+    cout &lt;&lt; "verify(17, 13)    = " &lt;&lt; (verify(17, 13, r3) ? "true" : "false") &lt;&lt; '\n';
+
+    // 循环实现得到相同结果
+    auto it = extendedGcdIterative(48, 18);
+    cout &lt;&lt; "extendedGcdIterative(48, 18) = {gcd: " &lt;&lt; it.gcd &lt;&lt; ", x: " &lt;&lt; it.x &lt;&lt; ", y: " &lt;&lt; it.y &lt;&lt; "}\n";
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="example" 

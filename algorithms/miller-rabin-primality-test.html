@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>米勒-拉宾素性测试 - 数论百科</title>
+    <title>米勒-拉宾素性测试 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -49,13 +49,13 @@
             
             <strong>算法原理：</strong>
             <p>
-                米勒-拉宾素性测试是一种概率算法，用于判断一个奇数 $n > 1$ 是否为素数。
+                米勒-拉宾素性测试是一种概率算法，用于判断一个奇数 $n \gt 1$ 是否为素数。
                 基于以下两个数论事实（对于奇素数 $p$）：
             </p>
             
             <ol style="line-height: 1.6;">
                 <li>
-                    费马小定理：对于任意 $a$ 满足 $1 < a < p$，有 $a^{p-1} \equiv 1 \pmod{p}$。
+                    费马小定理：对于任意 $a$ 满足 $1 \lt a \lt p$，有 $a^{p-1} \equiv 1 \pmod{p}$。
                 </li>
                 <li>
                     模素数 $p$，方程 $x^2 \equiv 1 \pmod{p}$ 只有两个解：$x \equiv \pm 1 \pmod{p}$。
@@ -64,10 +64,10 @@
             
             <p>
                 设 $n$ 为待测试的奇数，将 $n-1$ 分解为 $n-1 = 2^s \cdot d$，其中 $d$ 为奇数。
-                如果 $n$ 是素数，则对于任意 $a$（$1 < a < n$），以下两个条件之一成立：
+                如果 $n$ 是素数，则对于任意 $a$（$1 \lt a \lt n$），以下两个条件之一成立：
                 <ol type="a">
                     <li>$a^d \equiv 1 \pmod{n}$</li>
-                    <li>存在某个 $r$（$0 \leq r < s$）使得 $a^{2^r \cdot d} \equiv -1 \pmod{n}$</li>
+                    <li>存在某个 $r$（$0 \leq r \lt s$）使得 $a^{2^r \cdot d} \equiv -1 \pmod{n}$</li>
                 </ol>
             </p>
         </section>
@@ -83,12 +83,12 @@
             <ol style="line-height: 1.6;">
                 <li>
                     <strong>输入：</strong>
-                    待测试的奇数 $n > 2$，测试次数 $k$（决定准确率）。
+                    待测试的奇数 $n \gt 2$，测试次数 $k$（决定准确率）。
                 </li>
                 
                 <li>
                     <strong>特殊情况：</strong>
-                    如果 $n < 2$，返回"合数"；如果 $n = 2$ 或 $n = 3$，返回"素数"。
+                    如果 $n \lt 2$，返回"合数"；如果 $n = 2$ 或 $n = 3$，返回"素数"。
                 </li>
                 
                 <li>
@@ -202,202 +202,180 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 快速幂算法（模幂运算）
-function modPow(base, exponent, modulus) {
-    if (modulus === 1) return 0;
-    
-    let result = 1n;
-    base = BigInt(base) % BigInt(modulus);
-    let exp = BigInt(exponent);
-    
-    while (exp > 0n) {
-        if (exp % 2n === 1n) {
-            result = (result * base) % BigInt(modulus);
-        }
-        exp >>= 1n;
-        base = (base * base) % BigInt(modulus);
-    }
-    
-    return Number(result);
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;iomanip&gt;
+#include &lt;random&gt;
+
+using namespace std;
+
+// 模乘：使用 __int128 避免 64 位乘法溢出
+long long mulMod(long long a, long long b, long long m) {
+    return (long long)((__int128)a * b % m);
 }
 
-// 分解 n-1 = 2^s * d，其中 d 是奇数
-function factorNMinus1(n) {
-    let s = 0;
-    let d = n - 1;
-    
-    while (d % 2 === 0) {
-        d /= 2;
-        s++;
+// 快速幂（模幂运算）
+long long modPow(long long base, long long exponent, long long modulus) {
+    if (modulus == 1) return 0;
+    long long result = 1;
+    base %= modulus;
+    while (exponent &gt; 0) {
+        if (exponent &amp; 1) result = mulMod(result, base, modulus);
+        exponent &gt;&gt;= 1;
+        base = mulMod(base, base, modulus);
     }
-    
-    return { s, d };
+    return result;
 }
 
 // 单轮米勒-拉宾测试
-function millerRabinTest(n, a) {
+bool millerRabinTest(long long n, long long a) {
     // 特殊情况
-    if (n < 2) return false;
-    if (n === 2 || n === 3) return true;
-    if (n % 2 === 0) return false;
-    
-    // 分解 n-1
-    const { s, d } = factorNMinus1(n);
-    
+    if (n &lt; 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
+
+    // 分解 n-1 = 2^s * d，其中 d 是奇数
+    long long d = n - 1;
+    int s = 0;
+    while (d % 2 == 0) {
+        d /= 2;
+        s++;
+    }
+
     // 计算 a^d mod n
-    let x = modPow(a, d, n);
-    
+    long long x = modPow(a, d, n);
+
     // 情况1：a^d ≡ 1 mod n
-    if (x === 1 || x === n - 1) {
-        return true;
+    if (x == 1 || x == n - 1) return true;
+
+    // 情况2：a^(2^r * d) ≡ -1 mod n 对于某个 0 ≤ r &lt; s
+    for (int r = 1; r &lt; s; r++) {
+        x = mulMod(x, x, n);
+        if (x == n - 1) return true;
+        if (x == 1) return false; // 发现非平凡平方根，n是合数
     }
-    
-    // 情况2：a^(2^r * d) ≡ -1 mod n 对于某个 0 ≤ r < s
-    for (let r = 1; r < s; r++) {
-        x = modPow(x, 2, n);
-        
-        if (x === n - 1) {
-            return true;
-        }
-        
-        if (x === 1) {
-            return false; // 发现非平凡平方根，n是合数
-        }
-    }
-    
+
     return false;
 }
 
-// 完整的米勒-拉宾素性测试（k轮）
-function millerRabin(n, k = 20) {
+// 完整的米勒-拉宾素性测试（k轮随机测试）
+bool millerRabin(long long n, int k = 20) {
     // 处理小数字
-    if (n < 2) return false;
-    if (n === 2 || n === 3) return true;
-    if (n % 2 === 0) return false;
-    
+    if (n &lt; 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
+
     // 对于小整数，使用确定性测试的基底
-    if (n < 341550071728321) {
-        const deterministicBases = [2, 3, 5, 7, 11, 13, 17];
-        for (const a of deterministicBases) {
-            if (a >= n) break;
+    if (n &lt; 341550071728321LL) {
+        vector&lt;long long&gt; deterministicBases = {2, 3, 5, 7, 11, 13, 17};
+        for (long long a : deterministicBases) {
+            if (a &gt;= n) break;
             if (!millerRabinTest(n, a)) return false;
         }
         return true;
     }
-    
+
     // 随机测试 k 轮
-    for (let i = 0; i < k; i++) {
-        // 随机选择 a，2 ≤ a ≤ n-2
-        const a = 2 + Math.floor(Math.random() * (n - 4));
-        
-        if (!millerRabinTest(n, a)) {
-            return false; // 确定是合数
-        }
+    static mt19937 rng(12345); // 固定种子，保证结果可复现
+    uniform_int_distribution&lt;long long&gt; dist(2, n - 3);
+    for (int i = 0; i &lt; k; i++) {
+        long long a = dist(rng); // 随机选择 a，2 ≤ a ≤ n-3
+        if (!millerRabinTest(n, a)) return false; // 确定是合数
     }
-    
-    // 通过所有测试，很可能为素数
-    return true;
+
+    return true; // 通过所有测试，很可能为素数
 }
 
 // 性能优化的确定性测试（适用于64位整数）
-function deterministicMillerRabin64(n) {
-    if (n < 2) return false;
-    if (n === 2 || n === 3) return true;
-    if (n % 2 === 0) return false;
-    
+bool deterministicMillerRabin64(long long n) {
+    if (n &lt; 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
+
     // 对于64位整数，以下基底足够
-    const bases = [2, 3, 5, 7, 11, 13];
-    
-    for (const a of bases) {
-        if (a >= n) break;
+    vector&lt;long long&gt; bases = {2, 3, 5, 7, 11, 13};
+
+    for (long long a : bases) {
+        if (a &gt;= n) break;
         if (!millerRabinTest(n, a)) return false;
     }
-    
+
     return true;
-}
-
-// 示例使用
-console.log("=== 米勒-拉宾素性测试 ===");
-
-// 测试一些数字
-const testNumbers = [
-    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,      // 小素数
-    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,  // 更多素数
-    341, 561, 645, 1105, 1729, 2465,         // 伪素数和卡迈克尔数
-    1009, 1013, 1019, 1021,                  // 四位素数
-    10007, 10009, 10037, 10039,              // 五位素数
-    999983, 1000003, 1000033, 1000037        // 大素数
-];
-
-console.log("数字\t\t米勒-拉宾结果\t实际是否为素数");
-console.log("-".repeat(60));
-
-for (const n of testNumbers) {
-    const isPrime = millerRabin(n, 10);
-    const actual = isActuallyPrime(n);
-    console.log(`${n}\t\t${isPrime ? '可能是素数' : '合数'}\t\t${actual ? '是' : '否'}`);
 }
 
 // 辅助函数：简单判断是否为素数（仅用于验证，效率低）
-function isActuallyPrime(num) {
-    if (num < 2) return false;
-    if (num % 2 === 0) return num === 2;
-    const limit = Math.sqrt(num);
-    for (let i = 3; i <= limit; i += 2) {
-        if (num % i === 0) return false;
+bool isActuallyPrime(long long num) {
+    if (num &lt; 2) return false;
+    if (num % 2 == 0) return num == 2;
+    for (long long i = 3; i * i &lt;= num; i += 2) {
+        if (num % i == 0) return false;
     }
     return true;
 }
 
-// 性能测试
-console.log("\n=== 性能测试 ===");
-const bigPrime = 9999991; // 一个已知的素数
-const bigComposite = 9999991 * 9999973; // 两个大素数的乘积
+int main() {
+    cout &lt;&lt; "=== 米勒-拉宾素性测试 ===" &lt;&lt; '\n';
 
-console.time("大素数测试");
-const result1 = millerRabin(bigPrime, 20);
-console.timeEnd("大素数测试");
-console.log(`${bigPrime} 是素数? ${result1}`);
+    // 测试一些数字
+    vector&lt;long long&gt; testNumbers = {
+        2, 3, 5, 7, 11, 13, 17, 19, 23, 29,       // 小素数
+        31, 37, 41, 43, 47, 53, 59, 61, 67, 71,   // 更多素数
+        341, 561, 645, 1105, 1729, 2465,          // 伪素数和卡迈克尔数
+        1009, 1013, 1019, 1021,                   // 四位素数
+        10007, 10009, 10037, 10039,               // 五位素数
+        999983, 1000003, 1000033, 1000037         // 大素数
+    };
 
-console.time("大合数测试");
-const result2 = millerRabin(bigComposite, 20);
-console.timeEnd("大合数测试");
-console.log(`${bigComposite} 是素数? ${result2}`);
+    cout &lt;&lt; "数字\t\t米勒-拉宾结果\t实际是否为素数" &lt;&lt; '\n';
+    cout &lt;&lt; string(60, '-') &lt;&lt; '\n';
 
-// 错误率统计
-console.log("\n=== 错误率测试（测试伪素数） ===");
-const pseudoprimes = [341, 561, 645, 1105, 1387, 1729, 1905, 2047, 2465, 2701];
-let falsePositives = 0;
+    for (long long n : testNumbers) {
+        bool isPrime = millerRabin(n, 10);
+        bool actual = isActuallyPrime(n);
+        cout &lt;&lt; n &lt;&lt; "\t\t" &lt;&lt; (isPrime ? "可能是素数" : "合数")
+             &lt;&lt; "\t\t" &lt;&lt; (actual ? "是" : "否") &lt;&lt; '\n';
+    }
 
-for (const n of pseudoprimes) {
-    const result = millerRabin(n, 1); // 只测试一轮
-    if (result) falsePositives++;
+    // 性能测试
+    cout &lt;&lt; "\n=== 性能测试 ===" &lt;&lt; '\n';
+    long long bigPrime = 9999991; // 一个已知的素数
+    long long bigComposite = 9999991LL * 9999973LL; // 两个大素数的乘积
+
+    bool result1 = millerRabin(bigPrime, 20);
+    cout &lt;&lt; bigPrime &lt;&lt; " 是素数? " &lt;&lt; (result1 ? "true" : "false") &lt;&lt; '\n';
+
+    bool result2 = millerRabin(bigComposite, 20);
+    cout &lt;&lt; bigComposite &lt;&lt; " 是素数? " &lt;&lt; (result2 ? "true" : "false") &lt;&lt; '\n';
+
+    // 错误率统计
+    cout &lt;&lt; "\n=== 错误率测试（测试伪素数） ===" &lt;&lt; '\n';
+    vector&lt;long long&gt; pseudoprimes = {341, 561, 645, 1105, 1387, 1729, 1905, 2047, 2465, 2701};
+    int falsePositives = 0;
+
+    for (long long n : pseudoprimes) {
+        bool result = millerRabin(n, 1); // 只测试一轮
+        if (result) falsePositives++;
+    }
+
+    cout &lt;&lt; "在 " &lt;&lt; pseudoprimes.size() &lt;&lt; " 个伪素数中，单轮测试误判为素数的个数: " &lt;&lt; falsePositives &lt;&lt; '\n';
+    cout &lt;&lt; "单轮测试误判率: " &lt;&lt; fixed &lt;&lt; setprecision(1)
+         &lt;&lt; (double(falsePositives) / pseudoprimes.size() * 100) &lt;&lt; "%" &lt;&lt; '\n';
+
+    // 测试确定性版本
+    cout &lt;&lt; "\n=== 确定性测试（64位） ===" &lt;&lt; '\n';
+    vector&lt;long long&gt; numbersForDet = {1000000007, 1000000009, 1000000021, 1000000033};
+    for (long long n : numbersForDet) {
+        bool result = deterministicMillerRabin64(n);
+        cout &lt;&lt; n &lt;&lt; ": " &lt;&lt; (result ? "素数" : "合数") &lt;&lt; '\n';
+    }
+
+    return 0;
 }
-
-console.log(`在 ${pseudoprimes.length} 个伪素数中，单轮测试误判为素数的个数: ${falsePositives}`);
-console.log(`单轮测试误判率: ${(falsePositives / pseudoprimes.length * 100).toFixed(1)}%`);
-
-// 测试确定性版本
-console.log("\n=== 确定性测试（64位）===");
-const numbersForDet = [1000000007, 1000000009, 1000000021, 1000000033];
-for (const n of numbersForDet) {
-    const result = deterministicMillerRabin64(n);
-    console.log(`${n}: ${result ? '素数' : '合数'}`);
-}</code>
-            </pre>
+</code></pre>
         </section>
 
         <section class="applications" 

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>拉格朗日四平方和定理 - 数论百科</title>
+    <title>拉格朗日四平方和定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -107,7 +107,7 @@
                     <ol type="a">
                         <li>对于 $p = 2$，有 $2 = 1^2 + 1^2 + 0^2 + 0^2$。</li>
                         <li>对于奇素数 $p$，证明存在整数 $x, y$ 使得 $x^2 + y^2 + 1 \equiv 0 \pmod{p}$。</li>
-                        <li>然后可以找到整数 $a, b, c, d$ 使得 $a^2 + b^2 + c^2 + d^2 = mp$，其中 $0 < m < p$。</li>
+                        <li>然后可以找到整数 $a, b, c, d$ 使得 $a^2 + b^2 + c^2 + d^2 = mp$，其中 $0 \lt m \lt p$。</li>
                         <li>选取最小的 $m$，证明 $m = 1$，即 $p$ 可以表示为四平方和。</li>
                     </ol>
                 </li>
@@ -193,258 +193,267 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 判断一个数是否可以表示为三个平方和（勒让德三平方和定理）
-function canBeThreeSquares(n) {
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+using ll = long long;
+
+// 判断一个数是否可以表示为三个平方和（勒让德三平方和定理）
+bool canBeThreeSquares(ll n) {
     // 勒让德三平方和定理：n可以表示为三个平方和当且仅当
     // n不是形如 4^k(8m+7) 的数
-    let m = n;
-    
+    ll m = n;
+
     // 移除所有4的因子
-    while (m % 4 === 0) {
-        m = Math.floor(m / 4);
+    while (m % 4 == 0) {
+        m = m / 4;
     }
-    
+
     // 检查是否形如 8m+7
-    return (m % 8 !== 7);
+    return (m % 8 != 7);
 }
 
 // 判断一个数需要的最小平方数个数
-function minSquaresRequired(n) {
+int minSquaresRequired(ll n) {
     // 完全平方数
-    const sqrt = Math.sqrt(n);
-    if (Math.abs(sqrt - Math.round(sqrt)) < 1e-10) {
+    ll root = (ll)floor(sqrt((double)n));
+    if (root * root == n) {
         return 1;
     }
-    
+
     // 检查是否可以表示为两个平方和
     // 简单检查：是否存在 a,b 使得 a^2 + b^2 = n
-    for (let a = 0; a * a <= n; a++) {
-        const b2 = n - a * a;
-        const b = Math.sqrt(b2);
-        if (Math.abs(b - Math.round(b)) < 1e-10) {
+    for (ll a = 0; a * a &lt;= n; a++) {
+        ll b2 = n - a * a;
+        ll b = (ll)floor(sqrt((double)b2));
+        if (b * b == b2) {
             return 2;
         }
     }
-    
+
     // 检查是否可以表示为三个平方和
     if (canBeThreeSquares(n)) {
         // 尝试寻找三个平方和的表示
-        for (let a = 0; a * a <= n; a++) {
-            for (let b = a; a * a + b * b <= n; b++) {
-                const c2 = n - a * a - b * b;
-                const c = Math.sqrt(c2);
-                if (Math.abs(c - Math.round(c)) < 1e-10) {
+        for (ll a = 0; a * a &lt;= n; a++) {
+            for (ll b = a; a * a + b * b &lt;= n; b++) {
+                ll c2 = n - a * a - b * b;
+                ll c = (ll)floor(sqrt((double)c2));
+                if (c * c == c2) {
                     return 3;
                 }
             }
         }
     }
-    
+
     // 根据拉格朗日四平方和定理，总是可以表示为四个平方和
     return 4;
 }
 
 // 寻找四平方和表示（暴力搜索，适用于较小的数）
-function findFourSquares(n) {
+vector&lt;ll&gt; findFourSquares(ll n) {
     // 优化：先尝试用较少平方数表示
-    const limit = Math.sqrt(n);
-    
+    ll limit = (ll)floor(sqrt((double)n));
+
     // 尝试一个平方
-    const sqrtInt = Math.floor(Math.sqrt(n));
-    if (sqrtInt * sqrtInt === n) {
-        return [sqrtInt, 0, 0, 0];
+    ll root = (ll)floor(sqrt((double)n));
+    if (root * root == n) {
+        return {root, 0, 0, 0};
     }
-    
+
     // 尝试两个平方
-    for (let a = 0; a <= limit; a++) {
-        const a2 = a * a;
-        const remaining = n - a2;
-        if (remaining < 0) break;
-        
-        const b = Math.sqrt(remaining);
-        if (Math.abs(b - Math.round(b)) < 1e-10) {
-            return [a, Math.round(b), 0, 0];
+    for (ll a = 0; a &lt;= limit; a++) {
+        ll a2 = a * a;
+        ll remaining = n - a2;
+        if (remaining &lt; 0) break;
+
+        ll b = (ll)floor(sqrt((double)remaining));
+        if (b * b == remaining) {
+            return {a, b, 0, 0};
         }
     }
-    
+
     // 尝试三个平方
-    for (let a = 0; a <= limit; a++) {
-        const a2 = a * a;
-        for (let b = a; b <= limit; b++) {
-            const b2 = b * b;
-            const remaining = n - a2 - b2;
-            if (remaining < 0) break;
-            
-            const c = Math.sqrt(remaining);
-            if (Math.abs(c - Math.round(c)) < 1e-10) {
-                return [a, b, Math.round(c), 0];
+    for (ll a = 0; a &lt;= limit; a++) {
+        ll a2 = a * a;
+        for (ll b = a; b &lt;= limit; b++) {
+            ll b2 = b * b;
+            ll remaining = n - a2 - b2;
+            if (remaining &lt; 0) break;
+
+            ll c = (ll)floor(sqrt((double)remaining));
+            if (c * c == remaining) {
+                return {a, b, c, 0};
             }
         }
     }
-    
+
     // 四个平方（总是存在）
-    for (let a = 0; a <= limit; a++) {
-        const a2 = a * a;
-        for (let b = a; b <= limit; b++) {
-            const b2 = b * b;
-            for (let c = b; c <= limit; c++) {
-                const c2 = c * c;
-                const remaining = n - a2 - b2 - c2;
-                if (remaining < 0) break;
-                
-                const d = Math.sqrt(remaining);
-                if (Math.abs(d - Math.round(d)) < 1e-10) {
-                    return [a, b, c, Math.round(d)];
+    for (ll a = 0; a &lt;= limit; a++) {
+        ll a2 = a * a;
+        for (ll b = a; b &lt;= limit; b++) {
+            ll b2 = b * b;
+            for (ll c = b; c &lt;= limit; c++) {
+                ll c2 = c * c;
+                ll remaining = n - a2 - b2 - c2;
+                if (remaining &lt; 0) break;
+
+                ll d = (ll)floor(sqrt((double)remaining));
+                if (d * d == remaining) {
+                    return {a, b, c, d};
                 }
             }
         }
     }
-    
+
     // 理论上不会执行到这里
-    return null;
+    return {0, 0, 0, 0};
 }
 
 // 使用更高效的算法（基于拉格朗日算法）
-function findFourSquaresLagrange(n) {
+vector&lt;ll&gt; findFourSquaresLagrange(ll n) {
     // 特殊情况
-    if (n === 0) return [0, 0, 0, 0];
-    if (n === 1) return [1, 0, 0, 0];
-    
+    if (n == 0) return {0, 0, 0, 0};
+    if (n == 1) return {1, 0, 0, 0};
+
     // 步骤1：找到最大的平方 a^2 ≤ n
-    let a = Math.floor(Math.sqrt(n));
-    
+    ll a = (ll)floor(sqrt((double)n));
+
     // 如果 n 是完全平方数
-    if (a * a === n) {
-        return [a, 0, 0, 0];
+    if (a * a == n) {
+        return {a, 0, 0, 0};
     }
-    
+
     // 步骤2：尝试找到 b, c, d
     // 这里使用简化的搜索，实际上有更高效的算法
     return findFourSquares(n);
 }
 
 // 欧拉四平方和恒等式验证
-function eulerFourSquareIdentity(a, b, c, d, x, y, z, w) {
-    const left = (a*a + b*b + c*c + d*d) * (x*x + y*y + z*z + w*w);
-    
-    const r1 = a*x + b*y + c*z + d*w;
-    const r2 = a*y - b*x + c*w - d*z;
-    const r3 = a*z - b*w - c*x + d*y;
-    const r4 = a*w + b*z - c*y - d*x;
-    
-    const right = r1*r1 + r2*r2 + r3*r3 + r4*r4;
-    
-    return {
-        left: left,
-        right: right,
-        representation: [r1, r2, r3, r4],
-        valid: left === right
-    };
+struct EulerResult {
+    ll left;
+    ll right;
+    vector&lt;ll&gt; representation;
+    bool valid;
+};
+
+EulerResult eulerFourSquareIdentity(ll a, ll b, ll c, ll d, ll x, ll y, ll z, ll w) {
+    ll left = (a*a + b*b + c*c + d*d) * (x*x + y*y + z*z + w*w);
+
+    ll r1 = a*x + b*y + c*z + d*w;
+    ll r2 = a*y - b*x + c*w - d*z;
+    ll r3 = a*z - b*w - c*x + d*y;
+    ll r4 = a*w + b*z - c*y - d*x;
+
+    ll right = r1*r1 + r2*r2 + r3*r3 + r4*r4;
+
+    EulerResult result;
+    result.left = left;
+    result.right = right;
+    result.representation = {r1, r2, r3, r4};
+    result.valid = (left == right);
+    return result;
 }
+
+struct TestCase {
+    ll a, b, c, d, x, y, z, w;
+};
 
 // 示例使用
-console.log("=== 拉格朗日四平方和定理示例 ===");
+int main() {
+    cout &lt;&lt; "=== 拉格朗日四平方和定理示例 ===" &lt;&lt; '\n';
 
-// 测试一些数字
-const testNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 23, 31, 39, 87];
+    // 测试一些数字
+    vector&lt;ll&gt; testNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 23, 31, 39, 87};
 
-console.log("数字\t最小平方数个数\t四平方和表示");
-console.log("-".repeat(60));
+    cout &lt;&lt; "数字\t最小平方数个数\t四平方和表示" &lt;&lt; '\n';
+    cout &lt;&lt; string(60, '-') &lt;&lt; '\n';
 
-for (const n of testNumbers) {
-    const minSquares = minSquaresRequired(n);
-    const representation = findFourSquares(n);
-    
-    console.log(
-        `${n}\t${minSquares}\t\t` +
-        `${representation[0]}² + ${representation[1]}² + ${representation[2]}² + ${representation[3]}²`
-    );
-}
+    for (ll n : testNumbers) {
+        int minSquares = minSquaresRequired(n);
+        vector&lt;ll&gt; representation = findFourSquares(n);
 
-// 验证勒让德三平方和定理
-console.log("\n=== 勒让德三平方和定理验证 ===");
-const legendreTest = [7, 15, 23, 28, 31, 39, 47, 55, 60, 63];
-console.log("数字\t形如4^k(8m+7)?\t可表示为三平方和?");
-console.log("-".repeat(50));
+        cout &lt;&lt; n &lt;&lt; "\t" &lt;&lt; minSquares &lt;&lt; "\t\t"
+             &lt;&lt; representation[0] &lt;&lt; "² + " &lt;&lt; representation[1] &lt;&lt; "² + " &lt;&lt; representation[2] &lt;&lt; "² + " &lt;&lt; representation[3] &lt;&lt; "²" &lt;&lt; '\n';
+    }
 
-for (const n of legendreTest) {
-    let m = n;
-    while (m % 4 === 0) m = Math.floor(m / 4);
-    const isForm = (m % 8 === 7);
-    const canBeThree = canBeThreeSquares(n);
-    
-    console.log(`${n}\t${isForm ? '是' : '否'}\t\t${canBeThree ? '是' : '否'}`);
-}
+    // 验证勒让德三平方和定理
+    cout &lt;&lt; "\n=== 勒让德三平方和定理验证 ===" &lt;&lt; '\n';
+    vector&lt;ll&gt; legendreTest = {7, 15, 23, 28, 31, 39, 47, 55, 60, 63};
+    cout &lt;&lt; "数字\t形如4^k(8m+7)?\t可表示为三平方和?" &lt;&lt; '\n';
+    cout &lt;&lt; string(50, '-') &lt;&lt; '\n';
 
-// 欧拉恒等式验证
-console.log("\n=== 欧拉四平方和恒等式验证 ===");
+    for (ll n : legendreTest) {
+        ll m = n;
+        while (m % 4 == 0) m = m / 4;
+        bool isForm = (m % 8 == 7);
+        bool canBeThree = canBeThreeSquares(n);
 
-const tests = [
-    { a: 1, b: 2, c: 3, d: 4, x: 2, y: 3, z: 4, w: 5 },
-    { a: 1, b: 1, c: 1, d: 1, x: 2, y: 2, z: 2, w: 2 },
-    { a: 2, b: 3, c: 5, d: 7, x: 11, y: 13, z: 17, w: 19 }
-];
+        cout &lt;&lt; n &lt;&lt; "\t" &lt;&lt; (isForm ? "是" : "否") &lt;&lt; "\t\t" &lt;&lt; (canBeThree ? "是" : "否") &lt;&lt; '\n';
+    }
 
-for (const test of tests) {
-    const result = eulerFourSquareIdentity(
-        test.a, test.b, test.c, test.d,
-        test.x, test.y, test.z, test.w
-    );
-    
-    console.log(`(${test.a}²+${test.b}²+${test.c}²+${test.d}²) × (${test.x}²+${test.y}²+${test.z}²+${test.w}²) = ${result.left}`);
-    console.log(`表示为: ${result.representation[0]}² + ${result.representation[1]}² + ${result.representation[2]}² + ${result.representation[3]}² = ${result.right}`);
-    console.log(`恒等式${result.valid ? '成立' : '不成立'}`);
-    console.log("-".repeat(60));
-}
+    // 欧拉恒等式验证
+    cout &lt;&lt; "\n=== 欧拉四平方和恒等式验证 ===" &lt;&lt; '\n';
 
-// 寻找需要四个平方和的最小数字
-console.log("\n=== 需要四个平方和的最小数字 ===");
+    vector&lt;TestCase&gt; tests = {
+        {1, 2, 3, 4, 2, 3, 4, 5},
+        {1, 1, 1, 1, 2, 2, 2, 2},
+        {2, 3, 5, 7, 11, 13, 17, 19}
+    };
 
-let countFourSquares = 0;
-for (let n = 1; n <= 100; n++) {
-    const minSquares = minSquaresRequired(n);
-    if (minSquares === 4) {
-        countFourSquares++;
-        const representation = findFourSquares(n);
-        console.log(`${n} = ${representation[0]}² + ${representation[1]}² + ${representation[2]}² + ${representation[3]}²`);
-        
-        if (countFourSquares === 10) {
-            console.log("... (更多)");
-            break;
+    for (const TestCase&amp; test : tests) {
+        EulerResult result = eulerFourSquareIdentity(
+            test.a, test.b, test.c, test.d,
+            test.x, test.y, test.z, test.w
+        );
+
+        cout &lt;&lt; "(" &lt;&lt; test.a &lt;&lt; "²+" &lt;&lt; test.b &lt;&lt; "²+" &lt;&lt; test.c &lt;&lt; "²+" &lt;&lt; test.d &lt;&lt; "²) × (" &lt;&lt; test.x &lt;&lt; "²+" &lt;&lt; test.y &lt;&lt; "²+" &lt;&lt; test.z &lt;&lt; "²+" &lt;&lt; test.w &lt;&lt; "²) = " &lt;&lt; result.left &lt;&lt; '\n';
+        cout &lt;&lt; "表示为: " &lt;&lt; result.representation[0] &lt;&lt; "² + " &lt;&lt; result.representation[1] &lt;&lt; "² + " &lt;&lt; result.representation[2] &lt;&lt; "² + " &lt;&lt; result.representation[3] &lt;&lt; "² = " &lt;&lt; result.right &lt;&lt; '\n';
+        cout &lt;&lt; "恒等式" &lt;&lt; (result.valid ? "成立" : "不成立") &lt;&lt; '\n';
+        cout &lt;&lt; string(60, '-') &lt;&lt; '\n';
+    }
+
+    // 寻找需要四个平方和的最小数字
+    cout &lt;&lt; "\n=== 需要四个平方和的最小数字 ===" &lt;&lt; '\n';
+
+    int countFourSquares = 0;
+    for (ll n = 1; n &lt;= 100; n++) {
+        int minSquares = minSquaresRequired(n);
+        if (minSquares == 4) {
+            countFourSquares++;
+            vector&lt;ll&gt; representation = findFourSquares(n);
+            cout &lt;&lt; n &lt;&lt; " = " &lt;&lt; representation[0] &lt;&lt; "² + " &lt;&lt; representation[1] &lt;&lt; "² + " &lt;&lt; representation[2] &lt;&lt; "² + " &lt;&lt; representation[3] &lt;&lt; "²" &lt;&lt; '\n';
+
+            if (countFourSquares == 10) {
+                cout &lt;&lt; "... (更多)" &lt;&lt; '\n';
+                break;
+            }
         }
     }
+
+    // 性能测试：大数的四平方和表示
+    cout &lt;&lt; "\n=== 大数的四平方和表示 ===" &lt;&lt; '\n';
+
+    vector&lt;ll&gt; bigNumbers = {1000, 10000, 12345, 100000, 999999};
+    for (ll n : bigNumbers) {
+        vector&lt;ll&gt; representation = findFourSquares(n);
+
+        // 验证
+        ll sum = representation[0]*representation[0] + representation[1]*representation[1] +
+                 representation[2]*representation[2] + representation[3]*representation[3];
+        cout &lt;&lt; n &lt;&lt; " = " &lt;&lt; representation[0] &lt;&lt; "² + " &lt;&lt; representation[1] &lt;&lt; "² + " &lt;&lt; representation[2] &lt;&lt; "² + " &lt;&lt; representation[3] &lt;&lt; "²" &lt;&lt; '\n';
+        cout &lt;&lt; "验证: " &lt;&lt; sum &lt;&lt; " = " &lt;&lt; n &lt;&lt; " " &lt;&lt; (sum == n ? "✓" : "✗") &lt;&lt; '\n';
+        cout &lt;&lt; string(40, '-') &lt;&lt; '\n';
+    }
+
+    return 0;
 }
-
-// 性能测试：大数的四平方和表示
-console.log("\n=== 大数的四平方和表示 ===");
-
-const bigNumbers = [1000, 10000, 12345, 100000, 999999];
-for (const n of bigNumbers) {
-    console.time(`寻找 ${n} 的四平方和表示`);
-    const representation = findFourSquares(n);
-    console.timeEnd(`寻找 ${n} 的四平方和表示`);
-    
-    // 验证
-    const sum = representation[0]*representation[0] + representation[1]*representation[1] + 
-                representation[2]*representation[2] + representation[3]*representation[3];
-    console.log(`${n} = ${representation[0]}² + ${representation[1]}² + ${representation[2]}² + ${representation[3]}²`);
-    console.log(`验证: ${sum} = ${n} ${sum === n ? '✓' : '✗'}`);
-    console.log("-".repeat(40));
-}</code>
-            </pre>
+</code></pre>
         </section>
 
         <section class="applications" 

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>费马小定理 - 数论百科</title>
+    <title>费马小定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -97,7 +97,7 @@
                     考虑数列 $a, 2a, 3a, \dots, (p-1)a$。
                 </li>
                 <li>
-                    这些数模 $p$ 两两不同余：如果 $ia \equiv ja \pmod{p}$，则 $p \mid (i-j)a$。由于 $\gcd(a,p)=1$，所以 $p \mid (i-j)$，但 $0 < |i-j| < p$，矛盾。
+                    这些数模 $p$ 两两不同余：如果 $ia \equiv ja \pmod{p}$，则 $p \mid (i-j)a$。由于 $\gcd(a,p)=1$，所以 $p \mid (i-j)$，但 $0 \lt |i-j| \lt p$，矛盾。
                 </li>
                 <li>
                     因此，$\{a, 2a, \dots, (p-1)a\}$ 模 $p$ 是 $\{1, 2, \dots, p-1\}$ 的一个排列。
@@ -165,149 +165,142 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 快速幂算法（模幂运算）
-function modPow(base, exponent, modulus) {
-    if (modulus === 1) return 0;
-    
-    let result = 1n;
-    base = BigInt(base) % BigInt(modulus);
-    let exp = BigInt(exponent);
-    
-    while (exp > 0n) {
-        if (exp % 2n === 1n) {
-            result = (result * base) % BigInt(modulus);
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;random&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+// 快速幂算法（模幂运算）
+long long modPow(long long base, long long exponent, long long modulus) {
+    if (modulus == 1) return 0;
+
+    long long result = 1;
+    base %= modulus;
+
+    while (exponent &gt; 0) {
+        if (exponent % 2 == 1) {
+            result = (result * base) % modulus;
         }
-        exp >>= 1n;
-        base = (base * base) % BigInt(modulus);
+        exponent &gt;&gt;= 1;
+        base = (base * base) % modulus;
     }
-    
-    return Number(result);
+
+    return result;
+}
+
+// 判断是否为素数（简单检查，不适用于大数）
+bool isPrime(long long n) {
+    if (n &lt;= 1) return false;
+    if (n &lt;= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    for (long long i = 5; i * i &lt;= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
+    }
+    return true;
 }
 
 // 使用费马小定理计算 a^(p-1) mod p，验证定理
-function verifyFermatLittleTheorem(a, p) {
-    if (p <= 1) {
-        throw new Error("p 必须是大于1的整数");
+void verifyFermatLittleTheorem(long long a, long long p) {
+    if (p &lt;= 1) {
+        cout &lt;&lt; "错误：p 必须是大于1的整数\n";
+        return;
     }
-    
-    // 检查 p 是否为素数（简单检查，不适用于大数）
-    function isPrime(n) {
-        if (n <= 1) return false;
-        if (n <= 3) return true;
-        if (n % 2 === 0 || n % 3 === 0) return false;
-        for (let i = 5; i * i <= n; i += 6) {
-            if (n % i === 0 || n % (i + 2) === 0) return false;
-        }
-        return true;
-    }
-    
+
     if (!isPrime(p)) {
-        console.log(`警告：${p} 不是素数，费马小定理不保证成立`);
+        cout &lt;&lt; "警告：" &lt;&lt; p &lt;&lt; " 不是素数，费马小定理不保证成立\n";
     }
-    
+
     // 计算 a^(p-1) mod p
-    const result = modPow(a, p - 1, p);
-    const expected = (a % p === 0) ? 0 : 1;
-    
-    return {
-        a,
-        p,
-        computed: result,
-        expected: expected,
-        valid: result === expected
-    };
+    long long result = modPow(a, p - 1, p);
+    long long expected = (a % p == 0) ? 0 : 1;
+
+    cout &lt;&lt; a &lt;&lt; "^(" &lt;&lt; p &lt;&lt; "-1) mod " &lt;&lt; p &lt;&lt; " = " &lt;&lt; result
+         &lt;&lt; ", 预期: " &lt;&lt; expected
+         &lt;&lt; ", 验证: " &lt;&lt; (result == expected ? "通过" : "失败") &lt;&lt; "\n";
 }
 
 // 使用费马小定理简化指数计算
-function modularExponentiationFermat(a, exponent, p) {
+long long modularExponentiationFermat(long long a, long long exponent, long long p) {
     // 前提：p 是素数，且 a 不是 p 的倍数
-    if (a % p === 0) {
+    if (a % p == 0) {
         return 0;
     }
-    
+
     // 根据费马小定理：a^(p-1) ≡ 1 mod p
     // 所以我们可以将指数模 (p-1)
-    const reducedExponent = exponent % (p - 1);
-    
+    long long reducedExponent = exponent % (p - 1);
+
     // 计算 a^reducedExponent mod p
     return modPow(a, reducedExponent, p);
 }
 
-// 示例使用
-console.log("=== 费马小定理验证 ===");
-
-// 验证几个例子
-const tests = [
-    { a: 2, p: 5 },
-    { a: 3, p: 7 },
-    { a: 5, p: 11 },
-    { a: 2, p: 341 }, // 341是伪素数
-    { a: 3, p: 341 }  // 3^340 mod 341 ≠ 1，所以能检测出341是合数
-];
-
-for (const test of tests) {
-    try {
-        const result = verifyFermatLittleTheorem(test.a, test.p);
-        console.log(`${test.a}^(${test.p}-1) mod ${test.p} = ${result.computed}, 预期: ${result.expected}, 验证: ${result.valid ? '通过' : '失败'}`);
-    } catch (error) {
-        console.log(`错误：${error.message}`);
-    }
-}
-
-console.log("\n=== 使用费马小定理简化指数计算 ===");
-
-// 计算 7^222 mod 11
-const a = 7, exponent = 222, p = 11;
-const result = modularExponentiationFermat(a, exponent, p);
-console.log(`${a}^${exponent} mod ${p} = ${result}`); // 应该为5
-
-// 计算大指数的例子
-const bigResult = modularExponentiationFermat(123, 456789, 17);
-console.log(`123^456789 mod 17 = ${bigResult}`);
-
 // 费马素性测试（概率性）
-function fermatPrimalityTest(n, iterations = 10) {
-    if (n <= 1) return false;
-    if (n <= 3) return true;
-    if (n % 2 === 0) return false;
-    
-    for (let i = 0; i < iterations; i++) {
+bool fermatPrimalityTest(long long n, int iterations, mt19937 &amp;rng) {
+    if (n &lt;= 1) return false;
+    if (n &lt;= 3) return true;
+    if (n % 2 == 0) return false;
+
+    uniform_int_distribution&lt;long long&gt; dist(2, n - 2);
+
+    for (int i = 0; i &lt; iterations; i++) {
         // 随机选择 a，2 ≤ a ≤ n-2
-        const a = 2 + Math.floor(Math.random() * (n - 3));
-        
+        long long a = dist(rng);
+
         // 如果 a^(n-1) mod n ≠ 1，则 n 一定是合数
-        if (modPow(a, n - 1, n) !== 1) {
+        if (modPow(a, n - 1, n) != 1) {
             return false;
         }
     }
-    
+
     // 通过所有测试，可能是素数
     return true;
 }
 
-console.log("\n=== 费马素性测试 ===");
-const testNumbers = [5, 7, 11, 13, 17, 341, 561, 1009, 1013, 1729];
-for (const n of testNumbers) {
-    const isPrime = fermatPrimalityTest(n, 5);
-    console.log(`${n}: ${isPrime ? '可能是素数' : '合数'}`);
-}
+int main() {
+    cout &lt;&lt; "=== 费马小定理验证 ===\n";
 
-// 注意：费马测试有伪素数问题，如341、561等能通过以某些数为底的测试
-// 实际中应使用更可靠的测试（如米勒-拉宾测试）</code>
-            </pre>
+    // 验证几个例子
+    vector&lt;pair&lt;long long, long long&gt;&gt; tests = {
+        {2, 5},
+        {3, 7},
+        {5, 11},
+        {2, 341}, // 341是伪素数
+        {3, 341}  // 3^340 mod 341 ≠ 1，所以能检测出341是合数
+    };
+
+    for (auto test : tests) {
+        verifyFermatLittleTheorem(test.first, test.second);
+    }
+
+    cout &lt;&lt; "\n=== 使用费马小定理简化指数计算 ===\n";
+
+    // 计算 7^222 mod 11
+    long long a = 7, exponent = 222, p = 11;
+    long long result = modularExponentiationFermat(a, exponent, p);
+    cout &lt;&lt; a &lt;&lt; "^" &lt;&lt; exponent &lt;&lt; " mod " &lt;&lt; p &lt;&lt; " = " &lt;&lt; result &lt;&lt; "\n"; // 应该为5
+
+    // 计算大指数的例子
+    long long bigResult = modularExponentiationFermat(123, 456789, 17);
+    cout &lt;&lt; "123^456789 mod 17 = " &lt;&lt; bigResult &lt;&lt; "\n";
+
+    cout &lt;&lt; "\n=== 费马素性测试 ===\n";
+    mt19937 rng(12345);
+    vector&lt;long long&gt; testNumbers = {5, 7, 11, 13, 17, 341, 561, 1009, 1013, 1729};
+    for (long long n : testNumbers) {
+        bool maybePrime = fermatPrimalityTest(n, 5, rng);
+        cout &lt;&lt; n &lt;&lt; ": " &lt;&lt; (maybePrime ? "可能是素数" : "合数") &lt;&lt; "\n";
+    }
+
+    // 注意：费马测试有伪素数问题，如341、561等能通过以某些数为底的测试
+    // 实际中应使用更可靠的测试（如米勒-拉宾测试）
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

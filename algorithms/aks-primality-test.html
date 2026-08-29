@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>AKS素性测试 - 数论百科</title>
+    <title>AKS素性测试 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -81,22 +81,22 @@
             
             <ol style="line-height: 1.6;">
                 <li>
-                    <strong>输入：</strong> 整数 $n > 1$。
+                    <strong>输入：</strong> 整数 $n \gt 1$。
                 </li>
                 
                 <li>
                     <strong>检测完全幂：</strong>
-                    如果 $n = a^b$，其中 $a \in \mathbb{N}$，$b > 1$，则输出"合数"。
+                    如果 $n = a^b$，其中 $a \in \mathbb{N}$，$b \gt 1$，则输出"合数"。
                 </li>
                 
                 <li>
                     <strong>寻找最小的 $r$：</strong>
-                    找到最小的 $r \in \mathbb{N}$，使得 $\operatorname{ord}_r(n) > \log^2 n$（即 $n^k \not\equiv 1 \pmod{r}$ 对所有 $k \leq \log^2 n$ 成立）。
+                    找到最小的 $r \in \mathbb{N}$，使得 $\operatorname{ord}_r(n) \gt \log^2 n$（即 $n^k \not\equiv 1 \pmod{r}$ 对所有 $k \leq \log^2 n$ 成立）。
                 </li>
                 
                 <li>
                     <strong>检查小因子：</strong>
-                    如果存在 $a \leq r$ 使得 $1 < \gcd(a, n) < n$，则输出"合数"。
+                    如果存在 $a \leq r$ 使得 $1 \lt \gcd(a, n) \lt n$，则输出"合数"。
                 </li>
                 
                 <li>
@@ -143,13 +143,13 @@
                 <strong>过程：</strong>
                 <ol>
                     <li>$31$ 不是完全幂（如 $5^2=25$, $6^2=36$）</li>
-                    <li>寻找 $r$：需要 $\operatorname{ord}_r(31) > \log^2 31 \approx 5^2=25$。
+                    <li>寻找 $r$：需要 $\operatorname{ord}_r(31) \gt \log^2 31 \approx 5^2=25$。
                         <ul>
                             <li>尝试 $r=29$：$31 \bmod 29 = 2$，$2^1,2^2,...,2^{28}$ 中最小使 $2^k \equiv 1 \pmod{29}$ 的 $k=28$，大于25，符合条件。</li>
                         </ul>
                     </li>
                     <li>检查 $a \leq 29$ 的 $\gcd(a,31)$，均为1（因为31是素数），通过。</li>
-                    <li>$n=31 > r=29$，继续核心检验。</li>
+                    <li>$n=31 \gt r=29$，继续核心检验。</li>
                     <li>对于 $a=1$ 到 $\lfloor \sqrt{\phi(29)} \log 31 \rfloor = \lfloor \sqrt{28} \times 5 \rfloor \approx 26$，检验多项式同余式。由于31是素数，所有同余式成立。</li>
                     <li>输出"素数"。</li>
                 </ol>
@@ -163,7 +163,7 @@
                 <strong>过程：</strong>
                 <ol>
                     <li>$35$ 不是完全幂（$5^2=25$, $6^2=36$）</li>
-                    <li>寻找 $r$：需要 $\operatorname{ord}_r(35) > \log^2 35 \approx 5.13^2 \approx 26.3$。
+                    <li>寻找 $r$：需要 $\operatorname{ord}_r(35) \gt \log^2 35 \approx 5.13^2 \approx 26.3$。
                         <ul>
                             <li>尝试 $r=29$：$35 \bmod 29 = 6$，$6^1,6^2,...$ 中 $6^{14} \equiv 1 \pmod{29}$，14 < 26.3，不符合。</li>
                             <li>尝试 $r=31$：$35 \bmod 31 = 4$，$4^{15} \equiv 1 \pmod{31}$，15 < 26.3，不符合。</li>
@@ -183,126 +183,150 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (Python)：</h3>
-            <p style="color: #ccc; font-size: 0.9em;">注：这是一个教学性质的简化实现，完整的高效实现需要复杂的多项式运算优化。</p>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>import math
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note">注：这是一个教学性质的简化实现，完整的高效实现需要复杂的多项式运算优化。</p>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;numeric&gt;
+#include &lt;algorithm&gt;
 
-def is_perfect_power(n):
-    """检查n是否为某个整数的幂（指数>1）"""
-    for b in range(2, int(math.log2(n)) + 1):
-        a = round(n ** (1 / b))
-        if a ** b == n:
-            return True
-    return False
+using namespace std;
 
-def poly_mod_mul(p1, p2, mod, r):
-    """多项式乘法模 (X^r - 1, mod)"""
-    res = [0] * (2 * r)
-    for i in range(len(p1)):
-        for j in range(len(p2)):
-            res[i + j] = (res[i + j] + p1[i] * p2[j]) % mod
-    # 模 X^r - 1 化简
-    for i in range(2 * r - 1, r - 1, -1):
-        res[i - r] = (res[i - r] + res[i]) % mod
-    return res[:r]
+using ll = long long;
 
-def poly_mod_pow(poly, exp, mod, r):
-    """多项式快速幂模 (X^r - 1, mod)"""
-    result = [1] + [0] * (r - 1)
-    base = poly[:]
-    while exp > 0:
-        if exp & 1:
-            result = poly_mod_mul(result, base, mod, r)
-        base = poly_mod_mul(base, base, mod, r)
-        exp >>= 1
-    return result
+// 欧几里得算法求最大公约数（C++14 标准库无 std::gcd）
+ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
 
-def aks_primality_test(n):
-    """AKS素性测试"""
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    
-    # 第1步：检测完全幂
-    if is_perfect_power(n):
-        return False
-    
-    # 第2步：寻找最小的r，使得 ord_r(n) > log^2 n
-    log_n = math.log2(n)
-    log2_n = int(log_n * log_n)  # 近似 log^2 n
-    
-    r = 2
-    while True:
-        if math.gcd(r, n) != 1:
-            r += 1
-            continue
-        # 检查 n^k mod r 是否为1
-        found = True
-        for k in range(1, log2_n + 1):
-            if pow(n, k, r) == 1:
-                found = False
-                break
-        if found:
-            break
-        r += 1
-    
-    # 第3步：检查小因子
-    for a in range(2, min(r, n)):
-        g = math.gcd(a, n)
-        if 1 < g < n:
-            return False
-    
-    # 第4步：如果 n <= r，则n是素数
-    if n <= r:
-        return True
-    
-    # 第5步：核心多项式检验
-    max_a = int(math.sqrt(r - 1) * log_n)  # φ(r) ≤ r-1
-    # 构建多项式 (X + a)
-    for a in range(1, max_a + 1):
-        # 计算 (X + a)^n 模 (X^r - 1, n)
-        poly_base = [a % n, 1] + [0] * (r - 2)  # X + a
-        poly_exp = poly_mod_pow(poly_base, n, n, r)
-        
-        # 期望结果 X^n + a 模 (X^r - 1, n)
-        expected = [0] * r
-        expected[0] = a % n  # 常数项 a
-        expected[n % r] = (expected[n % r] + 1) % n  # X^(n mod r)
-        
-        if poly_exp != expected:
-            return False
-    
-    return True
+// 快速幂：计算 a^e mod m
+ll mod_pow(ll a, ll e, ll m) {
+    ll r = 1 % m;
+    a %= m;
+    while (e &gt; 0) {
+        if (e &amp; 1) r = r * a % m;
+        a = a * a % m;
+        e &gt;&gt;= 1;
+    }
+    return r;
+}
 
-# 示例测试
-print("=== AKS素性测试示例 ===")
-test_numbers = [2, 3, 17, 19, 23, 27, 29, 31, 35, 37, 41, 49]
-for n in test_numbers:
-    result = aks_primality_test(n)
-    print(f"{n}: {'素数' if result else '合数'}")
+// 检查 n 是否为某个整数的幂（指数 &gt; 1）
+bool is_perfect_power(ll n) {
+    for (ll b = 2; (1LL &lt;&lt; b) &lt;= n; ++b) {
+        ll a = (ll)llround(pow((double)n, 1.0 / (double)b));
+        for (ll cand = max(2LL, a - 1); cand &lt;= a + 1; ++cand) {
+            ll p = 1;
+            for (ll i = 0; i &lt; b; ++i) p *= cand;
+            if (p == n) return true;
+        }
+    }
+    return false;
+}
 
-print("\n=== 性能测试（小范围）===")
-for n in [97, 101, 103, 107, 109, 113, 121]:
-    print(f"测试 {n}...")
-    result = aks_primality_test(n)
-    print(f"{n}: {'素数' if result else '合数'}")
-    print("-" * 30)</code>
-            </pre>
+// 多项式乘法模 (X^r - 1, mod)
+vector&lt;ll&gt; poly_mod_mul(const vector&lt;ll&gt;&amp; p1, const vector&lt;ll&gt;&amp; p2, ll mod, int r) {
+    vector&lt;ll&gt; res(2 * r, 0);
+    for (int i = 0; i &lt; (int)p1.size(); ++i) {
+        for (int j = 0; j &lt; (int)p2.size(); ++j) {
+            res[i + j] = (res[i + j] + p1[i] * p2[j]) % mod;
+        }
+    }
+    // 模 X^r - 1 化简
+    for (int i = 2 * r - 1; i &gt;= r; --i) {
+        res[i - r] = (res[i - r] + res[i]) % mod;
+    }
+    res.resize(r);
+    return res;
+}
+
+// 多项式快速幂模 (X^r - 1, mod)
+vector&lt;ll&gt; poly_mod_pow(const vector&lt;ll&gt;&amp; poly, ll exp, ll mod, int r) {
+    vector&lt;ll&gt; result(r, 0);
+    result[0] = 1;
+    vector&lt;ll&gt; base = poly;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = poly_mod_mul(result, base, mod, r);
+        base = poly_mod_mul(base, base, mod, r);
+        exp &gt;&gt;= 1;
+    }
+    return result;
+}
+
+// AKS 素性测试
+bool aks_primality_test(ll n) {
+    if (n &lt;= 1) return false;
+    if (n &lt;= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+
+    // 第1步：检测完全幂
+    if (is_perfect_power(n)) return false;
+
+    // 第2步：寻找最小的 r，使得 ord_r(n) &gt; log^2 n
+    double log_n = log2((double)n);
+    ll log2_n = (ll)(log_n * log_n); // 近似 log^2 n
+
+    int r = 2;
+    while (true) {
+        if (gcd((ll)r, n) != 1) { ++r; continue; }
+        // 检查 n^k mod r 是否为 1
+        bool found = true;
+        for (ll k = 1; k &lt;= log2_n; ++k) {
+            if (mod_pow(n, k, r) == 1) { found = false; break; }
+        }
+        if (found) break;
+        ++r;
+    }
+
+    // 第3步：检查小因子
+    for (ll a = 2; a &lt; min((ll)r, n); ++a) {
+        ll g = gcd(a, n);
+        if (1 &lt; g &amp;&amp; g &lt; n) return false;
+    }
+
+    // 第4步：如果 n &lt;= r，则 n 是素数
+    if (n &lt;= r) return true;
+
+    // 第5步：核心多项式检验
+    ll max_a = (ll)(sqrt((double)(r - 1)) * log_n); // φ(r) ≤ r-1
+    for (ll a = 1; a &lt;= max_a; ++a) {
+        // 构建多项式 (X + a)
+        vector&lt;ll&gt; poly_base(r, 0);
+        poly_base[0] = a % n;
+        poly_base[1] = 1; // X 的系数
+        vector&lt;ll&gt; poly_exp = poly_mod_pow(poly_base, n, n, r);
+
+        // 期望结果 X^n + a 模 (X^r - 1, n)
+        vector&lt;ll&gt; expected(r, 0);
+        expected[0] = a % n; // 常数项 a
+        expected[n % r] = (expected[n % r] + 1) % n; // X^(n mod r)
+
+        if (poly_exp != expected) return false;
+    }
+
+    return true;
+}
+
+int main() {
+    cout &lt;&lt; "=== AKS素性测试示例 ===" &lt;&lt; '\n';
+    ll test_numbers[] = {2, 3, 17, 19, 23, 27, 29, 31, 35, 37, 41, 49};
+    for (ll n : test_numbers) {
+        bool result = aks_primality_test(n);
+        cout &lt;&lt; n &lt;&lt; ": " &lt;&lt; (result ? "素数" : "合数") &lt;&lt; '\n';
+    }
+
+    cout &lt;&lt; "\n=== 性能测试（小范围）===" &lt;&lt; '\n';
+    ll perf_numbers[] = {97, 101, 103, 107, 109, 113, 121};
+    for (ll n : perf_numbers) {
+        cout &lt;&lt; "测试 " &lt;&lt; n &lt;&lt; "...\n";
+        bool result = aks_primality_test(n);
+        cout &lt;&lt; n &lt;&lt; ": " &lt;&lt; (result ? "素数" : "合数") &lt;&lt; '\n';
+        cout &lt;&lt; "------------------------------\n";
+    }
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>素数定理 - 数论百科</title>
+    <title>素数定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -174,40 +174,42 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算不超过n的素数个数（埃氏筛法）
-function primePi(n) {
-    if (n < 2) return 0;
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note">
+                <strong>注意：</strong>
+                计算 $\pi(x)$ 的确切值对于大 $x$ 计算量很大，上述代码的筛法只能处理中等大小的 $x$。
+                实际应用中，对于非常大的 $x$，有专门的算法（如Meissel-Lehmer算法）可以高效计算 $\pi(x)$。
+            </p>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// 计算不超过n的素数个数（埃氏筛法）
+long long primePi(long long n) {
+    if (n &lt; 2) return 0;
     
-    const limit = Math.floor(Math.sqrt(n));
-    const isPrime = new Array(n + 1).fill(true);
+    long long limit = (long long)floor(sqrt((double)n));
+    vector&lt;bool&gt; isPrime(n + 1, true);
     isPrime[0] = false;
     isPrime[1] = false;
     
     // 埃氏筛法
-    for (let p = 2; p <= limit; p++) {
+    for (long long p = 2; p &lt;= limit; p++) {
         if (isPrime[p]) {
-            for (let multiple = p * p; multiple <= n; multiple += p) {
+            for (long long multiple = p * p; multiple &lt;= n; multiple += p) {
                 isPrime[multiple] = false;
             }
         }
     }
     
     // 计数
-    let count = 0;
-    for (let i = 2; i <= n; i++) {
+    long long count = 0;
+    for (long long i = 2; i &lt;= n; i++) {
         if (isPrime[i]) count++;
     }
     
@@ -215,110 +217,116 @@ function primePi(n) {
 }
 
 // 计算x/ln(x)
-function xOverLnX(x) {
-    return x / Math.log(x);
+double xOverLnX(double x) {
+    return x / log(x);
 }
 
 // 计算对数积分Li(x)的近似值（数值积分）
-function logarithmicIntegral(x) {
+double logarithmicIntegral(double x) {
     // 使用梯形法则进行数值积分
-    const n = 10000; // 分割数
-    const step = (x - 2) / n;
-    let sum = 0;
+    int n = 10000; // 分割数
+    double step = (x - 2) / n;
+    double sum = 0;
     
     // 梯形法则：∫f(x)dx ≈ (h/2)[f(x0)+2f(x1)+...+2f(x_{n-1})+f(xn)]
-    for (let i = 0; i <= n; i++) {
-        const t = 2 + i * step;
-        const weight = (i === 0 || i === n) ? 1 : 2;
-        sum += weight * (1 / Math.log(t));
+    for (int i = 0; i &lt;= n; i++) {
+        double t = 2 + i * step;
+        double weight = (i == 0 || i == n) ? 1 : 2;
+        sum += weight * (1 / log(t));
     }
     
     return (step / 2) * sum;
 }
 
-// 验证素数定理的近似程度
-function verifyPrimeNumberTheorem(limit) {
-    console.log("验证素数定理：");
-    console.log("x\tπ(x)\tx/ln(x)\tLi(x)\tπ(x)/(x/ln(x))");
-    console.log("-".repeat(60));
-    
-    const testPoints = [100, 1000, 10000, 100000, 1000000];
-    
-    for (const x of testPoints) {
-        if (x > limit) break;
-        
-        const piX = primePi(x);
-        const xOverLnXVal = xOverLnX(x);
-        const liX = logarithmicIntegral(x);
-        const ratio = piX / xOverLnXVal;
-        
-        console.log(`${x}\t${piX}\t${xOverLnXVal.toFixed(2)}\t${liX.toFixed(2)}\t${ratio.toFixed(4)}`);
+// 判断一个数是否为素数
+bool isPrime(long long num) {
+    if (num &lt; 2) return false;
+    if (num % 2 == 0) return num == 2;
+    long long limit = (long long)floor(sqrt((double)num));
+    for (long long i = 3; i &lt;= limit; i += 2) {
+        if (num % i == 0) return false;
     }
+    return true;
 }
 
-// 示例使用
-console.log("=== 素数定理验证 ===");
-verifyPrimeNumberTheorem(1000000);
-
-// 计算误差
-console.log("\n=== 计算不同近似公式的绝对误差 ===");
-const x = 1000000;
-const piX = primePi(x);
-const approx1 = xOverLnX(x);
-const approx2 = logarithmicIntegral(x);
-
-console.log(`π(${x}) = ${piX}`);
-console.log(`x/ln(x) = ${approx1.toFixed(2)}, 绝对误差 = ${Math.abs(piX - approx1).toFixed(2)}`);
-console.log(`Li(x) = ${approx2.toFixed(2)}, 绝对误差 = ${Math.abs(piX - approx2).toFixed(2)}`);
-console.log(`x/ln(x)的相对误差: ${(Math.abs(piX - approx1) / piX * 100).toFixed(2)}%`);
-console.log(`Li(x)的相对误差: ${(Math.abs(piX - approx2) / piX * 100).toFixed(2)}%`);
-
-// 素数定理的一个推论：第n个素数的渐近公式
-console.log("\n=== 第n个素数的渐近公式 ===");
-console.log("素数定理的一个推论：第n个素数p_n ~ n ln n");
-console.log("验证：");
-
-const testNs = [1, 10, 100, 1000, 10000];
-console.log("n\tp_n(实际)\tn ln n\t\tp_n/(n ln n)");
-
-// 为了获取实际第n个素数，我们需要一个函数来生成素数
-function nthPrime(n) {
-    if (n < 1) return null;
+// 获取第n个素数
+long long nthPrime(long long n) {
+    if (n &lt; 1) return -1;
     
-    let count = 0;
-    let num = 2;
+    long long count = 0;
+    long long num = 2;
     
     while (true) {
         if (isPrime(num)) {
             count++;
-            if (count === n) return num;
+            if (count == n) return num;
         }
         num++;
     }
 }
 
-function isPrime(num) {
-    if (num < 2) return false;
-    if (num % 2 === 0) return num === 2;
-    const limit = Math.sqrt(num);
-    for (let i = 3; i <= limit; i += 2) {
-        if (num % i === 0) return false;
+// 验证素数定理的近似程度
+void verifyPrimeNumberTheorem(long long limit) {
+    cout &lt;&lt; "验证素数定理：\n";
+    cout &lt;&lt; "x\tπ(x)\tx/ln(x)\tLi(x)\tπ(x)/(x/ln(x))\n";
+    cout &lt;&lt; string(60, '-') &lt;&lt; "\n";
+    
+    long long testPoints[] = {100, 1000, 10000, 100000, 1000000};
+    
+    for (long long x : testPoints) {
+        if (x &gt; limit) break;
+        
+        long long piX = primePi(x);
+        double xOverLnXVal = xOverLnX((double)x);
+        double liX = logarithmicIntegral((double)x);
+        double ratio = piX / xOverLnXVal;
+        
+        cout &lt;&lt; x &lt;&lt; "\t" &lt;&lt; piX &lt;&lt; "\t"
+             &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; xOverLnXVal &lt;&lt; "\t"
+             &lt;&lt; setprecision(2) &lt;&lt; liX &lt;&lt; "\t"
+             &lt;&lt; setprecision(4) &lt;&lt; ratio &lt;&lt; "\n";
     }
-    return true;
 }
 
-for (const n of testNs) {
-    const pn = nthPrime(n);
-    const approx = n * Math.log(n);
-    console.log(`${n}\t${pn}\t\t${approx.toFixed(2)}\t${(pn / approx).toFixed(4)}`);
-}</code>
-            </pre>
-            
-            <p style="margin-top: 15px; color: #f8f8f2;">
-                <strong>注意：</strong>
-                计算 $\pi(x)$ 的确切值对于大 $x$ 计算量很大，上述代码的筛法只能处理中等大小的 $x$。
-                实际应用中，对于非常大的 $x$，有专门的算法（如Meissel-Lehmer算法）可以高效计算 $\pi(x)$。
-            </p>
+int main() {
+    // 示例使用
+    cout &lt;&lt; "=== 素数定理验证 ===\n";
+    verifyPrimeNumberTheorem(1000000);
+    
+    // 计算误差
+    cout &lt;&lt; "\n=== 计算不同近似公式的绝对误差 ===\n";
+    long long x = 1000000;
+    long long piX = primePi(x);
+    double approx1 = xOverLnX((double)x);
+    double approx2 = logarithmicIntegral((double)x);
+    
+    cout &lt;&lt; "π(" &lt;&lt; x &lt;&lt; ") = " &lt;&lt; piX &lt;&lt; "\n";
+    cout &lt;&lt; "x/ln(x) = " &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; approx1
+         &lt;&lt; ", 绝对误差 = " &lt;&lt; setprecision(2) &lt;&lt; fabs(piX - approx1) &lt;&lt; "\n";
+    cout &lt;&lt; "Li(x) = " &lt;&lt; setprecision(2) &lt;&lt; approx2
+         &lt;&lt; ", 绝对误差 = " &lt;&lt; setprecision(2) &lt;&lt; fabs(piX - approx2) &lt;&lt; "\n";
+    cout &lt;&lt; "x/ln(x)的相对误差: " &lt;&lt; setprecision(2) &lt;&lt; (fabs(piX - approx1) / piX * 100) &lt;&lt; "%\n";
+    cout &lt;&lt; "Li(x)的相对误差: " &lt;&lt; setprecision(2) &lt;&lt; (fabs(piX - approx2) / piX * 100) &lt;&lt; "%\n";
+    
+    // 素数定理的一个推论：第n个素数的渐近公式
+    cout &lt;&lt; "\n=== 第n个素数的渐近公式 ===\n";
+    cout &lt;&lt; "素数定理的一个推论：第n个素数p_n ~ n ln n\n";
+    cout &lt;&lt; "验证：\n";
+    
+    long long testNs[] = {1, 10, 100, 1000, 10000};
+    cout &lt;&lt; "n\tp_n(实际)\tn ln n\t\tp_n/(n ln n)\n";
+    
+    for (long long n : testNs) {
+        long long pn = nthPrime(n);
+        double approx = n * log((double)n);
+        cout &lt;&lt; n &lt;&lt; "\t" &lt;&lt; pn &lt;&lt; "\t\t"
+             &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; approx &lt;&lt; "\t"
+             &lt;&lt; setprecision(4) &lt;&lt; (pn / approx) &lt;&lt; "\n";
+    }
+    
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="history" 
@@ -337,7 +345,7 @@ for (const n of testNs) {
             <p>
                 <strong>初步进展：</strong>
                 切比雪夫在1852年证明了存在常数 $c_1, c_2$ 使得对于充分大的 $x$：
-                $$c_1 \frac{x}{\ln x} < \pi(x) < c_2 \frac{x}{\ln x}$$
+                $$c_1 \frac{x}{\ln x} \lt \pi(x) \lt c_2 \frac{x}{\ln x}$$
                 他取 $c_1 = 0.92129, c_2 = 1.10555$。
             </p>
             
@@ -377,7 +385,7 @@ for (const n of testNs) {
                 
                 <li>
                     <strong>伯特兰公设：</strong>
-                    对于任意 $n > 1$，存在素数 $p$ 满足 $n < p < 2n$。
+                    对于任意 $n \gt 1$，存在素数 $p$ 满足 $n \lt p \lt 2n$。
                     这是切比雪夫证明的，比素数定理弱但不需要解析方法。
                 </li>
                 

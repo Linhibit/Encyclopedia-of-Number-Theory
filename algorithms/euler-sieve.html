@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>欧拉筛法 - 数论百科</title>
+    <title>欧拉筛法 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -80,7 +80,7 @@
                             遍历当前已找到的素数列表 <code>primes</code>：
                             <ul>
                                 <li>令当前素数为 $p$。</li>
-                                <li>如果 $i \times p > n$，则跳出循环。</li>
+                                <li>如果 $i \times p \gt n$，则跳出循环。</li>
                                 <li>将 <code>isPrime[i × p]</code> 标记为 <code>false</code>。</li>
                                 <li>
                                     <strong>关键步骤：</strong>
@@ -117,117 +117,68 @@
             </div>
         </section>
 
-        <section class="code-example" 
-                 style="background: #f5f5f5; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3>代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #2d2d2d; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 欧拉筛法（线性筛）
-function eulerSieve(n) {
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note"><strong>算法复杂度分析：</strong> 时间复杂度：$O(n)$，每个合数只被标记一次；空间复杂度：$O(n)$，需要存储布尔数组和素数列表。</p>
+            <pre><code>
+// 欧拉筛法（线性筛）
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 欧拉筛法：返回不超过 n 的所有素数
+vector&lt;int&gt; eulerSieve(int n) {
     // 布尔数组，表示是否为素数
-    const isPrime = new Array(n + 1).fill(true);
-    isPrime[0] = false;
-    isPrime[1] = false;
-    
+    vector&lt;bool&gt; isPrime(n + 1, true);
+    if (n &gt;= 0) isPrime[0] = false;
+    if (n &gt;= 1) isPrime[1] = false;
+
     // 素数列表
-    const primes = [];
-    
+    vector&lt;int&gt; primes;
+
     // 遍历所有数字
-    for (let i = 2; i <= n; i++) {
-        // 如果i是素数，加入列表
+    for (int i = 2; i &lt;= n; i++) {
+        // 如果 i 是素数，加入列表
         if (isPrime[i]) {
-            primes.push(i);
+            primes.push_back(i);
         }
-        
+
         // 遍历当前素数列表
-        for (let j = 0; j < primes.length; j++) {
-            const p = primes[j];
-            const multiple = i * p;
-            
+        for (int p : primes) {
+            long long multiple = 1LL * i * p;
+
             // 如果超出范围，跳出循环
-            if (multiple > n) {
+            if (multiple &gt; n) {
                 break;
             }
-            
+
             // 标记合数
-            isPrime[multiple] = false;
-            
-            // 关键：如果i能被p整除，跳出循环
-            if (i % p === 0) {
+            isPrime[(int)multiple] = false;
+
+            // 关键：如果 i 能被 p 整除，跳出循环
+            if (i % p == 0) {
                 break;
             }
         }
     }
-    
+
     return primes;
 }
 
-// 优化的欧拉筛法（使用位运算思想）
-function eulerSieveOptimized(n) {
-    // 使用Uint8Array节省内存
-    const isPrime = new Uint8Array(n + 1);
-    for (let i = 2; i <= n; i++) {
-        isPrime[i] = 1;
+int main() {
+    // 示例使用
+    vector&lt;int&gt; primes = eulerSieve(30);
+    for (int i = 0; i &lt; (int)primes.size(); i++) {
+        cout &lt;&lt; primes[i] &lt;&lt; (i + 1 == (int)primes.size() ? "\n" : " ");
     }
-    
-    const primes = [];
-    
-    for (let i = 2; i <= n; i++) {
-        if (isPrime[i]) {
-            primes.push(i);
-        }
-        
-        for (let j = 0; j < primes.length; j++) {
-            const p = primes[j];
-            const multiple = i * p;
-            
-            if (multiple > n) {
-                break;
-            }
-            
-            isPrime[multiple] = 0;
-            
-            // 关键优化：确保每个合数只被最小质因子标记
-            if (i % p === 0) {
-                break;
-            }
-        }
-    }
-    
-    return primes;
+    // 输出: 2 3 5 7 11 13 17 19 23 29
+
+    cout &lt;&lt; eulerSieve(100).size() &lt;&lt; '\n';
+    // 输出: 25（100以内有25个素数）
+
+    return 0;
 }
-
-// 示例使用
-console.log(eulerSieve(30));
-// 输出: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
-
-console.log(eulerSieve(100).length);  // 输出: 25（100以内有25个素数）
-
-// 性能对比
-console.time('欧拉筛法');
-eulerSieve(1000000);
-console.timeEnd('欧拉筛法');
-
-console.time('优化欧拉筛法');
-eulerSieveOptimized(1000000);
-console.timeEnd('优化欧拉筛法');</code>
-            </pre>
-            
-            <p style="margin-top: 15px;">
-                <strong>算法复杂度分析：</strong>
-                <ul>
-                    <li><strong>时间复杂度：</strong>$O(n)$。每个合数只被标记一次。</li>
-                    <li><strong>空间复杂度：</strong>$O(n)$。需要存储布尔数组和素数列表。</li>
-                </ul>
-            </p>
+</code></pre>
         </section>
 
         <section class="comparison" 
@@ -378,7 +329,7 @@ console.timeEnd('优化欧拉筛法');</code>
             <h4>📝 注意事项：</h4>
             <p>
                 1. 欧拉筛法虽然时间复杂度为 $O(n)$，但由于常数因子较大，
-                在小数据范围（如 $n < 10^6$）下可能不如优化后的埃氏筛法快。<br>
+                在小数据范围（如 $n \lt 10^6$）下可能不如优化后的埃氏筛法快。<br>
                 2. 算法需要存储素数列表，当 $n$ 很大时，素数列表会占用较多内存。<br>
                 3. 欧拉筛法不仅可以筛选素数，还可以用于计算数论函数（如欧拉函数 $\varphi(n)$、
                 莫比乌斯函数 $\mu(n)$）的值，通过稍作修改即可实现。

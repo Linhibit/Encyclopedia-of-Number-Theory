@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>卢卡斯定理 - 数论百科</title>
+    <title>卢卡斯定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -52,7 +52,7 @@
                 设 $p$ 为素数，$n$ 和 $m$ 为非负整数。将 $n$ 和 $m$ 表示为 $p$ 进制数：
                 $$n = n_k p^k + n_{k-1} p^{k-1} + \cdots + n_1 p + n_0$$
                 $$m = m_k p^k + m_{k-1} p^{k-1} + \cdots + m_1 p + m_0$$
-                其中 $0 \leq n_i, m_i < p$。
+                其中 $0 \leq n_i, m_i \lt p$。
             </p>
             
             <p>
@@ -61,7 +61,7 @@
             </p>
             
             <p>
-                其中 $\binom{n}{m}$ 表示组合数 $C_n^m$。特别地，如果某个 $m_i > n_i$，则 $\binom{n_i}{m_i} = 0$，从而 $\binom{n}{m} \equiv 0 \pmod{p}$。
+                其中 $\binom{n}{m}$ 表示组合数 $C_n^m$。特别地，如果某个 $m_i \gt n_i$，则 $\binom{n_i}{m_i} = 0$，从而 $\binom{n}{m} \equiv 0 \pmod{p}$。
             </p>
         </section>
 
@@ -83,7 +83,7 @@
                     $$(1+X)^n = \sum_{m=0}^n \binom{n}{m} X^m$$
                 </li>
                 <li>
-                    由于 $p$ 是素数，有 $(1+X)^p \equiv 1 + X^p \pmod{p}$（这是因为 $p$ 整除 $\binom{p}{k}$ 对于 $0 < k < p$）。
+                    由于 $p$ 是素数，有 $(1+X)^p \equiv 1 + X^p \pmod{p}$（这是因为 $p$ 整除 $\binom{p}{k}$ 对于 $0 \lt k \lt p$）。
                 </li>
                 <li>
                     将 $n$ 写成 $p$ 进制：$n = \sum_{i=0}^k n_i p^i$，则：
@@ -150,149 +150,149 @@
                             <li>$45 = 6 \times 7^1 + 3 \times 7^0$，所以 $m_1=6, m_0=3$（注意高位为0）</li>
                         </ul>
                     </li>
-                    <li>由于 $m_2=0 \leq n_2=2$，但 $m_1=6 > n_1=0$，所以 $\binom{n_1}{m_1} = \binom{0}{6} = 0$。</li>
+                    <li>由于 $m_2=0 \leq n_2=2$，但 $m_1=6 \gt n_1=0$，所以 $\binom{n_1}{m_1} = \binom{0}{6} = 0$。</li>
                     <li>根据卢卡斯定理，$\binom{100}{45} \equiv 0 \pmod{7}$，即能被 7 整除。</li>
                 </ol>
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 预计算阶乘和阶乘的逆元（模p）
-function precomputeFactorials(n, p) {
-    const fact = new Array(n + 1);
-    const invFact = new Array(n + 1);
-    
-    fact[0] = 1;
-    for (let i = 1; i <= n; i++) {
-        fact[i] = (fact[i - 1] * i) % p;
-    }
-    
-    // 费马小定理求逆元
-    invFact[n] = modPow(fact[n], p - 2, p);
-    for (let i = n - 1; i >= 0; i--) {
-        invFact[i] = (invFact[i + 1] * (i + 1)) % p;
-    }
-    
-    return { fact, invFact };
-}
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;chrono&gt;
+
+using namespace std;
+using ll = long long;
 
 // 快速幂算法
-function modPow(base, exp, mod) {
-    if (mod === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        e >>= 1n;
-        base = (base * base) % BigInt(mod);
+ll modPow(ll base, ll exp, ll mod) {
+    if (mod == 1) return 0;
+    ll result = 1;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = (result * base) % mod;
+        exp &gt;&gt;= 1;
+        base = (base * base) % mod;
     }
-    return Number(result);
+    return result;
 }
 
-// 使用预计算求组合数 C(n, m) mod p（n, m < p）
-function combModPrecomputed(n, m, fact, invFact, p) {
-    if (m < 0 || m > n) return 0;
-    if (m === 0 || m === n) return 1;
-    
+// 预计算阶乘和阶乘的逆元（模p）
+void precomputeFactorials(int n, int p, vector&lt;ll&gt;&amp; fact, vector&lt;ll&gt;&amp; invFact) {
+    fact.assign(n + 1, 0);
+    invFact.assign(n + 1, 0);
+
+    fact[0] = 1;
+    for (int i = 1; i &lt;= n; i++) {
+        fact[i] = (fact[i - 1] * i) % p;
+    }
+
+    // 费马小定理求逆元
+    invFact[n] = modPow(fact[n], p - 2, p);
+    for (int i = n - 1; i &gt;= 0; i--) {
+        invFact[i] = (invFact[i + 1] * (i + 1)) % p;
+    }
+}
+
+// 使用预计算求组合数 C(n, m) mod p（n, m &lt; p）
+ll combModPrecomputed(int n, int m, const vector&lt;ll&gt;&amp; fact, const vector&lt;ll&gt;&amp; invFact, int p) {
+    if (m &lt; 0 || m &gt; n) return 0;
+    if (m == 0 || m == n) return 1;
+
     return (fact[n] * invFact[m] % p) * invFact[n - m] % p;
 }
 
 // 卢卡斯定理计算组合数 C(n, m) mod p
-function lucasTheorem(n, m, p) {
-    if (m === 0) return 1;
-    
+ll lucasTheorem(ll n, ll m, int p) {
+    if (m == 0) return 1;
+
     // 将n, m转换为p进制
-    const nDigits = [];
-    const mDigits = [];
-    
-    let tempN = n, tempM = m;
-    while (tempN > 0 || tempM > 0) {
-        nDigits.push(tempN % p);
-        mDigits.push(tempM % p);
-        tempN = Math.floor(tempN / p);
-        tempM = Math.floor(tempM / p);
+    vector&lt;int&gt; nDigits, mDigits;
+
+    ll tempN = n, tempM = m;
+    while (tempN &gt; 0 || tempM &gt; 0) {
+        nDigits.push_back((int)(tempN % p));
+        mDigits.push_back((int)(tempM % p));
+        tempN /= p;
+        tempM /= p;
     }
-    
+
     // 确保两个数组长度相同
-    const len = Math.max(nDigits.length, mDigits.length);
-    while (nDigits.length < len) nDigits.push(0);
-    while (mDigits.length < len) mDigits.push(0);
-    
+    int len = (int)max(nDigits.size(), mDigits.size());
+    while ((int)nDigits.size() &lt; len) nDigits.push_back(0);
+    while ((int)mDigits.size() &lt; len) mDigits.push_back(0);
+
     // 预计算阶乘（只需计算到p-1）
-    const { fact, invFact } = precomputeFactorials(p - 1, p);
-    
+    vector&lt;ll&gt; fact, invFact;
+    precomputeFactorials(p - 1, p, fact, invFact);
+
     // 应用卢卡斯定理
-    let result = 1;
-    for (let i = 0; i < len; i++) {
-        const ni = nDigits[i];
-        const mi = mDigits[i];
-        
-        if (mi > ni) {
+    ll result = 1;
+    for (int i = 0; i &lt; len; i++) {
+        int ni = nDigits[i];
+        int mi = mDigits[i];
+
+        if (mi &gt; ni) {
             return 0; // C(ni, mi) = 0
         }
-        
+
         result = (result * combModPrecomputed(ni, mi, fact, invFact, p)) % p;
     }
-    
+
     return result;
 }
 
-// 示例使用
-console.log("=== 卢卡斯定理示例 ===");
+int main() {
+    // 示例使用
+    cout &lt;&lt; "=== 卢卡斯定理示例 ===\n";
 
-// 示例1：C(100, 30) mod 13
-const p1 = 13;
-const result1 = lucasTheorem(100, 30, p1);
-console.log(`C(100, 30) mod ${p1} = ${result1}`); // 应为7
+    // 示例1：C(100, 30) mod 13
+    int p1 = 13;
+    ll result1 = lucasTheorem(100, 30, p1);
+    cout &lt;&lt; "C(100, 30) mod " &lt;&lt; p1 &lt;&lt; " = " &lt;&lt; result1 &lt;&lt; '\n'; // 应为7
 
-// 示例2：C(100, 45) mod 7
-const p2 = 7;
-const result2 = lucasTheorem(100, 45, p2);
-console.log(`C(100, 45) mod ${p2} = ${result2}`); // 应为0
+    // 示例2：C(100, 45) mod 7
+    int p2 = 7;
+    ll result2 = lucasTheorem(100, 45, p2);
+    cout &lt;&lt; "C(100, 45) mod " &lt;&lt; p2 &lt;&lt; " = " &lt;&lt; result2 &lt;&lt; '\n'; // 应为0
 
-// 示例3：验证小数字
-const p3 = 5;
-console.log(`\n验证小数字（模${p3}）:`);
-for (let n = 0; n < 10; n++) {
-    for (let m = 0; m <= n; m++) {
-        // 直接计算（仅适用于n, m较小的情况）
-        let direct = 1;
-        for (let i = 1; i <= m; i++) {
-            direct = direct * (n - i + 1) / i;
-        }
-        direct = direct % p3;
-        
-        const lucas = lucasTheorem(n, m, p3);
-        
-        if (direct !== lucas) {
-            console.log(`矛盾：C(${n}, ${m}) mod ${p3}，直接计算=${direct}，卢卡斯定理=${lucas}`);
+    // 示例3：验证小数字
+    int p3 = 5;
+    cout &lt;&lt; "\n验证小数字（模" &lt;&lt; p3 &lt;&lt; "）:\n";
+    for (int n = 0; n &lt; 10; n++) {
+        for (int m = 0; m &lt;= n; m++) {
+            // 直接计算（仅适用于n, m较小的情况）
+            ll direct = 1;
+            for (int i = 1; i &lt;= m; i++) {
+                direct = direct * (n - i + 1) / i;
+            }
+            direct = direct % p3;
+
+            ll lucas = lucasTheorem(n, m, p3);
+
+            if (direct != lucas) {
+                cout &lt;&lt; "矛盾：C(" &lt;&lt; n &lt;&lt; ", " &lt;&lt; m &lt;&lt; ") mod " &lt;&lt; p3
+                     &lt;&lt; "，直接计算=" &lt;&lt; direct &lt;&lt; "，卢卡斯定理=" &lt;&lt; lucas &lt;&lt; '\n';
+            }
         }
     }
-}
-console.log("小数字验证完成！");
+    cout &lt;&lt; "小数字验证完成！\n";
 
-// 性能测试
-console.log("\n=== 性能测试 ===");
-console.time("卢卡斯定理");
-const bigResult = lucasTheorem(1000000, 500000, 10007);
-console.timeEnd("卢卡斯定理");
-console.log(`C(1000000, 500000) mod 10007 = ${bigResult}`);</code>
-            </pre>
+    // 性能测试
+    cout &lt;&lt; "\n=== 性能测试 ===\n";
+    auto start = chrono::high_resolution_clock::now();
+    ll bigResult = lucasTheorem(1000000, 500000, 10007);
+    auto end = chrono::high_resolution_clock::now();
+    auto ms = chrono::duration_cast&lt;chrono::milliseconds&gt;(end - start).count();
+    cout &lt;&lt; "卢卡斯定理: " &lt;&lt; ms &lt;&lt; "ms\n";
+    cout &lt;&lt; "C(1000000, 500000) mod 10007 = " &lt;&lt; bigResult &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

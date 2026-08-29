@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>原根 - 数论百科</title>
+    <title>原根 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -180,151 +180,156 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 快速幂算法
-function fastPow(base, exp, mod) {
-    if (mod === 1) return 0;
-    let result = 1n;
-    base = BigInt(base) % BigInt(mod);
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        e >>= 1n;
-        base = (base * base) % BigInt(mod);
-    }
-    return Number(result);
-}
-
-// 质因数分解
-function primeFactors(n) {
-    const factors = [];
-    let temp = n;
-    
-    // 处理因子2
-    while (temp % 2 === 0) {
-        factors.push(2);
-        temp /= 2;
-    }
-    
-    // 处理奇数因子
-    for (let i = 3; i * i <= temp; i += 2) {
-        while (temp % i === 0) {
-            factors.push(i);
-            temp /= i;
-        }
-    }
-    
-    if (temp > 1) {
-        factors.push(temp);
-    }
-    
-    // 去重，返回不同的质因子
-    return [...new Set(factors)];
-}
-
-// 寻找模素数p的原根
-function findPrimitiveRoot(p) {
-    if (p <= 1) return null;
-    
-    // 特殊情况
-    if (p === 2) return 1;
-    if (p === 3) return 2;
-    if (p === 4) return 3;
-    
-    // 计算p-1的质因子
-    const phi = p - 1;
-    const factors = primeFactors(phi);
-    
-    // 从2开始测试
-    for (let a = 2; a < p; a++) {
-        let isPrimitiveRoot = true;
-        
-        // 检查对于每个质因子q，a^{(p-1)/q} ≠ 1 mod p
-        for (const q of factors) {
-            const power = fastPow(a, phi / q, p);
-            if (power === 1) {
-                isPrimitiveRoot = false;
-                break;
-            }
-        }
-        
-        if (isPrimitiveRoot) {
-            return a;
-        }
-    }
-    
-    return null; // 理论上应该不会发生
-}
-
-// 找到所有原根
-function findAllPrimitiveRoots(p) {
-    const g = findPrimitiveRoot(p);
-    if (!g) return [];
-    
-    const phi = p - 1;
-    const roots = [];
-    
-    // 所有与phi互质的k，g^k都是原根
-    for (let k = 1; k <= phi; k++) {
-        if (gcd(k, phi) === 1) {
-            roots.push(fastPow(g, k, p));
-        }
-    }
-    
-    roots.sort((a, b) => a - b);
-    return roots;
-}
-
-// 辅助函数：最大公约数
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
-
-// 示例使用
-console.log("=== 寻找模素数的原根 ===");
-console.log(`模 7 的最小原根: ${findPrimitiveRoot(7)}`); // 3
-console.log(`模 7 的所有原根: ${findAllPrimitiveRoots(7)}`); // [3, 5]
-
-console.log(`\n模 13 的最小原根: ${findPrimitiveRoot(13)}`); // 2
-console.log(`模 13 的所有原根: ${findAllPrimitiveRoots(13)}`); // [2, 6, 7, 11]
-
-console.log(`\n模 17 的最小原根: ${findPrimitiveRoot(17)}`); // 3
-console.log(`模 17 的原根数量: ${findAllPrimitiveRoots(17).length}`); // φ(16)=8
-
-// 验证原根性质
-console.log("\n=== 验证原根性质 ===");
-const p = 13;
-const g = findPrimitiveRoot(p);
-console.log(`模 ${p} 的一个原根是 ${g}`);
-console.log(`验证 ${g} 的阶是 ${p-1}:`);
-let order = 1;
-let value = g % p;
-while (value !== 1) {
-    value = (value * g) % p;
-    order++;
-}
-console.log(`ord_${p}(${g}) = ${order}, φ(${p}) = ${p-1}`);</code>
-            </pre>
-            
-            <p style="margin-top: 15px; color: #f8f8f2;">
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <p class="code-note">
                 <strong>算法复杂度：</strong>
                 寻找原根的主要开销在于对 $\varphi(n)$ 的每个素因子进行幂运算测试。
                 设 $\varphi(n)$ 的不同素因子个数为 $\omega(\varphi(n))$，则时间复杂度为 $O(\omega(\varphi(n)) \log n)$。
             </p>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+using ll = long long;
+
+// 快速幂算法
+ll fastPow(ll base, ll exp, ll mod) {
+    if (mod == 1) return 0;
+    ll result = 1;
+    base %= mod;
+    ll e = exp;
+    while (e &gt; 0) {
+        if (e % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        e &gt;&gt;= 1;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+// 质因数分解（去重，返回不同的质因子）
+vector&lt;ll&gt; primeFactors(ll n) {
+    vector&lt;ll&gt; factors;
+    ll temp = n;
+
+    // 处理因子2
+    while (temp % 2 == 0) {
+        factors.push_back(2);
+        temp /= 2;
+    }
+
+    // 处理奇数因子
+    for (ll i = 3; i * i &lt;= temp; i += 2) {
+        while (temp % i == 0) {
+            factors.push_back(i);
+            temp /= i;
+        }
+    }
+
+    if (temp &gt; 1) {
+        factors.push_back(temp);
+    }
+
+    // 去重，返回不同的质因子
+    factors.erase(unique(factors.begin(), factors.end()), factors.end());
+    return factors;
+}
+
+// 辅助函数：最大公约数
+ll gcd(ll a, ll b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+// 寻找模素数p的原根
+ll findPrimitiveRoot(ll p) {
+    if (p &lt;= 1) return -1;
+
+    // 特殊情况
+    if (p == 2) return 1;
+    if (p == 3) return 2;
+    if (p == 4) return 3;
+
+    // 计算p-1的质因子
+    ll phi = p - 1;
+    vector&lt;ll&gt; factors = primeFactors(phi);
+
+    // 从2开始测试
+    for (ll a = 2; a &lt; p; a++) {
+        bool isPrimitiveRoot = true;
+
+        // 检查对于每个质因子q，a^{(p-1)/q} ≠ 1 mod p
+        for (ll q : factors) {
+            ll power = fastPow(a, phi / q, p);
+            if (power == 1) {
+                isPrimitiveRoot = false;
+                break;
+            }
+        }
+
+        if (isPrimitiveRoot) {
+            return a;
+        }
+    }
+
+    return -1; // 理论上应该不会发生
+}
+
+// 找到所有原根
+vector&lt;ll&gt; findAllPrimitiveRoots(ll p) {
+    ll g = findPrimitiveRoot(p);
+    if (g == -1) return vector&lt;ll&gt;();
+
+    ll phi = p - 1;
+    vector&lt;ll&gt; roots;
+
+    // 所有与phi互质的k，g^k都是原根
+    for (ll k = 1; k &lt;= phi; k++) {
+        if (gcd(k, phi) == 1) {
+            roots.push_back(fastPow(g, k, p));
+        }
+    }
+
+    sort(roots.begin(), roots.end());
+    return roots;
+}
+
+int main() {
+    // 示例使用
+    cout &lt;&lt; "=== 寻找模素数的原根 ===" &lt;&lt; '\n';
+    cout &lt;&lt; "模 7 的最小原根: " &lt;&lt; findPrimitiveRoot(7) &lt;&lt; '\n'; // 3
+    cout &lt;&lt; "模 7 的所有原根: ";
+    for (ll r : findAllPrimitiveRoots(7)) cout &lt;&lt; r &lt;&lt; " ";
+    cout &lt;&lt; '\n'; // [3, 5]
+
+    cout &lt;&lt; '\n' &lt;&lt; "模 13 的最小原根: " &lt;&lt; findPrimitiveRoot(13) &lt;&lt; '\n'; // 2
+    cout &lt;&lt; "模 13 的所有原根: ";
+    for (ll r : findAllPrimitiveRoots(13)) cout &lt;&lt; r &lt;&lt; " ";
+    cout &lt;&lt; '\n'; // [2, 6, 7, 11]
+
+    cout &lt;&lt; '\n' &lt;&lt; "模 17 的最小原根: " &lt;&lt; findPrimitiveRoot(17) &lt;&lt; '\n'; // 3
+    cout &lt;&lt; "模 17 的原根数量: " &lt;&lt; findAllPrimitiveRoots(17).size() &lt;&lt; '\n'; // φ(16)=8
+
+    // 验证原根性质
+    cout &lt;&lt; '\n' &lt;&lt; "=== 验证原根性质 ===" &lt;&lt; '\n';
+    ll p = 13;
+    ll g = findPrimitiveRoot(p);
+    cout &lt;&lt; "模 " &lt;&lt; p &lt;&lt; " 的一个原根是 " &lt;&lt; g &lt;&lt; '\n';
+    cout &lt;&lt; "验证 " &lt;&lt; g &lt;&lt; " 的阶是 " &lt;&lt; p - 1 &lt;&lt; ":" &lt;&lt; '\n';
+    ll order = 1;
+    ll value = g % p;
+    while (value != 1) {
+        value = (value * g) % p;
+        order++;
+    }
+    cout &lt;&lt; "ord_" &lt;&lt; p &lt;&lt; "(" &lt;&lt; g &lt;&lt; ") = " &lt;&lt; order &lt;&lt; ", φ(" &lt;&lt; p &lt;&lt; ") = " &lt;&lt; p - 1 &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="example" 

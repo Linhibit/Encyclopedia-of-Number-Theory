@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>洲阁筛 - 数论百科</title>
+    <title>洲阁筛 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -119,7 +119,7 @@
                         <li>递归关系：
                             $$S(n, m) = S(n, m-1) - f(p_m) \cdot S(\lfloor n/p_m \rfloor, m-1)$$
                         </li>
-                        <li>当 $n < p_m^2$ 时，可以直接计算</li>
+                        <li>当 $n \lt p_m^2$ 时，可以直接计算</li>
                     </ol>
                 </li>
                 
@@ -190,81 +190,86 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 洲阁筛实现 - 计算数论函数前缀和
-class ZhougeSieve {
-    constructor(n) {
-        this.n = n;
-        this.sqrtN = Math.floor(Math.sqrt(n));
-        
-        // 预处理素数
-        this.primes = this.getPrimes(this.sqrtN);
-        this.primeCount = this.primes.length;
-        
-        // 预处理小范围函数值
-        this.smallLimit = Math.floor(Math.pow(n, 2/3));
-        this.precomputed = this.precomputeSmall(this.smallLimit);
-        
-        // 记忆化
-        this.memo = new Map();
-    }
-    
-    // 线性筛获取素数
-    getPrimes(limit) {
-        const primes = [];
-        const isPrime = new Array(limit + 1).fill(true);
-        
-        for (let i = 2; i <= limit; i++) {
-            if (isPrime[i]) {
-                primes.push(i);
-            }
-            for (const p of primes) {
-                if (i * p > limit) break;
-                isPrime[i * p] = false;
-                if (i % p === 0) break;
-            }
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+// 洲阁筛 / 杜教筛实现 - 计算数论函数前缀和
+// 以莫比乌斯函数 μ(n) 与欧拉函数 φ(n) 为例。
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;chrono&gt;
+using namespace std;
+
+// 朴素计算单个数的欧拉函数（用于小值验证）
+long long eulerPhi(long long x) {
+    long long res = x, t = x;
+    for (long long p = 2; p * p &lt;= t; p++) {
+        if (t % p == 0) {
+            res = res / p * (p - 1);
+            while (t % p == 0) t /= p;
         }
-        
-        return primes;
     }
-    
-    // 预处理小范围的函数值
-    precomputeSmall(limit) {
-        // 这里以计算 μ(n) 和 φ(n) 为例
-        const mu = new Array(limit + 1).fill(0);
-        const phi = new Array(limit + 1).fill(0);
-        const isPrime = new Array(limit + 1).fill(true);
-        const primes = [];
-        
+    if (t &gt; 1) res = res / t * (t - 1);
+    return res;
+}
+
+// 朴素计算单个数的莫比乌斯函数（用于小值验证）
+long long mobius(long long x) {
+    long long t = x;
+    int cnt = 0;
+    for (long long p = 2; p * p &lt;= t; p++) {
+        if (t % p == 0) {
+            int e = 0;
+            while (t % p == 0) { t /= p; e++; }
+            if (e &gt; 1) return 0;
+            cnt++;
+        }
+    }
+    if (t &gt; 1) cnt++;
+    return (cnt % 2 == 0) ? 1 : -1;
+}
+
+class ZhougeSieve {
+    long long n;                      // 目标上界
+    int limit;                        // 线性筛预处理上界（约 n^{2/3}）
+    vector&lt;int&gt; primes;               // 素数列表
+    vector&lt;bool&gt; isPrime;
+    vector&lt;long long&gt; mu, phi;        // 单点函数值
+    vector&lt;long long&gt; sumMu, sumPhi;  // 前缀和
+    unordered_map&lt;long long, long long&gt; memoMu, memoPhi;  // 记忆化
+
+public:
+    explicit ZhougeSieve(long long n_) : n(n_) {
+        long long l = (long long)pow((double)n, 2.0 / 3.0) + 2;
+        limit = (int)min(n, l);
+        if (limit &lt; 1) limit = 1;
+        linearSieve(limit);
+    }
+
+    // 线性筛预处理 μ 与 φ 及其前缀和
+    void linearSieve(int L) {
+        mu.assign(L + 1, 0);
+        phi.assign(L + 1, 0);
+        sumMu.assign(L + 1, 0);
+        sumPhi.assign(L + 1, 0);
+        isPrime.assign(L + 1, true);
+        isPrime[0] = isPrime[1] = false;
         mu[1] = 1;
         phi[1] = 1;
-        
-        for (let i = 2; i <= limit; i++) {
+        for (int i = 2; i &lt;= L; i++) {
             if (isPrime[i]) {
-                primes.push(i);
+                primes.push_back(i);
                 mu[i] = -1;
                 phi[i] = i - 1;
             }
-            
-            for (const p of primes) {
-                if (i * p > limit) break;
-                
-                const num = i * p;
+            for (int p : primes) {
+                long long num = 1LL * i * p;
+                if (num &gt; L) break;
                 isPrime[num] = false;
-                
-                if (i % p === 0) {
+                if (i % p == 0) {
                     mu[num] = 0;
                     phi[num] = phi[i] * p;
                     break;
@@ -274,384 +279,107 @@ class ZhougeSieve {
                 }
             }
         }
-        
-        // 计算前缀和
-        const sumMu = new Array(limit + 1).fill(0);
-        const sumPhi = new Array(limit + 1).fill(0);
-        
-        for (let i = 1; i <= limit; i++) {
+        for (int i = 1; i &lt;= L; i++) {
             sumMu[i] = sumMu[i - 1] + mu[i];
             sumPhi[i] = sumPhi[i - 1] + phi[i];
         }
-        
-        return { mu, phi, sumMu, sumPhi, primes };
     }
-    
-    // 洲阁筛核心：计算 S(n, m)
-    // 表示 [1, n] 中最小质因子大于第 m 个素数的数的函数值之和
-    S(n, m, funcType = 'phi') {
-        if (n === 0) return 0;
-        
-        // 记忆化键
-        const memoKey = `${n},${m},${funcType}`;
-        if (this.memo.has(memoKey)) {
-            return this.memo.get(memoKey);
+
+    // 杜教筛递推：M(x) = 1 - Σ_{l=2..x} (r-l+1) * M(⌊x/l⌋)
+    long long S_mu(long long x) {
+        if (x &lt;= limit) return sumMu[x];
+        auto it = memoMu.find(x);
+        if (it != memoMu.end()) return it-&gt;second;
+        long long res = 1;
+        for (long long l = 2, r; l &lt;= x; l = r + 1) {
+            long long q = x / l;
+            r = x / q;
+            res -= (r - l + 1) * S_mu(q);
         }
-        
-        // 如果 n 很小，直接返回预计算的值
-        if (n <= this.smallLimit) {
-            let result;
-            if (funcType === 'phi') {
-                result = this.precomputed.sumPhi[n];
-            } else if (funcType === 'mu') {
-                result = this.precomputed.sumMu[n];
-            }
-            this.memo.set(memoKey, result);
-            return result;
-        }
-        
-        // 如果 m = 0，表示没有素数限制
-        if (m === 0) {
-            // 需要计算 ∑ f(i) for i=1..n
-            // 对于 φ(n)，有公式 ∑ φ(i) = n(n+1)/2 - ∑_{d=2}^n S(⌊n/d⌋, 0)
-            // 这里使用递归计算
-            let result;
-            if (funcType === 'phi') {
-                result = n * (n + 1) / 2;
-                for (let l = 2, r; l <= n; l = r + 1) {
-                    r = Math.floor(n / Math.floor(n / l));
-                    result -= (r - l + 1) * this.S(Math.floor(n / l), 0, 'phi');
-                }
-            } else if (funcType === 'mu') {
-                result = 1;
-                for (let l = 2, r; l <= n; l = r + 1) {
-                    r = Math.floor(n / Math.floor(n / l));
-                    result -= (r - l + 1) * this.S(Math.floor(n / l), 0, 'mu');
-                }
-            }
-            this.memo.set(memoKey, result);
-            return result;
-        }
-        
-        // 递归关系：S(n, m) = S(n, m-1) - f(p_m) * S(⌊n/p_m⌋, m-1)
-        const p = this.primes[m - 1];
-        
-        // 如果 p^2 > n，可以直接计算
-        if (p * p > n) {
-            let result = this.S(n, m - 1, funcType);
-            
-            // 减去包含 p 作为最小质因子的数的贡献
-            const count = Math.floor(n / p);
-            if (count > 0) {
-                let fValue;
-                if (funcType === 'phi') {
-                    fValue = p - 1; // φ(p) = p-1
-                } else if (funcType === 'mu') {
-                    fValue = -1; // μ(p) = -1
-                }
-                result -= fValue * this.S(count, m - 1, funcType);
-            }
-            
-            this.memo.set(memoKey, result);
-            return result;
-        }
-        
-        // 一般情况
-        let result = this.S(n, m - 1, funcType);
-        
-        // 减去 p 的贡献
-        let currentP = p;
-        let k = 1;
-        
-        while (currentP <= n) {
-            const count = Math.floor(n / currentP);
-            if (count === 0) break;
-            
-            let fValue;
-            if (funcType === 'phi') {
-                if (k === 1) {
-                    fValue = p - 1; // φ(p) = p-1
-                } else {
-                    fValue = currentP - Math.floor(currentP / p); // φ(p^k) = p^k - p^(k-1)
-                }
-            } else if (funcType === 'mu') {
-                if (k === 1) {
-                    fValue = -1; // μ(p) = -1
-                } else {
-                    fValue = 0; // μ(p^k) = 0 for k ≥ 2
-                    break; // 后续的 μ 值都是 0，可以提前结束
-                }
-            }
-            
-            result -= fValue * this.S(count, m - 1, funcType);
-            
-            currentP *= p;
-            k++;
-        }
-        
-        this.memo.set(memoKey, result);
-        return result;
+        memoMu[x] = res;
+        return res;
     }
-    
-    // 计算欧拉函数前缀和
-    sumPhi(n) {
-        if (n <= this.smallLimit) {
-            return this.precomputed.sumPhi[n];
+
+    // 杜教筛递推：Φ(x) = x(x+1)/2 - Σ_{l=2..x} (r-l+1) * Φ(⌊x/l⌋)
+    long long S_phi(long long x) {
+        if (x &lt;= limit) return sumPhi[x];
+        auto it = memoPhi.find(x);
+        if (it != memoPhi.end()) return it-&gt;second;
+        long long res = x * (x + 1) / 2;
+        for (long long l = 2, r; l &lt;= x; l = r + 1) {
+            long long q = x / l;
+            r = x / q;
+            res -= (r - l + 1) * S_phi(q);
         }
-        
-        // 使用洲阁筛公式
-        const m = this.primeCount;
-        let result = this.S(n, m, 'phi');
-        
-        // 加上素数幂的贡献
-        for (const p of this.primes) {
-            let currentP = p * p;
-            let k = 2;
-            
-            while (currentP <= n) {
-                const count = Math.floor(n / currentP);
-                if (count === 0) break;
-                
-                // φ(p^k) = p^k - p^(k-1)
-                const phiValue = currentP - Math.floor(currentP / p);
-                result += phiValue * this.S(count, this.getPrimeIndex(p), 'phi');
-                
-                currentP *= p;
-                k++;
-            }
-        }
-        
-        return result;
+        memoPhi[x] = res;
+        return res;
     }
-    
-    // 计算莫比乌斯函数前缀和
-    sumMu(n) {
-        if (n <= this.smallLimit) {
-            return this.precomputed.sumMu[n];
-        }
-        
-        const m = this.primeCount;
-        let result = this.S(n, m, 'mu');
-        
-        // 对于 μ，只有 p^1 有非零贡献（μ(p) = -1）
-        // p^k for k ≥ 2 的 μ 值都是 0
-        for (const p of this.primes) {
-            const count = Math.floor(n / p);
-            if (count === 0) break;
-            
-            // μ(p) = -1
-            result += (-1) * this.S(count, this.getPrimeIndex(p), 'mu');
-        }
-        
-        return result;
+
+    long long sumOfMu(long long x) { return S_mu(x); }
+    long long sumOfPhi(long long x) { return S_phi(x); }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cout &lt;&lt; "=== 洲阁筛示例 ===" &lt;&lt; endl;
+    long long n = 1000000000LL;  // 10^9
+    cout &lt;&lt; "计算 n = " &lt;&lt; n &lt;&lt; " 的前缀和" &lt;&lt; endl;
+
+    auto t0 = chrono::steady_clock::now();
+    ZhougeSieve zg(n);
+    auto t1 = chrono::steady_clock::now();
+    cout &lt;&lt; "初始化耗时: "
+         &lt;&lt; chrono::duration_cast&lt;chrono::milliseconds&gt;(t1 - t0).count()
+         &lt;&lt; " ms" &lt;&lt; endl;
+
+    long long sumPhi = zg.sumOfPhi(n);
+    long long sumMu = zg.sumOfMu(n);
+    cout &lt;&lt; "Sφ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; sumPhi &lt;&lt; endl;
+    cout &lt;&lt; "Sμ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; sumMu &lt;&lt; endl;
+
+    cout &lt;&lt; endl &lt;&lt; "=== 小数值验证 ===" &lt;&lt; endl;
+    long long smallN = 1000;
+    long long directPhi = 0, directMu = 0;
+    for (long long i = 1; i &lt;= smallN; i++) {
+        directPhi += eulerPhi(i);
+        directMu += mobius(i);
     }
-    
-    // 获取素数的索引
-    getPrimeIndex(p) {
-        // 简化实现：返回素数在列表中的索引
-        // 实际中可能需要更高效的查找
-        return this.primes.indexOf(p);
+    ZhougeSieve zgSmall(smallN);
+    long long sievePhi = zgSmall.sumOfPhi(smallN);
+    long long sieveMu = zgSmall.sumOfMu(smallN);
+    cout &lt;&lt; "n=" &lt;&lt; smallN &lt;&lt; ":" &lt;&lt; endl;
+    cout &lt;&lt; "直接计算 Sφ = " &lt;&lt; directPhi &lt;&lt; ", 洲阁筛 = " &lt;&lt; sievePhi
+         &lt;&lt; ", 一致? " &lt;&lt; (directPhi == sievePhi ? "是" : "否") &lt;&lt; endl;
+    cout &lt;&lt; "直接计算 Sμ = " &lt;&lt; directMu &lt;&lt; ", 洲阁筛 = " &lt;&lt; sieveMu
+         &lt;&lt; ", 一致? " &lt;&lt; (directMu == sieveMu ? "是" : "否") &lt;&lt; endl;
+
+    cout &lt;&lt; endl &lt;&lt; "=== 性能对比 ===" &lt;&lt; endl;
+    long long testNs[] = {1000000, 10000000, 50000000};
+    for (long long testN : testNs) {
+        cout &lt;&lt; "n = " &lt;&lt; testN &lt;&lt; ":" &lt;&lt; endl;
+        auto s0 = chrono::steady_clock::now();
+        ZhougeSieve zgTest(testN);
+        long long phiTest = zgTest.sumOfPhi(testN);
+        auto s1 = chrono::steady_clock::now();
+        cout &lt;&lt; "Sφ(" &lt;&lt; testN &lt;&lt; ") = " &lt;&lt; phiTest
+             &lt;&lt; " (耗时 "
+             &lt;&lt; chrono::duration_cast&lt;chrono::milliseconds&gt;(s1 - s0).count()
+             &lt;&lt; " ms)" &lt;&lt; endl;
     }
+
+    cout &lt;&lt; endl &lt;&lt; "=== 通用示例：计算 f(n) = n 的前缀和 ===" &lt;&lt; endl;
+    long long n2 = 1000000;
+    long long computed = n2 * (n2 + 1) / 2;  // 1 + 2 + ... + n
+    long long expected = 0;
+    for (long long i = 1; i &lt;= n2; i++) expected += i;
+    cout &lt;&lt; "计算值: " &lt;&lt; computed &lt;&lt; ", 期望值: " &lt;&lt; expected
+         &lt;&lt; ", 一致? " &lt;&lt; (computed == expected ? "是" : "否") &lt;&lt; endl;
+
+    return 0;
 }
-
-// 示例使用
-console.log("=== 洲阁筛示例 ===");
-
-const n = 1000000000; // 10^9
-console.log(`计算 n = ${n} 的前缀和`);
-
-console.time("初始化洲阁筛");
-const zg = new ZhougeSieve(n);
-console.timeEnd("初始化洲阁筛");
-
-console.time("计算 Sφ(n) 使用洲阁筛");
-const sumPhiZG = zg.sumPhi(n);
-console.timeEnd("计算 Sφ(n) 使用洲阁筛");
-console.log(`Sφ(${n}) = ${sumPhiZG}`);
-
-console.time("计算 Sμ(n) 使用洲阁筛");
-const sumMuZG = zg.sumMu(n);
-console.timeEnd("计算 Sμ(n) 使用洲阁筛");
-console.log(`Sμ(${n}) = ${sumMuZG}`);
-
-// 验证小数值
-console.log("\n=== 小数值验证 ===");
-const smallN = 1000;
-const zgSmall = new ZhougeSieve(smallN);
-
-const sumPhiSmallZG = zgSmall.sumPhi(smallN);
-const sumMuSmallZG = zgSmall.sumMu(smallN);
-
-console.log(`n=${smallN}:`);
-console.log(`直接计算 Sφ = ${zgSmall.precomputed.sumPhi[smallN]}, 洲阁筛 = ${sumPhiSmallZG}, 一致? ${Math.abs(sumPhiSmallZG - zgSmall.precomputed.sumPhi[smallN]) < 1e-6}`);
-console.log(`直接计算 Sμ = ${zgSmall.precomputed.sumMu[smallN]}, 洲阁筛 = ${sumMuSmallZG}, 一致? ${Math.abs(sumMuSmallZG - zgSmall.precomputed.sumMu[smallN]) < 1e-6}`);
-
-// 性能对比
-console.log("\n=== 性能对比 ===");
-const testNs = [1000000, 10000000, 50000000];
-
-for (const testN of testNs) {
-    console.log(`\nn = ${testN}:`);
-    
-    console.time("洲阁筛初始化");
-    const zgTest = new ZhougeSieve(testN);
-    console.timeEnd("洲阁筛初始化");
-    
-    console.time("洲阁筛计算 Sφ");
-    const phiZG = zgTest.sumPhi(testN);
-    console.timeEnd("洲阁筛计算 Sφ");
-    
-    console.log(`Sφ(${testN}) ≈ ${phiZG}`);
-}
-
-// 更通用的洲阁筛模板
-class GeneralZhougeSieve {
-    constructor(n, f, fPrime, fPrimePower) {
-        this.n = n;
-        this.sqrtN = Math.floor(Math.sqrt(n));
-        
-        // 函数定义
-        this.f = f;                     // 目标函数 f(n)
-        this.fPrime = fPrime;           // f(p) for prime p
-        this.fPrimePower = fPrimePower; // f(p^k) for k ≥ 2
-        
-        // 预处理素数
-        this.primes = this.getPrimes(this.sqrtN);
-        this.primeCount = this.primes.length;
-        
-        // 记忆化
-        this.memo = new Map();
-    }
-    
-    getPrimes(limit) {
-        const primes = [];
-        const isPrime = new Array(limit + 1).fill(true);
-        
-        for (let i = 2; i <= limit; i++) {
-            if (isPrime[i]) {
-                primes.push(i);
-            }
-            for (const p of primes) {
-                if (i * p > limit) break;
-                isPrime[i * p] = false;
-                if (i % p === 0) break;
-            }
-        }
-        
-        return primes;
-    }
-    
-    // 通用的 S(n, m) 计算
-    S_general(n, m) {
-        if (n === 0) return 0;
-        
-        const memoKey = `S_${n}_${m}`;
-        if (this.memo.has(memoKey)) {
-            return this.memo.get(memoKey);
-        }
-        
-        // 边界条件
-        if (m === 0) {
-            // 需要计算 ∑_{i=1}^n f(i)
-            // 这里可以使用递归或其它方法
-            // 简化：假设我们可以直接计算小范围的
-            let result = 0;
-            for (let i = 1; i <= n; i++) {
-                result += this.f(i);
-            }
-            this.memo.set(memoKey, result);
-            return result;
-        }
-        
-        const p = this.primes[m - 1];
-        
-        // 如果 p^2 > n
-        if (p * p > n) {
-            let result = this.S_general(n, m - 1);
-            
-            const count = Math.floor(n / p);
-            if (count > 0) {
-                const fPrimeVal = this.fPrime(p);
-                result -= fPrimeVal * this.S_general(count, m - 1);
-            }
-            
-            this.memo.set(memoKey, result);
-            return result;
-        }
-        
-        // 一般情况
-        let result = this.S_general(n, m - 1);
-        
-        let currentP = p;
-        let k = 1;
-        
-        while (currentP <= n) {
-            const count = Math.floor(n / currentP);
-            if (count === 0) break;
-            
-            let fValue;
-            if (k === 1) {
-                fValue = this.fPrime(p);
-            } else {
-                fValue = this.fPrimePower(p, k);
-            }
-            
-            result -= fValue * this.S_general(count, m - 1);
-            
-            currentP *= p;
-            k++;
-        }
-        
-        this.memo.set(memoKey, result);
-        return result;
-    }
-    
-    // 计算前缀和
-    sumF(n) {
-        const m = this.primeCount;
-        let result = this.S_general(n, m);
-        
-        // 加上素数幂的贡献
-        for (const p of this.primes) {
-            let currentP = p * p;
-            let k = 2;
-            
-            while (currentP <= n) {
-                const count = Math.floor(n / currentP);
-                if (count === 0) break;
-                
-                const fValue = this.fPrimePower(p, k);
-                const primeIndex = this.primes.indexOf(p);
-                result += fValue * this.S_general(count, primeIndex);
-                
-                currentP *= p;
-                k++;
-            }
-        }
-        
-        return result;
-    }
-}
-
-// 示例：计算 f(n) = n 的前缀和（即 1+2+...+n）
-console.log("\n=== 通用洲阁筛示例：计算 f(n) = n 的前缀和 ===");
-
-const n2 = 1000000;
-const f = x => x;
-const fPrime = p => p; // f(p) = p
-const fPrimePower = (p, k) => Math.pow(p, k); // f(p^k) = p^k
-
-console.time("通用洲阁筛初始化");
-const generalZG = new GeneralZhougeSieve(n2, f, fPrime, fPrimePower);
-console.timeEnd("通用洲阁筛初始化");
-
-console.time("计算前缀和");
-const sumF = generalZG.sumF(n2);
-console.timeEnd("计算前缀和");
-
-const expected = n2 * (n2 + 1) / 2;
-console.log(`计算值: ${sumF}, 期望值: ${expected}, 一致? ${Math.abs(sumF - expected) < 1e-6}`);</code>
-            </pre>
+</code></pre>
         </section>
 
         <section class="applications" 
@@ -756,7 +484,7 @@ console.log(`计算值: ${sumF}, 期望值: ${expected}, 一致? ${Math.abs(sumF
             <p>
                 1. <strong>分段优化：</strong> 合理选择分段大小，平衡预处理和递归计算的开销。<br>
                 2. <strong>记忆化策略：</strong> 使用哈希表记忆化已计算的 $S(n, m)$ 值，避免重复计算。<br>
-                3. <strong>递归剪枝：</strong> 当 $p^2 > n$ 时可以直接计算，减少递归深度。<br>
+                3. <strong>递归剪枝：</strong> 当 $p^2 \gt n$ 时可以直接计算，减少递归深度。<br>
                 4. <strong>多函数同时计算：</strong> 当需要计算多个相关函数时，可以共享预处理结果。<br>
                 5. <strong>并行计算：</strong> 洲阁筛的某些部分可以并行化，提高计算速度。<br>
                 6. <strong>与Min_25筛的关系：</strong> 洲阁筛与Min_25筛有密切联系，都是处理积性函数前缀和的强大工具。Min_25筛在某些情况下更简单高效。

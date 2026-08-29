@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Pollard Rho算法 - 数论百科</title>
+    <title>Pollard Rho算法 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -57,7 +57,7 @@
                 <strong>核心观察：</strong>
             </p>
             <ol style="line-height: 1.6;">
-                <li>假设 $n$ 有一个非平凡因子 $d$（$1 < d < n$）。</li>
+                <li>假设 $n$ 有一个非平凡因子 $d$（$1 \lt d \lt n$）。</li>
                 <li>我们随机生成一个序列 $x_0, x_1, x_2, \dots$，其中 $x_{i+1} = f(x_i) \bmod n$，$f$ 是一个伪随机函数（通常 $f(x) = x^2 + c$）。</li>
                 <li>考虑序列模 $d$ 的值：$y_i = x_i \bmod d$。由于 $d$ 远小于 $n$，序列 $\{y_i\}$ 会更快地出现重复（周期）。</li>
                 <li>根据生日悖论，我们可以在大约 $O(\sqrt{d})$ 步内找到一对 $i \neq j$ 使得 $y_i = y_j$，即 $d \mid (x_i - x_j)$。</li>
@@ -192,250 +192,134 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 辅助函数：计算最大公约数（欧几里得算法）
-function gcd(a, b) {
-    a = BigInt(a);
-    b = BigInt(b);
-    while (b !== 0n) {
-        [a, b] = [b, a % b];
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;numeric&gt;
+using namespace std;
+
+using i64 = long long;
+
+// 欧几里得算法求最大公约数（C++14 标准库无 std::gcd）
+i64 gcd(i64 a, i64 b) { return b ? gcd(b, a % b) : a; }
+
+// 快速乘法：计算 (a * b) % mod，用 __int128 防止 64 位乘法溢出
+i64 mulMod(i64 a, i64 b, i64 mod) {
+    return (i64)((__int128)a * b % mod);
+}
+
+// 快速幂：计算 (base^exp) % mod
+i64 powMod(i64 base, i64 exp, i64 mod) {
+    i64 result = 1 % mod;
+    base %= mod;
+    while (exp &gt; 0) {
+        if (exp &amp; 1) result = mulMod(result, base, mod);
+        base = mulMod(base, base, mod);
+        exp &gt;&gt;= 1;
     }
-    return Number(a);
+    return result;
 }
 
-// 快速乘法（防止溢出）：计算 (a * b) % mod
-function mulMod(a, b, mod) {
-    a = BigInt(a);
-    b = BigInt(b);
-    mod = BigInt(mod);
-    return Number((a * b) % mod);
-}
-
-// 快速幂算法：计算 (base^exp) % mod
-function powMod(base, exp, mod) {
-    base = BigInt(base) % BigInt(mod);
-    let result = 1n;
-    let e = BigInt(exp);
-    while (e > 0n) {
-        if (e % 2n === 1n) {
-            result = (result * base) % BigInt(mod);
-        }
-        base = (base * base) % BigInt(mod);
-        e >>= 1n;
+// 米勒-拉宾素性测试（用前 12 个素数作基，对 64 位整数是确定性的）
+bool millerRabin(i64 n) {
+    if (n &lt; 2) return false;
+    for (i64 p : {2LL, 3LL, 5LL, 7LL, 11LL, 13LL, 17LL, 19LL, 23LL, 29LL, 31LL, 37LL}) {
+        if (n % p == 0) return n == p;
     }
-    return Number(result);
-}
-
-// 米勒-拉宾素性测试（辅助函数，用于判断素数）
-function millerRabin(n, k = 5) {
-    if (n < 2n) return false;
-    if (n === 2n || n === 3n) return true;
-    if (n % 2n === 0n) return false;
-    
-    // 将 n-1 写成 2^s * d
-    let s = 0;
-    let d = n - 1n;
-    while (d % 2n === 0n) {
-        d /= 2n;
+    // 将 n - 1 写成 2^s * d 的形式
+    i64 d = n - 1, s = 0;
+    while (d % 2 == 0) {
+        d /= 2;
         s++;
     }
-    
-    // 测试 k 次
-    for (let i = 0; i < k; i++) {
-        // 随机选择 a，2 ≤ a ≤ n-2
-        const a = 2n + BigInt(Math.floor(Math.random() * (Number(n) - 3)));
-        let x = powMod(Number(a), Number(d), Number(n));
-        
-        if (x === 1 || x === Number(n) - 1) {
-            continue;
-        }
-        
-        let found = false;
-        for (let r = 1; r < s; r++) {
-            x = mulMod(x, x, Number(n));
-            if (x === Number(n) - 1) {
-                found = true;
+    for (i64 a : {2LL, 3LL, 5LL, 7LL, 11LL, 13LL, 17LL, 19LL, 23LL, 29LL, 31LL, 37LL}) {
+        i64 x = powMod(a, d, n);
+        if (x == 1 || x == n - 1) continue;
+        bool passed = false;
+        for (i64 r = 1; r &lt; s; r++) {
+            x = mulMod(x, x, n);
+            if (x == n - 1) {
+                passed = true;
                 break;
             }
         }
-        
-        if (!found) {
-            return false;
-        }
+        if (!passed) return false;
     }
-    
     return true;
 }
 
-// Pollard Rho 算法的单次尝试
-function pollardRhoSingle(n, c = 1) {
-    if (n % 2n === 0n) return 2n;
-    
-    // 定义伪随机函数 f(x) = (x^2 + c) mod n
-    function f(x) {
-        const xBig = BigInt(x);
-        const nBig = BigInt(n);
-        return Number((xBig * xBig + BigInt(c)) % nBig);
-    }
-    
-    // 初始化
-    let x = 2;
-    let y = 2;
-    let d = 1;
-    
-    // 使用弗洛伊德判圈算法
-    while (d === 1) {
+// Pollard Rho 单次尝试：返回 n 的一个因子（可能等于 n，表示本次失败）
+i64 pollardRho(i64 n, i64 c) {
+    if (n % 2 == 0) return 2;
+    // 伪随机函数 f(x) = (x^2 + c) mod n
+    auto f = [&amp;](i64 v) { return (mulMod(v, v, n) + c) % n; };
+    i64 x = 2, y = 2, d = 1;
+    // 弗洛伊德判圈算法
+    while (d == 1) {
         x = f(x);
         y = f(f(y));
-        d = gcd(Math.abs(x - y), Number(n));
+        i64 diff = x &gt; y ? x - y : y - x;
+        d = gcd(diff, n);
     }
-    
-    // 如果 d == n，算法失败（需要改变 c）
-    return BigInt(d);
+    return d;
 }
 
-// 完整的 Pollard Rho 因数分解（递归）
-function pollardRhoFactorization(n, factors = []) {
-    let nBig = BigInt(n);
-    
-    // 如果 n 已经是 1，直接返回
-    if (nBig === 1n) {
-        return factors;
+// 完整的 Pollard Rho 因数分解（递归），素因子存入 factors
+void factorize(i64 n, vector&lt;i64&gt;&amp; factors) {
+    if (n == 1) return;
+    if (millerRabin(n)) {
+        factors.push_back(n);
+        return;
     }
-    
-    // 如果 n 是素数，加入因子列表
-    if (millerRabin(nBig)) {
-        factors.push(nBig);
-        return factors;
-    }
-    
-    // 尝试不同的 c 值直到成功
-    for (let c = 1; c <= 10; c++) {
-        const d = pollardRhoSingle(nBig, c);
-        
-        // 如果 d 是 n 的非平凡因子
-        if (d !== nBig && d !== 1n) {
-            // 递归分解 d 和 n/d
-            factors = pollardRhoFactorization(d, factors);
-            factors = pollardRhoFactorization(nBig / d, factors);
-            return factors;
+    for (i64 c = 1; c &lt;= 10; c++) {
+        i64 d = pollardRho(n, c);
+        if (d != n &amp;&amp; d != 1) {
+            factorize(d, factors);
+            factorize(n / d, factors);
+            return;
         }
     }
-    
-    // 如果所有 c 都失败，将 n 作为不可分解的因子加入（可能是素数幂）
-    factors.push(nBig);
-    return factors;
+    // 所有 c 都失败时，把 n 直接作为因子加入（例如素数幂等退化情况）
+    factors.push_back(n);
 }
 
-// 优化的 Pollard Rho 版本（累积乘积减少 gcd 计算）
-function pollardRhoOptimized(n, c = 1) {
-    if (n % 2n === 0n) return 2n;
-    
-    // 定义伪随机函数
-    function f(x) {
-        const xBig = BigInt(x);
-        const nBig = BigInt(n);
-        return Number((xBig * xBig + BigInt(c)) % nBig);
-    }
-    
-    let x = 2;
-    let y = 2;
-    let d = 1;
-    let product = 1;
-    let count = 0;
-    const batchSize = 100; // 每 batchSize 步计算一次 gcd
-    
-    while (d === 1) {
-        x = f(x);
-        y = f(f(y));
-        product = mulMod(product, Math.abs(x - y), Number(n));
-        count++;
-        
-        if (count === batchSize) {
-            d = gcd(product, Number(n));
-            product = 1;
-            count = 0;
+int main() {
+    cout &lt;&lt; "=== Pollard Rho 因数分解算法 ===\n";
+
+    vector&lt;i64&gt; testNumbers = {
+        8051LL,
+        10403LL,
+        999983LL * 999979LL,
+        1234567890123456789LL,
+        999999999999999989LL
+    };
+
+    for (i64 n : testNumbers) {
+        cout &lt;&lt; "\n分解 " &lt;&lt; n &lt;&lt; ":\n";
+        vector&lt;i64&gt; factors;
+        factorize(n, factors);
+        sort(factors.begin(), factors.end());
+
+        cout &lt;&lt; "因子: ";
+        bool first = true;
+        for (i64 f : factors) {
+            if (!first) cout &lt;&lt; " × ";
+            cout &lt;&lt; f;
+            first = false;
         }
+        cout &lt;&lt; "\n";
+
+        i64 product = 1;
+        for (i64 f : factors) product *= f;
+        cout &lt;&lt; "验证: " &lt;&lt; (product == n ? "正确" : "错误") &lt;&lt; "\n";
     }
-    
-    // 如果最后一批没有触发，计算最终的 gcd
-    if (d === 1) {
-        d = gcd(product, Number(n));
-    }
-    
-    return BigInt(d);
+
+    return 0;
 }
-
-// 示例使用
-console.log("=== Pollard Rho 因数分解算法 ===");
-
-// 测试一些数字
-const testNumbers = [
-    8051n,
-    10403n,
-    1522605027922533360535618378132637429718068114961380688657908494580122963258952897654000350692006139n, // RSA-100 的一个因子
-    1234567890123456789012345678901n,
-    999999999999999999999999999999n
-];
-
-for (const n of testNumbers) {
-    console.log(`\n分解 ${n}:`);
-    console.time("分解时间");
-    try {
-        const factors = pollardRhoFactorization(n);
-        console.timeEnd("分解时间");
-        console.log(`因子: ${factors.map(f => f.toString()).join(' × ')}`);
-        
-        // 验证乘积
-        const product = factors.reduce((a, b) => a * b, 1n);
-        console.log(`验证: ${product === n ? '正确' : '错误'}`);
-    } catch (error) {
-        console.timeEnd("分解时间");
-        console.log(`分解失败: ${error.message}`);
-    }
-}
-
-// 性能对比：优化版 vs 基础版
-console.log("\n=== 性能对比 ===");
-const testNum = 1234567890123456789012345678901n;
-console.time("基础版 Pollard Rho");
-const factor1 = pollardRhoSingle(testNum);
-console.timeEnd("基础版 Pollard Rho");
-console.log(`找到因子: ${factor1}`);
-
-console.time("优化版 Pollard Rho");
-const factor2 = pollardRhoOptimized(testNum);
-console.timeEnd("优化版 Pollard Rho");
-console.log(`找到因子: ${factor2}`);
-
-// 完全分解一个中等大小的数
-console.log("\n=== 完全分解示例 ===");
-const toFactor = 1234567891n * 9876543211n; // 两个素数的乘积
-console.log(`要分解的数: ${toFactor}`);
-console.time("完全分解");
-const allFactors = pollardRhoFactorization(toFactor);
-console.timeEnd("完全分解");
-console.log(`所有素因子: ${allFactors.map(f => f.toString()).join(' × ')}`);
-
-// 检查是否为素数
-console.log("\n=== 素数检查 ===");
-for (const factor of allFactors) {
-    const isPrime = millerRabin(factor);
-    console.log(`${factor} ${isPrime ? '是' : '不是'}素数`);
-}</code>
-            </pre>
+</code></pre>
         </section>
 
         <section class="applications" 

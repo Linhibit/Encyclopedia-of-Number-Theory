@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>贝祖定理 - 数论百科</title>
+    <title>贝祖定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -79,10 +79,10 @@
             <p>
                 <strong>第一步：证明 $d$ 整除 $a$ 和 $b$</strong><br>
                 设 $d = ax_0 + by_0$。对任意 $a$，我们可以用带余除法写出：
-                $a = qd + r$，其中 $0 \leq r < d$。<br>
+                $a = qd + r$，其中 $0 \leq r \lt d$。<br>
                 那么 $r = a - qd = a - q(ax_0 + by_0) = a(1 - qx_0) + b(-qy_0)$，
                 所以 $r \in S$。<br>
-                由于 $d$ 是 $S$ 中的最小正整数且 $0 \leq r < d$，必有 $r = 0$，
+                由于 $d$ 是 $S$ 中的最小正整数且 $0 \leq r \lt d$，必有 $r = 0$，
                 因此 $d$ 整除 $a$。同理可证 $d$ 整除 $b$。
             </p>
             

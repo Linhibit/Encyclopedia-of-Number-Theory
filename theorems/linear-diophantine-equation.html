@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>线性丢番图方程 - 数论百科</title>
+    <title>线性丢番图方程 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -218,10 +218,10 @@
                         \quad t \in \mathbb{Z}
                         $$
                     </li>
-                    <li>要求 $x > 0$ 且 $y > 0$：
+                    <li>要求 $x \gt 0$ 且 $y \gt 0$：
                         <ul>
-                            <li>$34 + 3t > 0 \Rightarrow t > -34/3 \approx -11.33$，所以 $t \geq -11$</li>
-                            <li>$-51 - 5t > 0 \Rightarrow -5t > 51 \Rightarrow t < -51/5 = -10.2$，所以 $t \leq -11$</li>
+                            <li>$34 + 3t \gt 0 \Rightarrow t \gt -34/3 \approx -11.33$，所以 $t \geq -11$</li>
+                            <li>$-51 - 5t \gt 0 \Rightarrow -5t \gt 51 \Rightarrow t \lt -51/5 = -10.2$，所以 $t \leq -11$</li>
                         </ul>
                     </li>
                     <li>同时满足 $t \geq -11$ 且 $t \leq -11$，所以 $t = -11$。</li>
@@ -230,161 +230,176 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 扩展欧几里得算法
-function extendedGcd(a, b) {
-    if (b === 0) {
-        return { gcd: a, x: 1, y: 0 };
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// 扩展欧几里得算法
+// 返回 gcd(a, b)，并通过引用参数返回一组满足 ax + by = gcd(a, b) 的整数解
+long long extendedGcd(long long a, long long b, long long &amp;x, long long &amp;y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
     }
-    
-    const result = extendedGcd(b, a % b);
-    const { gcd, x: x1, y: y1 } = result;
-    
-    const x = y1;
-    const y = x1 - Math.floor(a / b) * y1;
-    
-    return { gcd, x, y };
+    long long x1, y1;
+    long long g = extendedGcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
 }
 
+// 求解结果结构体
+struct Solution {
+    bool hasSolution;   // 是否有整数解
+    long long x0, y0;   // 特解
+    long long a1, b1;   // 约化后的系数
+    bool allPairs;      // 是否所有整数对都是解 (a = b = c = 0)
+};
+
+// 正整数解结构体
+struct PositiveSolution {
+    long long x, y, t;
+};
+
 // 求解线性丢番图方程 ax + by = c
-function solveDiophantine(a, b, c) {
+Solution solveDiophantine(long long a, long long b, long long c) {
+    Solution sol{};
+    sol.hasSolution = false;
+    sol.allPairs = false;
+
     // 特殊情况处理
-    if (a === 0 && b === 0) {
-        return c === 0 ? 
-            { hasSolution: true, solution: "所有整数对都是解" } : 
-            { hasSolution: false, solution: "无解" };
+    if (a == 0 &amp;&amp; b == 0) {
+        if (c == 0) {
+            sol.hasSolution = true;
+            sol.allPairs = true;   // 所有整数对都是解
+        }
+        return sol;
     }
-    
-    // 使用扩展欧几里得算法
-    const { gcd, x, y } = extendedGcd(Math.abs(a), Math.abs(b));
-    
+
+    // 使用扩展欧几里得算法（对绝对值求解）
+    long long x, y;
+    long long g = extendedGcd(a &lt; 0 ? -a : a, b &lt; 0 ? -b : b, x, y);
+
     // 检查解的存在性
-    if (c % gcd !== 0) {
-        return { hasSolution: false, solution: "无整数解" };
+    if (c % g != 0) {
+        return sol;   // 无整数解
     }
-    
+
     // 计算特解
-    const factor = c / gcd;
-    let x0 = x * factor;
-    let y0 = y * factor;
-    
+    long long factor = c / g;
+    long long x0 = x * factor;
+    long long y0 = y * factor;
+
     // 调整符号
-    if (a < 0) x0 = -x0;
-    if (b < 0) y0 = -y0;
-    
+    if (a &lt; 0) x0 = -x0;
+    if (b &lt; 0) y0 = -y0;
+
     // 约化系数
-    const a1 = a / gcd;
-    const b1 = b / gcd;
-    
-    // 通解公式
-    const solutionFormula = `通解：<br>
-        x = ${x0} + ${b1}t<br>
-        y = ${y0} - ${a1}t<br>
-        其中 t 为任意整数`;
-    
-    // 返回特解和通解公式
-    return {
-        hasSolution: true,
-        particularSolution: { x: x0, y: y0 },
-        generalSolution: solutionFormula,
-        a1: a1,
-        b1: b1
-    };
+    long long a1 = a / g;
+    long long b1 = b / g;
+
+    sol.hasSolution = true;
+    sol.x0 = x0;
+    sol.y0 = y0;
+    sol.a1 = a1;
+    sol.b1 = b1;
+    return sol;
 }
 
 // 寻找正整数解
-function findPositiveSolutions(a, b, c, maxT = 100) {
-    const solution = solveDiophantine(a, b, c);
-    
-    if (!solution.hasSolution) {
-        return [];
-    }
-    
-    const { particularSolution, a1, b1 } = solution;
-    const { x: x0, y: y0 } = particularSolution;
-    const positiveSolutions = [];
-    
+vector&lt;PositiveSolution&gt; findPositiveSolutions(const Solution &amp;sol, int maxT = 100) {
+    vector&lt;PositiveSolution&gt; positiveSolutions;
+    if (!sol.hasSolution) return positiveSolutions;
+
+    long long x0 = sol.x0, y0 = sol.y0;
+    long long a1 = sol.a1, b1 = sol.b1;
+
     // 通解：x = x0 + b1*t, y = y0 - a1*t
-    // 寻找使 x>0 且 y>0 的 t
-    for (let t = -maxT; t <= maxT; t++) {
-        const x = x0 + b1 * t;
-        const y = y0 - a1 * t;
-        
-        if (x > 0 && y > 0) {
-            positiveSolutions.push({ x, y, t });
+    // 寻找使 x&gt;0 且 y&gt;0 的 t
+    for (int t = -maxT; t &lt;= maxT; t++) {
+        long long x = x0 + b1 * t;
+        long long y = y0 - a1 * t;
+
+        if (x &gt; 0 &amp;&amp; y &gt; 0) {
+            positiveSolutions.push_back({x, y, t});
         }
     }
-    
+
     return positiveSolutions;
 }
 
-// 示例使用
-console.log("=== 线性丢番图方程求解 ===");
+int main() {
+    cout &lt;&lt; "=== 线性丢番图方程求解 ===\n";
 
-// 示例1：21x + 14y = 35
-console.log("\n1. 方程：21x + 14y = 35");
-const sol1 = solveDiophantine(21, 14, 35);
-console.log(`解存在: ${sol1.hasSolution}`);
-if (sol1.hasSolution) {
-    console.log(`特解: (${sol1.particularSolution.x}, ${sol1.particularSolution.y})`);
-    console.log(sol1.generalSolution);
-}
-
-// 示例2：6x + 9y = 20
-console.log("\n2. 方程：6x + 9y = 20");
-const sol2 = solveDiophantine(6, 9, 20);
-console.log(`解存在: ${sol2.hasSolution}`);
-
-// 示例3：5x + 3y = 17 的正整数解
-console.log("\n3. 方程：5x + 3y = 17 的正整数解");
-const sol3 = solveDiophantine(5, 3, 17);
-console.log(`解存在: ${sol3.hasSolution}`);
-if (sol3.hasSolution) {
-    console.log(`特解: (${sol3.particularSolution.x}, ${sol3.particularSolution.y})`);
-    
-    const positiveSol = findPositiveSolutions(5, 3, 17, 20);
-    console.log(`正整数解（共${positiveSol.length}个）:`);
-    positiveSol.forEach(s => console.log(`  t=${s.t}: (${s.x}, ${s.y})`));
-}
-
-// 示例4：更复杂的方程
-console.log("\n4. 方程：107x + 37y = 25");
-const sol4 = solveDiophantine(107, 37, 25);
-console.log(`解存在: ${sol4.hasSolution}`);
-if (sol4.hasSolution) {
-    console.log(`特解: (${sol4.particularSolution.x}, ${sol4.particularSolution.y})`);
-    console.log(sol4.generalSolution);
-}
-
-// 验证解的正确性
-console.log("\n=== 验证解的正确性 ===");
-const testCases = [
-    { a: 21, b: 14, c: 35 },
-    { a: 5, b: 3, c: 17 },
-    { a: 107, b: 37, c: 25 }
-];
-
-for (const test of testCases) {
-    const sol = solveDiophantine(test.a, test.b, test.c);
-    if (sol.hasSolution) {
-        const { x, y } = sol.particularSolution;
-        const leftSide = test.a * x + test.b * y;
-        console.log(`验证：${test.a}×${x} + ${test.b}×${y} = ${leftSide}, 目标值=${test.c}, ${leftSide === test.c ? '✓' : '✗'}`);
+    // 示例1：21x + 14y = 35
+    cout &lt;&lt; "\n1. 方程：21x + 14y = 35\n";
+    Solution sol1 = solveDiophantine(21, 14, 35);
+    cout &lt;&lt; "解存在: " &lt;&lt; (sol1.hasSolution ? "true" : "false") &lt;&lt; "\n";
+    if (sol1.hasSolution) {
+        cout &lt;&lt; "特解: (" &lt;&lt; sol1.x0 &lt;&lt; ", " &lt;&lt; sol1.y0 &lt;&lt; ")\n";
+        cout &lt;&lt; "通解：\n";
+        cout &lt;&lt; "  x = " &lt;&lt; sol1.x0 &lt;&lt; " + " &lt;&lt; sol1.b1 &lt;&lt; "t\n";
+        cout &lt;&lt; "  y = " &lt;&lt; sol1.y0 &lt;&lt; " - " &lt;&lt; sol1.a1 &lt;&lt; "t\n";
+        cout &lt;&lt; "  其中 t 为任意整数\n";
     }
-}</code>
-            </pre>
+
+    // 示例2：6x + 9y = 20
+    cout &lt;&lt; "\n2. 方程：6x + 9y = 20\n";
+    Solution sol2 = solveDiophantine(6, 9, 20);
+    cout &lt;&lt; "解存在: " &lt;&lt; (sol2.hasSolution ? "true" : "false") &lt;&lt; "\n";
+
+    // 示例3：5x + 3y = 17 的正整数解
+    cout &lt;&lt; "\n3. 方程：5x + 3y = 17 的正整数解\n";
+    Solution sol3 = solveDiophantine(5, 3, 17);
+    cout &lt;&lt; "解存在: " &lt;&lt; (sol3.hasSolution ? "true" : "false") &lt;&lt; "\n";
+    if (sol3.hasSolution) {
+        cout &lt;&lt; "特解: (" &lt;&lt; sol3.x0 &lt;&lt; ", " &lt;&lt; sol3.y0 &lt;&lt; ")\n";
+
+        vector&lt;PositiveSolution&gt; positiveSol = findPositiveSolutions(sol3, 20);
+        cout &lt;&lt; "正整数解（共" &lt;&lt; positiveSol.size() &lt;&lt; "个）:\n";
+        for (size_t i = 0; i &lt; positiveSol.size(); i++) {
+            cout &lt;&lt; "  t=" &lt;&lt; positiveSol[i].t &lt;&lt; ": (" &lt;&lt; positiveSol[i].x &lt;&lt; ", " &lt;&lt; positiveSol[i].y &lt;&lt; ")\n";
+        }
+    }
+
+    // 示例4：更复杂的方程
+    cout &lt;&lt; "\n4. 方程：107x + 37y = 25\n";
+    Solution sol4 = solveDiophantine(107, 37, 25);
+    cout &lt;&lt; "解存在: " &lt;&lt; (sol4.hasSolution ? "true" : "false") &lt;&lt; "\n";
+    if (sol4.hasSolution) {
+        cout &lt;&lt; "特解: (" &lt;&lt; sol4.x0 &lt;&lt; ", " &lt;&lt; sol4.y0 &lt;&lt; ")\n";
+        cout &lt;&lt; "通解：\n";
+        cout &lt;&lt; "  x = " &lt;&lt; sol4.x0 &lt;&lt; " + " &lt;&lt; sol4.b1 &lt;&lt; "t\n";
+        cout &lt;&lt; "  y = " &lt;&lt; sol4.y0 &lt;&lt; " - " &lt;&lt; sol4.a1 &lt;&lt; "t\n";
+        cout &lt;&lt; "  其中 t 为任意整数\n";
+    }
+
+    // 验证解的正确性
+    cout &lt;&lt; "\n=== 验证解的正确性 ===\n";
+    struct TestCase { long long a, b, c; };
+    TestCase testCases[] = {
+        { 21, 14, 35 },
+        { 5, 3, 17 },
+        { 107, 37, 25 }
+    };
+    for (const TestCase &amp;test : testCases) {
+        Solution sol = solveDiophantine(test.a, test.b, test.c);
+        if (sol.hasSolution) {
+            long long x = sol.x0, y = sol.y0;
+            long long leftSide = test.a * x + test.b * y;
+            cout &lt;&lt; "验证：" &lt;&lt; test.a &lt;&lt; "×" &lt;&lt; x &lt;&lt; " + " &lt;&lt; test.b &lt;&lt; "×" &lt;&lt; y
+                 &lt;&lt; " = " &lt;&lt; leftSide &lt;&lt; ", 目标值=" &lt;&lt; test.c
+                 &lt;&lt; ", " &lt;&lt; (leftSide == test.c ? "✓" : "✗") &lt;&lt; "\n";
+        }
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

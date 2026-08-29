@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>狄利克雷卷积 - 数论百科</title>
+    <title>狄利克雷卷积 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -88,7 +88,7 @@
                     $$\varepsilon(n) = 
                     \begin{cases}
                     1 & \text{如果 } n = 1 \\
-                    0 & \text{如果 } n > 1
+                    0 & \text{如果 } n \gt 1
                     \end{cases}$$
                     则对于任意数论函数 $f$，有 $f * \varepsilon = \varepsilon * f = f$。
                 </li>
@@ -162,7 +162,7 @@
                     <tr>
                         <td style="padding: 8px; border: 1px solid #ccc;">单位函数</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon$</td>
-                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon(1)=1$, $\varepsilon(n)=0$ ($n>1$)</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">$\varepsilon(1)=1$, $\varepsilon(n)=0$ ($n\gt1$)</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">$f * \varepsilon = f$</td>
                     </tr>
                 </tbody>
@@ -251,225 +251,203 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 获取一个数的所有因子
-function getDivisors(n) {
-    const divisors = [];
-    const sqrt = Math.sqrt(n);
-    
-    for (let i = 1; i <= sqrt; i++) {
-        if (n % i === 0) {
-            divisors.push(i);
-            if (i !== n / i) {
-                divisors.push(n / i);
-            }
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+using namespace std;
+
+// 获取 n 的所有因子（升序）
+vector&lt;long long&gt; getDivisors(long long n) {
+    vector&lt;long long&gt; divisors;
+    for (long long i = 1; i * i &lt;= n; i++) {
+        if (n % i == 0) {
+            divisors.push_back(i);
+            if (i != n / i) divisors.push_back(n / i);
         }
     }
-    
-    return divisors.sort((a, b) => a - b);
+    sort(divisors.begin(), divisors.end());
+    return divisors;
 }
 
 // 狄利克雷卷积实现
-function dirichletConvolution(f, g, n) {
-    const divisors = getDivisors(n);
-    let result = 0;
-    
-    for (const d of divisors) {
+long long dirichletConvolution(function&lt;long long(long long)&gt; f,
+                               function&lt;long long(long long)&gt; g,
+                               long long n) {
+    vector&lt;long long&gt; divisors = getDivisors(n);
+    long long result = 0;
+    for (long long d : divisors) {
         result += f(d) * g(n / d);
     }
-    
     return result;
 }
 
 // 常见数论函数的实现
 
 // 常数函数 1
-function constantOne(n) {
+long long constantOne(long long) {
     return 1;
 }
 
 // 恒等函数 id(n) = n
-function identity(n) {
+long long identity(long long n) {
     return n;
 }
 
 // 欧拉函数 φ(n)
-function eulerPhi(n) {
-    let result = n;
-    let temp = n;
-    
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
-            while (temp % p === 0) {
-                temp /= p;
-            }
+long long eulerPhi(long long n) {
+    long long result = n;
+    long long temp = n;
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
+            while (temp % p == 0) temp /= p;
             result -= result / p;
         }
     }
-    
-    if (temp > 1) {
+    if (temp &gt; 1) {
         result -= result / temp;
     }
-    
     return result;
 }
 
 // 约数个数 d(n)
-function divisorCount(n) {
-    let count = 0;
-    const sqrt = Math.sqrt(n);
-    
-    for (let i = 1; i <= sqrt; i++) {
-        if (n % i === 0) {
+long long divisorCount(long long n) {
+    long long count = 0;
+    for (long long i = 1; i * i &lt;= n; i++) {
+        if (n % i == 0) {
             count++;
-            if (i !== n / i) {
-                count++;
-            }
+            if (i != n / i) count++;
         }
     }
-    
     return count;
 }
 
 // 约数和 σ(n)
-function divisorSum(n) {
-    let sum = 0;
-    const sqrt = Math.sqrt(n);
-    
-    for (let i = 1; i <= sqrt; i++) {
-        if (n % i === 0) {
+long long divisorSum(long long n) {
+    long long sum = 0;
+    for (long long i = 1; i * i &lt;= n; i++) {
+        if (n % i == 0) {
             sum += i;
-            if (i !== n / i) {
-                sum += n / i;
-            }
+            if (i != n / i) sum += n / i;
         }
     }
-    
     return sum;
 }
 
 // 莫比乌斯函数 μ(n)
-function mobius(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    let primeCount = 0;
-    let temp = n;
-    
-    for (let p = 2; p * p <= temp; p++) {
-        if (temp % p === 0) {
+long long mobius(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+    long long primeCount = 0;
+    long long temp = n;
+    for (long long p = 2; p * p &lt;= temp; p++) {
+        if (temp % p == 0) {
             primeCount++;
             temp /= p;
-            
-            if (temp % p === 0) {
+            if (temp % p == 0) {
                 return 0; // 有平方因子
             }
         }
     }
-    
-    if (temp > 1) {
+    if (temp &gt; 1) {
         primeCount++;
     }
-    
-    return primeCount % 2 === 0 ? 1 : -1;
+    return primeCount % 2 == 0 ? 1 : -1;
 }
 
 // 单位函数 ε(n)
-function unitEpsilon(n) {
-    return n === 1 ? 1 : 0;
+long long unitEpsilon(long long n) {
+    return n == 1 ? 1 : 0;
 }
 
-// 示例使用
-console.log("=== 狄利克雷卷积示例 ===");
-
-// 示例1：验证 φ = id * μ
-console.log("\n1. 验证 φ = id * μ (n=1..10):");
-for (let n = 1; n <= 10; n++) {
-    const phiDirect = eulerPhi(n);
-    const phiConv = dirichletConvolution(identity, mobius, n);
-    console.log(`n=${n}: φ(${n})=${phiDirect}, (id*μ)(${n})=${phiConv}, ${phiDirect === phiConv ? '✓' : '✗'}`);
-}
-
-// 示例2：验证 1 * φ = id
-console.log("\n2. 验证 1 * φ = id (n=1..10):");
-for (let n = 1; n <= 10; n++) {
-    const idDirect = n;
-    const conv = dirichletConvolution(constantOne, eulerPhi, n);
-    console.log(`n=${n}: id(${n})=${idDirect}, (1*φ)(${n})=${conv}, ${idDirect === conv ? '✓' : '✗'}`);
-}
-
-// 示例3：计算 d = 1 * 1
-console.log("\n3. 验证 d = 1 * 1 (n=1..10):");
-for (let n = 1; n <= 10; n++) {
-    const dDirect = divisorCount(n);
-    const conv = dirichletConvolution(constantOne, constantOne, n);
-    console.log(`n=${n}: d(${n})=${dDirect}, (1*1)(${n})=${conv}, ${dDirect === conv ? '✓' : '✗'}`);
-}
-
-// 示例4：计算 σ = id * 1
-console.log("\n4. 验证 σ = id * 1 (n=1..10):");
-for (let n = 1; n <= 10; n++) {
-    const sigmaDirect = divisorSum(n);
-    const conv = dirichletConvolution(identity, constantOne, n);
-    console.log(`n=${n}: σ(${n})=${sigmaDirect}, (id*1)(${n})=${conv}, ${sigmaDirect === conv ? '✓' : '✗'}`);
-}
-
-// 示例5：狄利克雷逆的计算
-console.log("\n5. 计算常数函数1的狄利克雷逆（应该是μ）:");
-function dirichletInverse(f, n) {
-    // 递归计算 f^{-1}(n)
-    // 公式：f^{-1}(1) = 1/f(1), 对于 n>1: f^{-1}(n) = -1/f(1) * Σ_{d|n, d<n} f(n/d) * f^{-1}(d)
-    const inv = new Array(n + 1).fill(0);
-    
-    if (f(1) === 0) {
-        throw new Error("f(1)=0，逆不存在");
+// 狄利克雷逆：递归计算 f^{-1}(n)
+// 公式：f^{-1}(1) = 1/f(1); 对于 n&gt;1: f^{-1}(n) = -1/f(1) * Σ_{d|n, d&lt;n} f(n/d) * f^{-1}(d)
+vector&lt;long long&gt; dirichletInverse(function&lt;long long(long long)&gt; f, long long n) {
+    vector&lt;long long&gt; inv(n + 1, 0);
+    if (f(1) == 0) {
+        cerr &lt;&lt; "f(1)=0，逆不存在" &lt;&lt; '\n';
+        return inv;
     }
-    
     inv[1] = 1 / f(1);
-    
-    for (let i = 2; i <= n; i++) {
-        let sum = 0;
-        const divisors = getDivisors(i);
-        
-        for (const d of divisors) {
-            if (d < i) {
-                sum += f(i / d) * inv[d];
-            }
+    for (long long i = 2; i &lt;= n; i++) {
+        long long sum = 0;
+        vector&lt;long long&gt; divisors = getDivisors(i);
+        for (long long d : divisors) {
+            if (d &lt; i) sum += f(i / d) * inv[d];
         }
-        
         inv[i] = -sum / f(1);
     }
-    
     return inv;
 }
 
-// 计算1的逆，应该是μ
-const inv1 = dirichletInverse(constantOne, 20);
-console.log("n\t计算逆\tμ(n)");
-for (let i = 1; i <= 20; i++) {
-    console.log(`${i}\t${inv1[i].toFixed(0)}\t${mobius(i)}`);
-}
+int main() {
+    cout &lt;&lt; "=== 狄利克雷卷积示例 ===" &lt;&lt; '\n';
 
-// 验证卷积 f * f^{-1} = ε
-console.log("\n6. 验证常数函数1与其逆的卷积是ε:");
-for (let n = 1; n <= 10; n++) {
-    const conv = dirichletConvolution(constantOne, (x) => inv1[x], n);
-    const expected = unitEpsilon(n);
-    console.log(`n=${n}: (1*1^{-1})(${n})=${conv}, ε(${n})=${expected}, ${Math.abs(conv - expected) < 0.001 ? '✓' : '✗'}`);
-}</code>
-            </pre>
+    // 示例1：验证 φ = id * μ
+    cout &lt;&lt; "\n1. 验证 φ = id * μ (n=1..10):" &lt;&lt; '\n';
+    for (long long n = 1; n &lt;= 10; n++) {
+        long long phiDirect = eulerPhi(n);
+        long long phiConv = dirichletConvolution(identity, mobius, n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": φ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; phiDirect
+             &lt;&lt; ", (id*μ)(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; phiConv
+             &lt;&lt; ", " &lt;&lt; (phiDirect == phiConv ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    // 示例2：验证 1 * φ = id
+    cout &lt;&lt; "\n2. 验证 1 * φ = id (n=1..10):" &lt;&lt; '\n';
+    for (long long n = 1; n &lt;= 10; n++) {
+        long long idDirect = n;
+        long long conv = dirichletConvolution(constantOne, eulerPhi, n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": id(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; idDirect
+             &lt;&lt; ", (1*φ)(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; conv
+             &lt;&lt; ", " &lt;&lt; (idDirect == conv ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    // 示例3：验证 d = 1 * 1
+    cout &lt;&lt; "\n3. 验证 d = 1 * 1 (n=1..10):" &lt;&lt; '\n';
+    for (long long n = 1; n &lt;= 10; n++) {
+        long long dDirect = divisorCount(n);
+        long long conv = dirichletConvolution(constantOne, constantOne, n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": d(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; dDirect
+             &lt;&lt; ", (1*1)(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; conv
+             &lt;&lt; ", " &lt;&lt; (dDirect == conv ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    // 示例4：验证 σ = id * 1
+    cout &lt;&lt; "\n4. 验证 σ = id * 1 (n=1..10):" &lt;&lt; '\n';
+    for (long long n = 1; n &lt;= 10; n++) {
+        long long sigmaDirect = divisorSum(n);
+        long long conv = dirichletConvolution(identity, constantOne, n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": σ(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; sigmaDirect
+             &lt;&lt; ", (id*1)(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; conv
+             &lt;&lt; ", " &lt;&lt; (sigmaDirect == conv ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    // 示例5：计算常数函数1的狄利克雷逆（应该是μ）
+    cout &lt;&lt; "\n5. 计算常数函数1的狄利克雷逆（应该是μ）:" &lt;&lt; '\n';
+    vector&lt;long long&gt; inv1 = dirichletInverse(constantOne, 20);
+    cout &lt;&lt; "n\t计算逆\tμ(n)" &lt;&lt; '\n';
+    for (long long i = 1; i &lt;= 20; i++) {
+        cout &lt;&lt; i &lt;&lt; '\t' &lt;&lt; inv1[i] &lt;&lt; '\t' &lt;&lt; mobius(i) &lt;&lt; '\n';
+    }
+
+    // 示例6：验证常数函数1与其逆的卷积是ε
+    cout &lt;&lt; "\n6. 验证常数函数1与其逆的卷积是ε:" &lt;&lt; '\n';
+    for (long long n = 1; n &lt;= 10; n++) {
+        long long conv = dirichletConvolution(constantOne,
+            [&amp;inv1](long long x) { return inv1[x]; }, n);
+        long long expected = unitEpsilon(n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": (1*1^{-1})(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; conv
+             &lt;&lt; ", ε(" &lt;&lt; n &lt;&lt; ")=" &lt;&lt; expected
+             &lt;&lt; ", " &lt;&lt; (conv == expected ? "✓" : "✗") &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

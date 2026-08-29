@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>杜教筛 - 数论百科</title>
+    <title>杜教筛 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -100,7 +100,7 @@
                     对于给定的 $n$，计算 $S_f(n)$：
                     <ol type="a">
                         <li>如果 $n \leq m$，直接返回预计算的 $S_f(n)$</li>
-                        <li>如果 $n > m$，检查是否已计算过 $S_f(n)$（记忆化）</li>
+                        <li>如果 $n \gt m$，检查是否已计算过 $S_f(n)$（记忆化）</li>
                         <li>如果未计算，使用杜教筛公式：
                             $$S_f(n) = \frac{1}{g(1)} \left( S_h(n) - \sum_{d=2}^n f(d) S_g\left(\lfloor \frac{n}{d} \rfloor\right) \right)$$
                         </li>
@@ -150,7 +150,7 @@
             <p>
                 <strong>例2：计算莫比乌斯函数 $\mu(n)$ 的前缀和</strong><br>
                 设 $f(n) = \mu(n)$，取 $g(n) = 1$，则：
-                $$h(n) = (\mu * 1)(n) = \varepsilon(n) = \begin{cases} 1 & n=1 \\ 0 & n>1 \end{cases}$$
+                $$h(n) = (\mu * 1)(n) = \varepsilon(n) = \begin{cases} 1 & n=1 \\ 0 & n\gt1 \end{cases}$$
                 因此 $S_h(n) = 1$。<br>
                 杜教筛公式为：
                 $$S_\mu(n) = 1 - \sum_{d=2}^n S_\mu\left(\lfloor \frac{n}{d} \rfloor\right)$$
@@ -168,271 +168,222 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 线性筛预处理多个积性函数
-function linearSieve(limit) {
-    const primes = [];
-    const isPrime = new Array(limit + 1).fill(true);
-    const mu = new Array(limit + 1).fill(0);      // 莫比乌斯函数
-    const phi = new Array(limit + 1).fill(0);     // 欧拉函数
-    const d = new Array(limit + 1).fill(0);       // 约数个数
-    const minPrime = new Array(limit + 1).fill(0); // 最小质因子
-    
-    // 初始化
-    mu[1] = 1;
-    phi[1] = 1;
-    d[1] = 1;
-    
-    for (let i = 2; i <= limit; i++) {
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+using i128 = __int128;
+
+// 打印 __int128（用于可能超过 64 位的前缀和）
+void print_i128(i128 x) {
+    if (x == 0) {
+        cout &lt;&lt; '0';
+        return;
+    }
+    if (x &lt; 0) {
+        cout &lt;&lt; '-';
+        x = -x;
+    }
+    string s;
+    while (x &gt; 0) {
+        s.push_back(char('0' + int(x % 10)));
+        x /= 10;
+    }
+    reverse(s.begin(), s.end());
+    cout &lt;&lt; s;
+}
+
+// 线性筛预处理多个积性函数
+struct Precomp {
+    vector&lt;int&gt; primes;
+    vector&lt;int&gt; mu, d;            // 莫比乌斯函数、约数个数
+    vector&lt;long long&gt; phi;        // 欧拉函数
+    vector&lt;int&gt; minPrime;         // 最小质因子
+    vector&lt;long long&gt; sumMu, sumPhi, sumD;  // 前缀和
+};
+
+Precomp linearSieve(int limit) {
+    Precomp pre;
+    vector&lt;bool&gt; isPrime(limit + 1, true);
+    pre.mu.assign(limit + 1, 0);
+    pre.phi.assign(limit + 1, 0);
+    pre.d.assign(limit + 1, 0);
+    pre.minPrime.assign(limit + 1, 0);
+
+    pre.mu[1] = 1;
+    pre.phi[1] = 1;
+    pre.d[1] = 1;
+
+    for (int i = 2; i &lt;= limit; i++) {
         if (isPrime[i]) {
-            primes.push(i);
-            mu[i] = -1;
-            phi[i] = i - 1;
-            d[i] = 2;
-            minPrime[i] = i;
+            pre.primes.push_back(i);
+            pre.mu[i] = -1;
+            pre.phi[i] = i - 1;
+            pre.d[i] = 2;
+            pre.minPrime[i] = i;
         }
-        
-        for (const p of primes) {
-            if (i * p > limit) break;
-            
-            const num = i * p;
+        for (int p : pre.primes) {
+            long long num = 1LL * i * p;
+            if (num &gt; limit) break;
             isPrime[num] = false;
-            minPrime[num] = p;
-            
-            if (i % p === 0) {
+            pre.minPrime[num] = p;
+
+            if (i % p == 0) {
                 // i 包含质因子 p
-                mu[num] = 0;
-                phi[num] = phi[i] * p;
-                
+                pre.mu[num] = 0;
+                pre.phi[num] = pre.phi[i] * p;
                 // 计算 d(num)：如果 i = p^a * m，则 num = p^(a+1) * m
-                let temp = i, a = 0;
-                while (temp % p === 0) {
+                int temp = i, a = 0;
+                while (temp % p == 0) {
                     temp /= p;
                     a++;
                 }
-                d[num] = d[i] / (a + 1) * (a + 2);
+                pre.d[num] = pre.d[i] / (a + 1) * (a + 2);
                 break;
             } else {
                 // i 和 p 互质
-                mu[num] = -mu[i];
-                phi[num] = phi[i] * (p - 1);
-                d[num] = d[i] * 2;
+                pre.mu[num] = -pre.mu[i];
+                pre.phi[num] = pre.phi[i] * (p - 1);
+                pre.d[num] = pre.d[i] * 2;
             }
         }
     }
-    
-    // 计算前缀和
-    const sumMu = new Array(limit + 1).fill(0);
-    const sumPhi = new Array(limit + 1).fill(0);
-    const sumD = new Array(limit + 1).fill(0);
-    
-    for (let i = 1; i <= limit; i++) {
-        sumMu[i] = sumMu[i - 1] + mu[i];
-        sumPhi[i] = sumPhi[i - 1] + phi[i];
-        sumD[i] = sumD[i - 1] + d[i];
+
+    pre.sumMu.assign(limit + 1, 0);
+    pre.sumPhi.assign(limit + 1, 0);
+    pre.sumD.assign(limit + 1, 0);
+    for (int i = 1; i &lt;= limit; i++) {
+        pre.sumMu[i] = pre.sumMu[i - 1] + pre.mu[i];
+        pre.sumPhi[i] = pre.sumPhi[i - 1] + pre.phi[i];
+        pre.sumD[i] = pre.sumD[i - 1] + pre.d[i];
     }
-    
-    return {
-        primes, mu, phi, d,
-        sumMu, sumPhi, sumD,
-        minPrime
-    };
+
+    return pre;
 }
 
 // 杜教筛类
 class DuSieve {
-    constructor(n) {
-        this.n = n;
-        this.limit = Math.floor(Math.pow(n, 2/3)); // 预处理大小
-        this.pre = linearSieve(this.limit);
-        
-        // 记忆化存储
-        this.muMemo = new Map();
-        this.phiMemo = new Map();
-        this.dMemo = new Map();
+    long long n;
+    int limit;
+    Precomp pre;
+    unordered_map&lt;long long, long long&gt; muMemo;
+    unordered_map&lt;long long, i128&gt; phiMemo;
+    unordered_map&lt;long long, long long&gt; dMemo;
+
+public:
+    DuSieve(long long n_) : n(n_) {
+        limit = (int)pow((double)n, 2.0 / 3.0);  // 预处理大小
+        pre = linearSieve(limit);
     }
-    
-    // 计算莫比乌斯函数前缀和 Sμ(n)
-    sumMuDu(n) {
-        if (n <= this.limit) return this.pre.sumMu[n];
-        if (this.muMemo.has(n)) return this.muMemo.get(n);
-        
-        let result = 1; // S_h(n) = 1 (h = μ * 1 = ε)
-        
-        // 整数分块求和
-        for (let l = 2, r; l <= n; l = r + 1) {
-            r = Math.floor(n / Math.floor(n / l));
-            result -= (r - l + 1) * this.sumMuDu(Math.floor(n / l));
+
+    // 计算莫比乌斯函数前缀和 Sμ(x)
+    long long sumMu(long long x) {
+        if (x &lt;= limit) return pre.sumMu[x];
+        auto it = muMemo.find(x);
+        if (it != muMemo.end()) return it-&gt;second;
+
+        long long result = 1;  // S_h(n) = 1 (h = μ * 1 = ε)
+        for (long long l = 2, r; l &lt;= x; l = r + 1) {
+            r = x / (x / l);
+            result -= (r - l + 1) * sumMu(x / l);
         }
-        
-        this.muMemo.set(n, result);
+        muMemo[x] = result;
         return result;
     }
-    
-    // 计算欧拉函数前缀和 Sφ(n)
-    sumPhiDu(n) {
-        if (n <= this.limit) return this.pre.sumPhi[n];
-        if (this.phiMemo.has(n)) return this.phiMemo.get(n);
-        
+
+    // 计算欧拉函数前缀和 Sφ(x)
+    i128 sumPhi(long long x) {
+        if (x &lt;= limit) return pre.sumPhi[x];
+        auto it = phiMemo.find(x);
+        if (it != phiMemo.end()) return it-&gt;second;
+
         // S_h(n) = n(n+1)/2 (h = φ * 1 = id)
-        let result = n * (n + 1) / 2;
-        
-        // 整数分块求和
-        for (let l = 2, r; l <= n; l = r + 1) {
-            r = Math.floor(n / Math.floor(n / l));
-            result -= (r - l + 1) * this.sumPhiDu(Math.floor(n / l));
+        i128 result = (i128)x * (x + 1) / 2;
+        for (long long l = 2, r; l &lt;= x; l = r + 1) {
+            r = x / (x / l);
+            result -= (i128)(r - l + 1) * sumPhi(x / l);
         }
-        
-        this.phiMemo.set(n, result);
+        phiMemo[x] = result;
         return result;
     }
-    
-    // 计算约数个数前缀和 Sd(n) - 需要同时计算 Sμ
-    sumDDu(n) {
-        if (n <= this.limit) return this.pre.sumD[n];
-        if (this.dMemo.has(n)) return this.dMemo.get(n);
-        
-        // h = d * μ = 1, 所以 S_h(n) = n
-        let result = n;
-        
-        // 需要 μ 的前缀和
-        for (let l = 2, r; l <= n; l = r + 1) {
-            r = Math.floor(n / Math.floor(n / l));
-            const sumMuRange = this.sumMuDu(r) - this.sumMuDu(l - 1);
-            result -= sumMuRange * this.sumDDu(Math.floor(n / l));
+
+    // 计算约数个数前缀和 Sd(x) - 需要同时计算 Sμ
+    long long sumD(long long x) {
+        if (x &lt;= limit) return pre.sumD[x];
+        auto it = dMemo.find(x);
+        if (it != dMemo.end()) return it-&gt;second;
+
+        long long result = x;  // h = d * μ = 1, 所以 S_h(n) = n
+        for (long long l = 2, r; l &lt;= x; l = r + 1) {
+            r = x / (x / l);
+            long long sumMuRange = sumMu(r) - sumMu(l - 1);
+            result -= sumMuRange * sumD(x / l);
         }
-        
-        this.dMemo.set(n, result);
+        dMemo[x] = result;
         return result;
     }
-    
-    // 通用的杜教筛模板
-    // f: 目标函数，g: 辅助函数，h: 卷积函数，calcHSum: 计算h前缀和的函数
-    duSieveGeneral(n, fPre, gPre, calcHSum) {
-        if (n <= this.limit) return fPre[n];
-        
-        const memoKey = `f_${n}`;
-        if (this.generalMemo && this.generalMemo.has(memoKey)) {
-            return this.generalMemo.get(memoKey);
-        }
-        
-        let result = calcHSum(n);
-        
-        // 整数分块
-        for (let l = 2, r; l <= n; l = r + 1) {
-            r = Math.floor(n / Math.floor(n / l));
-            // 需要计算 ∑ g(d) for d in [l, r]
-            // 这里假设我们可以快速计算g的前缀和
-            const sumGRange = gPre[r] - gPre[l - 1];
-            result -= sumGRange * this.duSieveGeneral(
-                Math.floor(n / l), fPre, gPre, calcHSum
-            );
-        }
-        
-        // 除以 g(1)
-        result /= gPre[1] - gPre[0];
-        
-        if (this.generalMemo) {
-            this.generalMemo.set(memoKey, result);
-        }
-        
-        return result;
+};
+
+int main() {
+    cout &lt;&lt; "=== 杜教筛示例 ===" &lt;&lt; '\n';
+
+    long long n = 1000000000LL;  // 10^9
+    cout &lt;&lt; "计算 n = " &lt;&lt; n &lt;&lt; " 的前缀和" &lt;&lt; '\n';
+
+    DuSieve du(n);
+    cout &lt;&lt; "Sμ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; du.sumMu(n) &lt;&lt; '\n';
+    cout &lt;&lt; "Sφ(" &lt;&lt; n &lt;&lt; ") = ";
+    print_i128(du.sumPhi(n));
+    cout &lt;&lt; '\n';
+    cout &lt;&lt; "Sd(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; du.sumD(n) &lt;&lt; '\n';
+
+    // 验证小数值
+    cout &lt;&lt; '\n' &lt;&lt; "=== 小数值验证 ===" &lt;&lt; '\n';
+    long long smallN = 1000;
+    Precomp smallPre = linearSieve((int)smallN);
+    DuSieve duSmall(smallN);
+    long long sumMuSmall = duSmall.sumMu(smallN);
+    i128 sumPhiSmall = duSmall.sumPhi(smallN);
+    long long sumDSmall = duSmall.sumD(smallN);
+
+    cout &lt;&lt; "n=" &lt;&lt; smallN &lt;&lt; ":" &lt;&lt; '\n';
+    cout &lt;&lt; "直接计算 Sμ = " &lt;&lt; smallPre.sumMu[smallN] &lt;&lt; ", 杜教筛 = " &lt;&lt; sumMuSmall
+         &lt;&lt; ", 一致? " &lt;&lt; (smallPre.sumMu[smallN] == sumMuSmall ? "true" : "false") &lt;&lt; '\n';
+    cout &lt;&lt; "直接计算 Sφ = " &lt;&lt; smallPre.sumPhi[smallN] &lt;&lt; ", 杜教筛 = ";
+    print_i128(sumPhiSmall);
+    cout &lt;&lt; ", 一致? " &lt;&lt; ((i128)smallPre.sumPhi[smallN] == sumPhiSmall ? "true" : "false") &lt;&lt; '\n';
+    cout &lt;&lt; "直接计算 Sd = " &lt;&lt; smallPre.sumD[smallN] &lt;&lt; ", 杜教筛 = " &lt;&lt; sumDSmall
+         &lt;&lt; ", 一致? " &lt;&lt; (smallPre.sumD[smallN] == sumDSmall ? "true" : "false") &lt;&lt; '\n';
+
+    // 多组规模对比
+    cout &lt;&lt; '\n' &lt;&lt; "=== 多组规模对比 ===" &lt;&lt; '\n';
+    long long testNs[] = {1000000LL, 10000000LL, 100000000LL};
+    for (long long testN : testNs) {
+        DuSieve duTest(testN);
+        cout &lt;&lt; "Sφ(" &lt;&lt; testN &lt;&lt; ") ≈ ";
+        print_i128(duTest.sumPhi(testN));
+        cout &lt;&lt; '\n';
     }
+
+    // 计算更大的 n
+    cout &lt;&lt; '\n' &lt;&lt; "=== 大数值计算 ===" &lt;&lt; '\n';
+    long long hugeN = 10000000000LL;  // 10^10
+    cout &lt;&lt; "尝试计算 n = " &lt;&lt; hugeN &lt;&lt; '\n';
+    DuSieve duHuge(hugeN);
+    cout &lt;&lt; "Sφ(" &lt;&lt; hugeN &lt;&lt; ") ≈ ";
+    print_i128(duHuge.sumPhi(hugeN));
+    cout &lt;&lt; '\n';
+
+    return 0;
 }
-
-// 示例使用
-console.log("=== 杜教筛示例 ===");
-
-const n = 1000000000; // 10^9
-console.log(`计算 n = ${n} 的前缀和`);
-
-console.time("初始化杜教筛");
-const du = new DuSieve(n);
-console.timeEnd("初始化杜教筛");
-
-console.time("计算 Sμ(n)");
-const sumMu = du.sumMuDu(n);
-console.timeEnd("计算 Sμ(n)");
-console.log(`Sμ(${n}) = ${sumMu}`);
-
-console.time("计算 Sφ(n)");
-const sumPhi = du.sumPhiDu(n);
-console.timeEnd("计算 Sφ(n)");
-console.log(`Sφ(${n}) = ${sumPhi}`);
-
-console.time("计算 Sd(n)");
-const sumD = du.sumDDu(n);
-console.timeEnd("计算 Sd(n)");
-console.log(`Sd(${n}) = ${sumD}`);
-
-// 验证小数值
-console.log("\n=== 小数值验证 ===");
-const smallN = 1000;
-const smallPre = linearSieve(smallN);
-
-const duSmall = new DuSieve(smallN);
-const sumMuSmall = duSmall.sumMuDu(smallN);
-const sumPhiSmall = duSmall.sumPhiDu(smallN);
-const sumDSmall = duSmall.sumDDu(smallN);
-
-console.log(`n=${smallN}:`);
-console.log(`直接计算 Sμ = ${smallPre.sumMu[smallN]}, 杜教筛 = ${sumMuSmall}, 一致? ${Math.abs(sumMuSmall - smallPre.sumMu[smallN]) < 1e-6}`);
-console.log(`直接计算 Sφ = ${smallPre.sumPhi[smallN]}, 杜教筛 = ${sumPhiSmall}, 一致? ${Math.abs(sumPhiSmall - smallPre.sumPhi[smallN]) < 1e-6}`);
-console.log(`直接计算 Sd = ${smallPre.sumD[smallN]}, 杜教筛 = ${sumDSmall}, 一致? ${Math.abs(sumDSmall - smallPre.sumD[smallN]) < 1e-6}`);
-
-// 性能对比
-console.log("\n=== 性能对比 ===");
-const testNs = [1000000, 10000000, 100000000];
-
-for (const testN of testNs) {
-    console.log(`\nn = ${testN}:`);
-    
-    console.time("线性筛");
-    const pre = linearSieve(testN);
-    console.timeEnd("线性筛");
-    
-    console.time("杜教筛初始化");
-    const duTest = new DuSieve(testN);
-    console.timeEnd("杜教筛初始化");
-    
-    console.time("杜教筛计算 Sφ");
-    const phiDu = duTest.sumPhiDu(testN);
-    console.timeEnd("杜教筛计算 Sφ");
-    
-    console.log(`Sφ(${testN}) ≈ ${phiDu}`);
-}
-
-// 计算更大的n
-console.log("\n=== 大数值计算 ===");
-const hugeN = 10000000000; // 10^10
-console.log(`尝试计算 n = ${hugeN}`);
-
-console.time("杜教筛初始化 (大n)");
-const duHuge = new DuSieve(hugeN);
-console.timeEnd("杜教筛初始化 (大n)");
-
-console.time("计算 Sφ(10^10)");
-try {
-    const phiHuge = duHuge.sumPhiDu(hugeN);
-    console.timeEnd("计算 Sφ(10^10)");
-    console.log(`Sφ(${hugeN}) ≈ ${phiHuge}`);
-} catch (error) {
-    console.timeEnd("计算 Sφ(10^10)");
-    console.log(`计算失败: ${error.message}`);
-}</code>
-            </pre>
+</code></pre>
         </section>
 
         <section class="applications" 

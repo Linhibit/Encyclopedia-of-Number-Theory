@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>佩尔方程 - 数论百科</title>
+    <title>佩尔方程 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -194,177 +194,189 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 计算d的平方根连分数展开
-function continuedFractionSqrt(d) {
-    const a0 = Math.floor(Math.sqrt(d));
-    if (a0 * a0 === d) {
-        throw new Error("d必须是完全平方数");
-    }
-    
-    const terms = [a0];
-    const seen = new Map();
-    let m = 0;
-    let b = 1;
-    let a = a0;
-    let key;
-    
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+// 计算 d 的平方根连分数展开，并求解佩尔方程 x² - dy² = 1
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;cmath&gt;
+using namespace std;
+using ll = long long;
+
+// 连分数展开结果：a0 与循环部分
+struct ContinuedFraction {
+    ll a0;
+    vector&lt;ll&gt; periodic; // 循环部分
+};
+
+// 计算 d 的平方根连分数展开
+ContinuedFraction continuedFractionSqrt(ll d) {
+    ll a0 = (ll)floor(sqrt((double)d));
+    vector&lt;ll&gt; terms;
+    terms.push_back(a0);
+    map&lt;string, ll&gt; seen; // 记录 (m,b,a) 是否出现过
+    ll m = 0, b = 1, a = a0;
+
     while (true) {
         m = b * a - m;
-        b = Math.floor((d - m * m) / b);
-        a = Math.floor((a0 + m) / b);
-        
-        key = `${m},${b},${a}`;
-        if (seen.has(key)) {
-            break;
-        }
-        
-        seen.set(key, terms.length);
-        terms.push(a);
+        b = (d - m * m) / b;
+        a = (a0 + m) / b;
+
+        string key = to_string(m) + "," + to_string(b) + "," + to_string(a);
+        if (seen.count(key)) break;
+
+        seen[key] = (ll)terms.size();
+        terms.push_back(a);
     }
-    
-    return {
-        a0: a0,
-        periodic: terms.slice(1), // 循环部分
-        full: terms
-    };
+
+    ContinuedFraction cf;
+    cf.a0 = a0;
+    for (size_t i = 1; i &lt; terms.size(); ++i) cf.periodic.push_back(terms[i]);
+    return cf;
 }
 
 // 计算连分数的渐近分数
-function convergents(terms) {
-    const p = [terms[0], terms[0] * terms[1] + 1];
-    const q = [1, terms[1]];
-    
-    for (let i = 2; i < terms.length; i++) {
-        p[i] = terms[i] * p[i-1] + p[i-2];
-        q[i] = terms[i] * q[i-1] + q[i-2];
+void convergents(const vector&lt;ll&gt;&amp; terms, vector&lt;ll&gt;&amp; p, vector&lt;ll&gt;&amp; q) {
+    p.clear();
+    q.clear();
+    p.push_back(terms[0]);
+    p.push_back(terms[0] * terms[1] + 1);
+    q.push_back(1);
+    q.push_back(terms[1]);
+
+    for (size_t i = 2; i &lt; terms.size(); ++i) {
+        p.push_back(terms[i] * p[i - 1] + p[i - 2]);
+        q.push_back(terms[i] * q[i - 1] + q[i - 2]);
     }
-    
-    return { p, q };
 }
 
+// 佩尔方程的一个解
+struct PellSolution {
+    ll x;
+    ll y;
+    ll index;
+};
+
 // 求解佩尔方程 x² - dy² = 1 的基本解
-function solvePellBasic(d) {
-    const cf = continuedFractionSqrt(d);
-    const periodicLen = cf.periodic.length;
-    
-    // 计算足够多的渐近分数
-    const terms = [cf.a0, ...cf.periodic];
+PellSolution solvePellBasic(ll d) {
+    ContinuedFraction cf = continuedFractionSqrt(d);
+    ll periodicLen = (ll)cf.periodic.size();
+
     // 扩展循环部分以获得足够的项
-    const extendedTerms = [cf.a0];
-    for (let i = 0; i < periodicLen * 2; i++) {
-        extendedTerms.push(cf.periodic[i % periodicLen]);
+    vector&lt;ll&gt; extendedTerms;
+    extendedTerms.push_back(cf.a0);
+    for (ll i = 0; i &lt; periodicLen * 2; ++i) {
+        extendedTerms.push_back(cf.periodic[i % periodicLen]);
     }
-    
-    const conv = convergents(extendedTerms);
-    
+
+    vector&lt;ll&gt; p, q;
+    convergents(extendedTerms, p, q);
+
     // 根据循环节长度确定基本解的位置
-    let index;
-    if (periodicLen % 2 === 0) {
+    ll index;
+    if (periodicLen % 2 == 0) {
         // 偶数循环节，基本解在 l-1 处
         index = periodicLen - 1;
     } else {
         // 奇数循环节，基本解在 2l-1 处
         index = 2 * periodicLen - 1;
     }
-    
-    return {
-        x: conv.p[index],
-        y: conv.q[index],
-        index: index
-    };
+
+    PellSolution sol;
+    sol.x = p[index];
+    sol.y = q[index];
+    sol.index = index;
+    return sol;
 }
 
-// 生成佩尔方程的第n个解
-function pellSolution(d, n) {
-    const basic = solvePellBasic(d);
-    const x1 = basic.x;
-    const y1 = basic.y;
-    
+// 生成佩尔方程的第 n 个解
+PellSolution pellSolution(ll d, ll n) {
+    PellSolution basic = solvePellBasic(d);
+    ll x1 = basic.x;
+    ll y1 = basic.y;
+
     // 使用快速幂计算 (x1 + y1√d)^n
-    function powerSolution(exp) {
-        let x = 1n;
-        let y = 0n;
-        let xPow = BigInt(x1);
-        let yPow = BigInt(y1);
-        let e = BigInt(exp);
-        
-        while (e > 0n) {
-            if (e % 2n === 1n) {
-                // 乘以当前幂
-                const newX = x * xPow + BigInt(d) * y * yPow;
-                const newY = x * yPow + y * xPow;
-                x = newX;
-                y = newY;
-            }
-            // 平方当前幂
-            const newXPow = xPow * xPow + BigInt(d) * yPow * yPow;
-            const newYPow = 2n * xPow * yPow;
-            xPow = newXPow;
-            yPow = newYPow;
-            
-            e >>= 1n;
+    // 中间结果可能超出 64 位，用 __int128 避免溢出
+    __int128 x = 1, y = 0;
+    __int128 xPow = x1, yPow = y1;
+    __int128 dd = d;
+    __int128 e = n;
+
+    while (e &gt; 0) {
+        if (e % 2 == 1) {
+            // 乘以当前幂
+            __int128 newX = x * xPow + dd * y * yPow;
+            __int128 newY = x * yPow + y * xPow;
+            x = newX;
+            y = newY;
         }
-        
-        return { x: Number(x), y: Number(y) };
+        // 平方当前幂
+        __int128 newXPow = xPow * xPow + dd * yPow * yPow;
+        __int128 newYPow = 2 * xPow * yPow;
+        xPow = newXPow;
+        yPow = newYPow;
+
+        e &gt;&gt;= 1;
     }
-    
-    return powerSolution(n);
+
+    PellSolution sol;
+    sol.x = (ll)x;
+    sol.y = (ll)y;
+    sol.index = n;
+    return sol;
 }
 
-// 示例使用
-console.log("=== 佩尔方程求解 ===");
+int main() {
+    cout &lt;&lt; "=== 佩尔方程求解 ===" &lt;&lt; '\n';
 
-// 示例1：x² - 2y² = 1
-console.log("\n1. x² - 2y² = 1");
-const sol1 = solvePellBasic(2);
-console.log(`基本解: (${sol1.x}, ${sol1.y})`);
-console.log(`验证: ${sol1.x}² - 2×${sol1.y}² = ${sol1.x*sol1.x - 2*sol1.y*sol1.y}`);
+    // 示例1：x² - 2y² = 1
+    cout &lt;&lt; "\n1. x² - 2y² = 1" &lt;&lt; '\n';
+    PellSolution sol1 = solvePellBasic(2);
+    cout &lt;&lt; "基本解: (" &lt;&lt; sol1.x &lt;&lt; ", " &lt;&lt; sol1.y &lt;&lt; ")" &lt;&lt; '\n';
+    cout &lt;&lt; "验证: " &lt;&lt; sol1.x &lt;&lt; "² - 2×" &lt;&lt; sol1.y &lt;&lt; "² = "
+         &lt;&lt; (sol1.x * sol1.x - 2 * sol1.y * sol1.y) &lt;&lt; '\n';
 
-// 生成前5个解
-console.log("前5个解:");
-for (let n = 1; n <= 5; n++) {
-    const sol = pellSolution(2, n);
-    console.log(`n=${n}: (${sol.x}, ${sol.y})`);
-}
-
-// 示例2：x² - 7y² = 1
-console.log("\n2. x² - 7y² = 1");
-const sol2 = solvePellBasic(7);
-console.log(`基本解: (${sol2.x}, ${sol2.y})`);
-console.log(`验证: ${sol2.x}² - 7×${sol2.y}² = ${sol2.x*sol2.x - 7*sol2.y*sol2.y}`);
-
-// 示例3：x² - 13y² = 1
-console.log("\n3. x² - 13y² = 1");
-const sol3 = solvePellBasic(13);
-console.log(`基本解: (${sol3.x}, ${sol3.y})`);
-console.log(`验证: ${sol3.x}² - 13×${sol3.y}² = ${sol3.x*sol3.x - 13*sol3.y*sol3.y}`);
-
-// 验证连分数展开
-console.log("\n=== 连分数展开验证 ===");
-const testD = [2, 3, 5, 6, 7, 8, 10, 11, 12, 13];
-for (const d of testD) {
-    try {
-        const cf = continuedFractionSqrt(d);
-        console.log(`√${d} = [${cf.a0}; ${cf.periodic.map((v, i) => i === cf.periodic.length-1 ? v + ']' : v).join(', ')}`);
-        console.log(`  循环节长度: ${cf.periodic.length}`);
-    } catch (e) {
-        // 忽略完全平方数
+    // 生成前5个解
+    cout &lt;&lt; "前5个解:" &lt;&lt; '\n';
+    for (ll n = 1; n &lt;= 5; ++n) {
+        PellSolution sol = pellSolution(2, n);
+        cout &lt;&lt; "n=" &lt;&lt; n &lt;&lt; ": (" &lt;&lt; sol.x &lt;&lt; ", " &lt;&lt; sol.y &lt;&lt; ")" &lt;&lt; '\n';
     }
-}</code>
-            </pre>
+
+    // 示例2：x² - 7y² = 1
+    cout &lt;&lt; "\n2. x² - 7y² = 1" &lt;&lt; '\n';
+    PellSolution sol2 = solvePellBasic(7);
+    cout &lt;&lt; "基本解: (" &lt;&lt; sol2.x &lt;&lt; ", " &lt;&lt; sol2.y &lt;&lt; ")" &lt;&lt; '\n';
+    cout &lt;&lt; "验证: " &lt;&lt; sol2.x &lt;&lt; "² - 7×" &lt;&lt; sol2.y &lt;&lt; "² = "
+         &lt;&lt; (sol2.x * sol2.x - 7 * sol2.y * sol2.y) &lt;&lt; '\n';
+
+    // 示例3：x² - 13y² = 1
+    cout &lt;&lt; "\n3. x² - 13y² = 1" &lt;&lt; '\n';
+    PellSolution sol3 = solvePellBasic(13);
+    cout &lt;&lt; "基本解: (" &lt;&lt; sol3.x &lt;&lt; ", " &lt;&lt; sol3.y &lt;&lt; ")" &lt;&lt; '\n';
+    cout &lt;&lt; "验证: " &lt;&lt; sol3.x &lt;&lt; "² - 13×" &lt;&lt; sol3.y &lt;&lt; "² = "
+         &lt;&lt; (sol3.x * sol3.x - 13 * sol3.y * sol3.y) &lt;&lt; '\n';
+
+    // 验证连分数展开
+    cout &lt;&lt; "\n=== 连分数展开验证 ===" &lt;&lt; '\n';
+    ll testD[] = {2, 3, 5, 6, 7, 8, 10, 11, 12, 13};
+    for (ll d : testD) {
+        ContinuedFraction cf = continuedFractionSqrt(d);
+        cout &lt;&lt; "√" &lt;&lt; d &lt;&lt; " = [" &lt;&lt; cf.a0 &lt;&lt; "; ";
+        for (size_t i = 0; i &lt; cf.periodic.size(); ++i) {
+            if (i &gt; 0) cout &lt;&lt; ", ";
+            cout &lt;&lt; cf.periodic[i];
+        }
+        cout &lt;&lt; "]" &lt;&lt; '\n';
+        cout &lt;&lt; "  循环节长度: " &lt;&lt; cf.periodic.size() &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 

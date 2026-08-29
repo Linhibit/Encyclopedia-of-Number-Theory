@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>狄利克雷算术级数定理 - 数论百科</title>
+    <title>狄利克雷算术级数定理 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -55,7 +55,7 @@
             </p>
             
             <p>
-                <strong>关键条件：</strong> 互质性 $\gcd(a,d)=1$ 是必要条件。若 $\gcd(a,d)>1$，则级数中至多包含一个素数（当 $a$ 本身为素数时）。
+                <strong>关键条件：</strong> 互质性 $\gcd(a,d)=1$ 是必要条件。若 $\gcd(a,d)\gt1$，则级数中至多包含一个素数（当 $a$ 本身为素数时）。
             </p>
         </section>
 
@@ -79,10 +79,10 @@
                 </li>
                 <li>
                     定义<strong>狄利克雷L函数</strong>：
-                    $$L(s, \chi) = \sum_{n=1}^{\infty} \frac{\chi(n)}{n^s} = \prod_{p} \left(1 - \frac{\chi(p)}{p^s}\right)^{-1} \quad (\operatorname{Re}(s) > 1)$$
+                    $$L(s, \chi) = \sum_{n=1}^{\infty} \frac{\chi(n)}{n^s} = \prod_{p} \left(1 - \frac{\chi(p)}{p^s}\right)^{-1} \quad (\operatorname{Re}(s) \gt 1)$$
                 </li>
                 <li>
-                    证明关键引理：<strong>$L(1, \chi) \neq 0$</strong> 对所有非主特征 $\chi$ 成立（特别是实特征时 $L(1, \chi) > 0$）。
+                    证明关键引理：<strong>$L(1, \chi) \neq 0$</strong> 对所有非主特征 $\chi$ 成立（特别是实特征时 $L(1, \chi) \gt 0$）。
                 </li>
                 <li>
                     分析 $L(s, \chi)$ 在 $s=1$ 附近的渐近行为：
@@ -133,94 +133,107 @@
                 <strong>反例：</strong> $a=2,\ d=4$（级数：$2,6,10,14,18,\dots$）
             </p>
             <ul style="padding-left: 20px; line-height: 1.6;">
-                <li>互质性：$\gcd(2,4)=2 > 1$ ✗</li>
-                <li>级数中仅 $2$ 是素数，其余均为偶数且 $>2$，故为合数</li>
+                <li>互质性：$\gcd(2,4)=2 \gt 1$ ✗</li>
+                <li>级数中仅 $2$ 是素数，其余均为偶数且 $\gt2$，故为合数</li>
                 <li>验证了互质条件的必要性</li>
             </ul>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 简单素性测试（试除法，适用于小数字）
-function isPrime(n) {
-    if (n < 2) return false;
-    if (n === 2) return true;
-    if (n % 2 === 0) return false;
-    const sqrt = Math.sqrt(n);
-    for (let i = 3; i <= sqrt; i += 2) {
-        if (n % i === 0) return false;
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+// 简单素性测试（试除法，适用于小数字）
+bool isPrime(long long n) {
+    if (n &lt; 2) return false;
+    if (n == 2) return true;
+    if (n % 2 == 0) return false;
+    for (long long i = 3; i * i &lt;= n; i += 2) {
+        if (n % i == 0) return false;
     }
     return true;
 }
 
-// 检查a与d是否互质
-function gcd(a, b) {
-    while (b !== 0) {
-        [a, b] = [b, a % b];
+// 计算最大公约数（辗转相除法）
+long long gcd(long long a, long long b) {
+    while (b != 0) {
+        long long t = a % b;
+        a = b;
+        b = t;
     }
     return a;
 }
 
-// 在算术级数 a + k*d (k≥0) 中寻找不超过limit的素数
-function primesInAP(a, d, limit) {
-    if (gcd(a, d) !== 1) {
-        console.warn(`警告: gcd(${a}, ${d}) = ${gcd(a,d)} > 1，级数中至多含一个素数`);
+// 在算术级数 a + k*d (k&gt;=0) 中寻找不超过 limit 的素数
+vector&lt;long long&gt; primesInAP(long long a, long long d, long long limit) {
+    if (gcd(a, d) != 1) {
+        cout &lt;&lt; "警告: gcd(" &lt;&lt; a &lt;&lt; ", " &lt;&lt; d &lt;&lt; ") = " &lt;&lt; gcd(a, d)
+             &lt;&lt; " &gt; 1，级数中至多含一个素数" &lt;&lt; '\n';
     }
-    
-    const primes = [];
-    let k = 0;
+
+    vector&lt;long long&gt; primes;
+    long long k = 0;
     while (true) {
-        const term = a + k * d;
-        if (term > limit) break;
-        if (isPrime(term)) primes.push(term);
+        long long term = a + k * d;
+        if (term &gt; limit) break;
+        if (isPrime(term)) primes.push_back(term);
         k++;
     }
     return primes;
 }
 
-// 示例测试
-console.log("=== 狄利克雷定理验证示例 ===\n");
+void printVector(const vector&lt;long long&gt;&amp; v) {
+    for (size_t i = 0; i &lt; v.size(); ++i) {
+        if (i &gt; 0) cout &lt;&lt; ", ";
+        cout &lt;&lt; v[i];
+    }
+    cout &lt;&lt; '\n';
+}
 
-// 示例1: 4k+1 型素数
-const ap1 = primesInAP(1, 4, 100);
-console.log(`级数 1 + 4k (≤100) 中的素数: ${ap1.join(', ')}`);
-console.log(`数量: ${ap1.length}\n`);
+int main() {
+    cout &lt;&lt; "=== 狄利克雷定理验证示例 ===" &lt;&lt; '\n' &lt;&lt; '\n';
 
-// 示例2: 4k+3 型素数
-const ap2 = primesInAP(3, 4, 100);
-console.log(`级数 3 + 4k (≤100) 中的素数: ${ap2.join(', ')}`);
-console.log(`数量: ${ap2.length}\n`);
+    // 示例1: 4k+1 型素数
+    vector&lt;long long&gt; ap1 = primesInAP(1, 4, 100);
+    cout &lt;&lt; "级数 1 + 4k (≤100) 中的素数: ";
+    printVector(ap1);
+    cout &lt;&lt; "数量: " &lt;&lt; ap1.size() &lt;&lt; '\n' &lt;&lt; '\n';
 
-// 示例3: 6k+5 型素数 (gcd(5,6)=1)
-const ap3 = primesInAP(5, 6, 150);
-console.log(`级数 5 + 6k (≤150) 中的素数: ${ap3.join(', ')}`);
-console.log(`数量: ${ap3.length}\n`);
+    // 示例2: 4k+3 型素数
+    vector&lt;long long&gt; ap2 = primesInAP(3, 4, 100);
+    cout &lt;&lt; "级数 3 + 4k (≤100) 中的素数: ";
+    printVector(ap2);
+    cout &lt;&lt; "数量: " &lt;&lt; ap2.size() &lt;&lt; '\n' &lt;&lt; '\n';
 
-// 反例: 非互质情况
-const ap4 = primesInAP(2, 4, 50);
-console.log(`级数 2 + 4k (≤50) 中的素数: ${ap4.join(', ')}`);
-console.log(`数量: ${ap4.length} (仅含2，验证互质条件必要性)\n`);
+    // 示例3: 6k+5 型素数 (gcd(5,6)=1)
+    vector&lt;long long&gt; ap3 = primesInAP(5, 6, 150);
+    cout &lt;&lt; "级数 5 + 6k (≤150) 中的素数: ";
+    printVector(ap3);
+    cout &lt;&lt; "数量: " &lt;&lt; ap3.size() &lt;&lt; '\n' &lt;&lt; '\n';
 
-// 统计不同模数下素数分布
-console.log("=== 模4素数分布统计 (≤1000) ===");
-const count1 = primesInAP(1, 4, 1000).length;
-const count3 = primesInAP(3, 4, 1000).length;
-console.log(`4k+1 型素数数量: ${count1}`);
-console.log(`4k+3 型素数数量: ${count3}`);
-console.log(`比例 (4k+1)/(4k+3): ${(count1/count3).toFixed(3)}`);
-console.log(`(注：当上限→∞时，比例趋近于1，体现素数分布的均匀性)`);</code>
-            </pre>
+    // 反例: 非互质情况
+    vector&lt;long long&gt; ap4 = primesInAP(2, 4, 50);
+    cout &lt;&lt; "级数 2 + 4k (≤50) 中的素数: ";
+    printVector(ap4);
+    cout &lt;&lt; "数量: " &lt;&lt; ap4.size() &lt;&lt; " (仅含2，验证互质条件必要性)" &lt;&lt; '\n' &lt;&lt; '\n';
+
+    // 统计不同模数下素数分布
+    cout &lt;&lt; "=== 模4素数分布统计 (≤1000) ===" &lt;&lt; '\n';
+    long long count1 = (long long)primesInAP(1, 4, 1000).size();
+    long long count3 = (long long)primesInAP(3, 4, 1000).size();
+    cout &lt;&lt; "4k+1 型素数数量: " &lt;&lt; count1 &lt;&lt; '\n';
+    cout &lt;&lt; "4k+3 型素数数量: " &lt;&lt; count3 &lt;&lt; '\n';
+    cout &lt;&lt; "比例 (4k+1)/(4k+3): " &lt;&lt; fixed &lt;&lt; setprecision(3)
+         &lt;&lt; (double)count1 / (double)count3 &lt;&lt; '\n';
+    cout &lt;&lt; "(注：当上限→∞时，比例趋近于1，体现素数分布的均匀性)" &lt;&lt; '\n';
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 
@@ -264,4 +277,10 @@ console.log(`(注：当上限→∞时，比例趋近于1，体现素数分布�
             <h4>📝 历史与延伸：</h4>
             <p>
                 • <strong>1837年</strong>：约翰·彼得·古斯塔夫·勒热纳·狄利克雷首次用解析方法证明，开创解析数论先河。<br>
-                • <strong>关键突破</strong>：引入特征和L函数，将数论问题转化为复分析问题。<
+                • <strong>关键突破</strong>：引入特征和L函数，将数论问题转化为复分析问题。<br>
+                • <strong>深远影响</strong>：该定理是解析数论的奠基性结果之一，为素数在算术级数中的分布理论奠定了基础。
+            </p>
+        </section>
+    </div>
+</body>
+</html>

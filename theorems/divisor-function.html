@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>除数函数公式 - 数论百科</title>
+    <title>除数函数公式 - 算法竞赛数论百科</title>
     <link rel="stylesheet" href="../style.css">
     
     <script>
@@ -144,185 +144,173 @@
             </p>
         </section>
 
-        <section class="code-example" 
-                 style="background: #2d2d2d; 
-                        padding: 20px; 
-                        margin: 20px 0; 
-                        border-radius: 5px;">
-            
-            <h3 style="color: #f8f8f2;">代码示例 (JavaScript)：</h3>
-            
-            <pre style="background: #1e1e1e; 
-                        color: #f8f8f2; 
-                        padding: 15px; 
-                        border-radius: 5px; 
-                        overflow-x: auto;">
-<code>// 质因数分解
-function primeFactorization(n) {
-    const factors = {};
-    let temp = n;
-    
+        <section class="code-example">
+            <h3>代码示例 (C++)</h3>
+            <pre><code>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+using namespace std;
+
+// 质因数分解：返回 {素数, 指数} 列表
+vector&lt;pair&lt;long long, int&gt;&gt; primeFactorization(long long n) {
+    vector&lt;pair&lt;long long, int&gt;&gt; factors;
+
     // 处理因子2
-    while (temp % 2 === 0) {
-        factors[2] = (factors[2] || 0) + 1;
-        temp /= 2;
+    int cnt = 0;
+    while (n % 2 == 0) {
+        ++cnt;
+        n /= 2;
     }
-    
+    if (cnt &gt; 0) factors.push_back({2, cnt});
+
     // 处理奇数因子
-    for (let i = 3; i * i <= temp; i += 2) {
-        while (temp % i === 0) {
-            factors[i] = (factors[i] || 0) + 1;
-            temp /= i;
+    for (long long i = 3; i * i &lt;= n; i += 2) {
+        cnt = 0;
+        while (n % i == 0) {
+            ++cnt;
+            n /= i;
         }
+        if (cnt &gt; 0) factors.push_back({i, cnt});
     }
-    
+
     // 如果还有剩余的大于1的因子
-    if (temp > 1) {
-        factors[temp] = (factors[temp] || 0) + 1;
-    }
-    
+    if (n &gt; 1) factors.push_back({n, 1});
+
     return factors;
 }
 
 // 计算约数个数 d(n)
-function divisorCount(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    const factors = primeFactorization(n);
-    let count = 1;
-    
-    for (const exponent of Object.values(factors)) {
-        count *= (exponent + 1);
+long long divisorCount(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    auto factors = primeFactorization(n);
+    long long count = 1;
+    for (auto&amp; f : factors) {
+        count *= (f.second + 1);
     }
-    
     return count;
 }
 
 // 计算约数和 σ(n)
-function divisorSum(n) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    const factors = primeFactorization(n);
-    let sum = 1;
-    
-    for (const [prime, exponent] of Object.entries(factors)) {
-        const p = Number(prime);
-        const a = exponent;
-        
+long long divisorSum(long long n) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    auto factors = primeFactorization(n);
+    long long sum = 1;
+    for (auto&amp; f : factors) {
+        long long p = f.first;
+        int a = f.second;
         // 计算 (p^(a+1) - 1) / (p - 1)
-        let term = 1;
-        let power = 1;
-        for (let i = 0; i <= a; i++) {
-            term += power;
-            power *= p;
-        }
-        term -= 1; // 因为初始 term=1，所以需要减去1
-        
-        // 使用公式 (p^(a+1)-1)/(p-1) 避免大数计算
-        // 注意：当a较大时，p^(a+1)可能溢出，这里使用BigInt
-        const numerator = BigInt(p) ** BigInt(a + 1) - 1n;
-        const denominator = BigInt(p) - 1n;
-        term = Number(numerator / denominator);
-        
+        long long power = 1;
+        for (int i = 0; i &lt;= a; i++) power *= p;
+        long long term = (power - 1) / (p - 1);
         sum *= term;
     }
-    
     return sum;
 }
 
-// 计算 σ_x(n)：约数的x次幂之和
-function divisorFunction(n, x) {
-    if (n <= 0) return 0;
-    if (n === 1) return 1;
-    
-    const factors = primeFactorization(n);
-    let result = 1;
-    
-    if (x === 0) {
+// 计算 σ_x(n)：约数的 x 次幂之和
+long long divisorFunction(long long n, int x) {
+    if (n &lt;= 0) return 0;
+    if (n == 1) return 1;
+
+    auto factors = primeFactorization(n);
+
+    if (x == 0) {
         // σ_0(n) = d(n)
         return divisorCount(n);
     }
-    
-    for (const [prime, exponent] of Object.entries(factors)) {
-        const p = Number(prime);
-        const a = exponent;
-        
-        if (x === 1) {
+
+    long long result = 1;
+    for (auto&amp; f : factors) {
+        long long p = f.first;
+        int a = f.second;
+        if (x == 1) {
             // 使用约数和的简化公式
-            const numerator = BigInt(p) ** BigInt(a + 1) - 1n;
-            const denominator = BigInt(p) - 1n;
-            result *= Number(numerator / denominator);
+            long long power = 1;
+            for (int i = 0; i &lt;= a; i++) power *= p;
+            result *= (power - 1) / (p - 1);
         } else {
-            // 一般公式：σ_x(n) = ∏ (p_i^{(a_i+1)x} - 1) / (p_i^x - 1)
-            const p_x = Math.pow(p, x);
-            if (Math.abs(p_x - 1) < 1e-10) {
-                // 当 p^x ≈ 1 时，公式退化为 a+1
+            // 一般公式：σ_x(n) = ∏ (p^((a+1)x) - 1) / (p^x - 1)
+            long long p_x = 1;
+            for (int i = 0; i &lt; x; i++) p_x *= p;
+            if (p_x == 1) {
                 result *= (a + 1);
             } else {
-                const numerator = Math.pow(p, (a + 1) * x) - 1;
-                const denominator = p_x - 1;
-                result *= (numerator / denominator);
+                long long numerator = 1;
+                for (int i = 0; i &lt; (a + 1) * x; i++) numerator *= p;
+                result *= (numerator - 1) / (p_x - 1);
             }
         }
     }
-    
     return result;
 }
 
-// 示例使用
-console.log("=== 除数函数计算 ===");
-
-// 计算 360 的约数个数和约数和
-const n = 360;
-console.log(`n = ${n}`);
-console.log(`质因数分解: ${JSON.stringify(primeFactorization(n))}`);
-console.log(`约数个数 d(${n}) = ${divisorCount(n)}`);
-console.log(`约数和 σ(${n}) = ${divisorSum(n)}`);
-
-// 验证一些完全数
-console.log("\n=== 完全数验证 ===");
-const perfectNumbers = [6, 28, 496, 8128];
-for (const num of perfectNumbers) {
-    const sum = divisorSum(num);
-    console.log(`σ(${num}) = ${sum}, 2×${num} = ${2*num}, ${sum === 2*num ? '是完全数 ✓' : '不是完全数 ✗'}`);
-}
-
-// 计算前20个数的约数个数
-console.log("\n=== 前20个正整数的约数个数 ===");
-for (let i = 1; i <= 20; i++) {
-    const count = divisorCount(i);
-    process.stdout.write(`d(${i})=${count}\t`);
-    if (i % 5 === 0) console.log();
-}
-
 // 寻找亲和数对：两个数中，每一个数的所有约数之和等于另一个数
-console.log("\n=== 寻找亲和数对 ===");
-function findAmicablePairs(limit) {
-    const pairs = [];
-    const sumCache = new Array(limit + 1).fill(0);
-    
-    for (let i = 1; i <= limit; i++) {
+vector&lt;pair&lt;long long, long long&gt;&gt; findAmicablePairs(int limit) {
+    vector&lt;pair&lt;long long, long long&gt;&gt; pairs;
+    vector&lt;long long&gt; sumCache(limit + 1, 0);
+
+    for (int i = 1; i &lt;= limit; i++) {
         sumCache[i] = divisorSum(i);
     }
-    
-    for (let a = 2; a <= limit; a++) {
-        const b = sumCache[a];
-        if (b > a && b <= limit && sumCache[b] === a) {
-            pairs.push([a, b]);
+
+    for (int a = 2; a &lt;= limit; a++) {
+        long long b = sumCache[a];
+        if (b &gt; a &amp;&amp; b &lt;= limit &amp;&amp; sumCache[b] == a) {
+            pairs.push_back({a, b});
         }
     }
-    
     return pairs;
 }
 
-const amicablePairs = findAmicablePairs(10000);
-console.log(`10000以内的亲和数对:`);
-for (const [a, b] of amicablePairs) {
-    console.log(`(${a}, ${b})：σ(${a})=${divisorSum(a)}, σ(${b})=${divisorSum(b)}`);
-}</code>
-            </pre>
+int main() {
+    cout &lt;&lt; "=== 除数函数计算 ===\n";
+
+    // 计算 360 的约数个数和约数和
+    long long n = 360;
+    cout &lt;&lt; "n = " &lt;&lt; n &lt;&lt; '\n';
+    cout &lt;&lt; "质因数分解: ";
+    auto facs = primeFactorization(n);
+    for (size_t i = 0; i &lt; facs.size(); i++) {
+        if (i &gt; 0) cout &lt;&lt; ", ";
+        cout &lt;&lt; facs[i].first &lt;&lt; "^" &lt;&lt; facs[i].second;
+    }
+    cout &lt;&lt; '\n';
+    cout &lt;&lt; "约数个数 d(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; divisorCount(n) &lt;&lt; '\n';
+    cout &lt;&lt; "约数和 σ(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; divisorSum(n) &lt;&lt; '\n';
+
+    // 验证一些完全数
+    cout &lt;&lt; "\n=== 完全数验证 ===\n";
+    vector&lt;long long&gt; perfectNumbers = {6, 28, 496, 8128};
+    for (auto num : perfectNumbers) {
+        long long sum = divisorSum(num);
+        cout &lt;&lt; "σ(" &lt;&lt; num &lt;&lt; ") = " &lt;&lt; sum &lt;&lt; ", 2×" &lt;&lt; num &lt;&lt; " = " &lt;&lt; 2 * num
+             &lt;&lt; ", " &lt;&lt; (sum == 2 * num ? "是完全数 ✓" : "不是完全数 ✗") &lt;&lt; '\n';
+    }
+
+    // 计算前20个数的约数个数
+    cout &lt;&lt; "\n=== 前20个正整数的约数个数 ===\n";
+    for (int i = 1; i &lt;= 20; i++) {
+        cout &lt;&lt; "d(" &lt;&lt; i &lt;&lt; ")=" &lt;&lt; divisorCount(i) &lt;&lt; "\t";
+        if (i % 5 == 0) cout &lt;&lt; '\n';
+    }
+
+    // 寻找亲和数对
+    cout &lt;&lt; "\n=== 寻找亲和数对 ===\n";
+    auto amicablePairs = findAmicablePairs(10000);
+    cout &lt;&lt; "10000以内的亲和数对:\n";
+    for (auto&amp; pr : amicablePairs) {
+        cout &lt;&lt; "(" &lt;&lt; pr.first &lt;&lt; ", " &lt;&lt; pr.second &lt;&lt; ")：σ(" &lt;&lt; pr.first &lt;&lt; ")="
+             &lt;&lt; divisorSum(pr.first) &lt;&lt; ", σ(" &lt;&lt; pr.second &lt;&lt; ")=" &lt;&lt; divisorSum(pr.second) &lt;&lt; '\n';
+    }
+
+    return 0;
+}
+</code></pre>
         </section>
 
         <section class="applications" 
@@ -346,7 +334,7 @@ for (const [a, b] of amicablePairs) {
                 
                 <li>
                     <strong>盈数和亏数：</strong>
-                    $\sigma(n) > 2n$ 称为盈数，$\sigma(n) < 2n$ 称为亏数。
+                    $\sigma(n) \gt 2n$ 称为盈数，$\sigma(n) \lt 2n$ 称为亏数。
                 </li>
                 
                 <li>

@@ -1,5 +1,5 @@
 /* ============================================================
-   算法竞赛数论百科 · 全局样式
+   数论百科 · 全局样式
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
@@ -41,8 +41,10 @@ img, iframe, video, canvas {
    ============================================================ */
 header {
     text-align: center;
-    padding: 48px 0 32px;
-    border-bottom: 2px solid #eee;
+    padding: 56px 20px 40px;
+    margin: -20px -20px 0;
+    border-bottom: 1px solid #eceef1;
+    background: linear-gradient(180deg, #f6f8fb 0%, #fcfcfc 100%);
 }
 
 .tagline {
@@ -181,14 +183,68 @@ header {
 
 .chart-stats b { color: #1a1a1a; }
 
+.chart-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.chart-tabs {
+    display: inline-flex;
+    background: #eef1f5;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.chart-tab {
+    border: none;
+    background: transparent;
+    color: #555;
+    font-size: 0.9rem;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.chart-tab:hover { color: #d32f2f; }
+
+.chart-tab.active {
+    background: #fff;
+    color: #d32f2f;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+
+.chart-canvas-wrap {
+    position: relative;
+}
+
+.chart-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(30, 30, 30, 0.92);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    white-space: nowrap;
+    z-index: 5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
 /* ============================================================
    首页 · 定理卡片网格
    ============================================================ */
 .theorem-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 28px;
-    margin-top: 40px;
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .theorem-card {
@@ -240,6 +296,49 @@ header {
     border-radius: 4px;
     margin-right: 5px;
 }
+
+.grid-heading {
+    margin: 48px 0 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.grid-heading h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.grid-sub {
+    margin: 0;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.card-top h3 { margin: 0; }
+
+.diff-badge {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+    color: #fff;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+}
+
+.diff-1 { background: #2e7d32; }
+.diff-2 { background: #1565c0; }
+.diff-3 { background: #e65100; }
+.diff-4 { background: #7b1fa2; }
 
 /* 防止卡片内长内容出框 */
 .theorem-card, .theorem-box, .algorithm-box, .code-example {

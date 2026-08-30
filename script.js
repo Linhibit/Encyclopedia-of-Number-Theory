@@ -162,8 +162,16 @@ function renderTheorems(theorems, highlightTokens = []) {
         const titleHTML = processForHighlight(t.title);
         const descHTML = processForHighlight(t.description);
 
+        const DIFF_LEVEL = { '入门': 1, '基础': 2, '进阶': 3, '高阶': 4 };
+        const badge = t.difficulty
+            ? `<span class="diff-badge diff-${DIFF_LEVEL[t.difficulty] || 2}">${t.difficulty}</span>`
+            : '';
+
         card.innerHTML = `
-            <h3>${titleHTML}</h3>
+            <div class="card-top">
+                <h3>${titleHTML}</h3>
+                ${badge}
+            </div>
             <p>${descHTML}</p>
             <div class="tags">${t.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
         `;

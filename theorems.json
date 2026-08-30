@@ -1,255 +1,296 @@
 [
   {
-    "title": "费马小定理",
-    "description": "如果 $p$ 是素数，且 $a$ 不是 $p$ 的倍数，则 $a^{p-1} \\equiv 1 \\pmod{p}$。这是数论中的一个基本定理，在密码学中有重要应用。",
-    "link": "theorems/fermat-little-theorem.html",
-    "tags": ["模运算", "素数", "同余", "数论基础", "密码学"]
-  },
-  {
-    "title": "欧几里得算法",
-    "description": "用于计算两个整数最大公约数（GCD）的高效方法。",
-    "link": "algorithms/euclidean-algorithm.html",
-    "tags": ["最大公约数", "算法"]
-  },
-  {
-    "title": "中国剩余定理",
-    "description": "给定一组两两互质的正整数 $m_1, m_2, \\dots, m_k$，对于任意整数 $a_1, a_2, \\dots, a_k$，同余方程组 $x \\equiv a_i \\pmod{m_i}$ 在模 $M = m_1 m_2 \\cdots m_k$ 下有唯一解。",
-    "link": "theorems/chinese-remainder-theorem.html",
-    "tags": ["同余方程", "模运算", "数论定理"]
+    "title": "算术基本定理",
+    "difficulty": "入门",
+    "description": "每个大于1的自然数都可以唯一地分解为素数的乘积（不考虑素数因子的顺序）。这一性质称为整数的唯一分解定理。",
+    "link": "theorems/fundamental-theorem-of-arithmetic.html",
+    "tags": ["质因数分解", "唯一分解", "数论基础"]
   },
   {
     "title": "欧几里得定理",
+    "difficulty": "入门",
     "description": "由欧几里得证明的经典定理：素数的集合是无限的。$$ \\pi(x) \\to \\infty \\text{ as } x \\to \\infty $$",
     "link": "theorems/euclid-theorem.html",
     "tags": ["素数", "基础理论", "欧几里得"]
   },
   {
+    "title": "欧几里得算法",
+    "difficulty": "入门",
+    "description": "用于计算两个整数最大公约数（GCD）的高效方法。",
+    "link": "algorithms/euclidean-algorithm.html",
+    "tags": ["最大公约数", "算法"]
+  },
+  {
     "title": "扩展欧几里得算法",
+    "difficulty": "入门",
     "description": "给定整数 $a$ 和 $b$，扩展欧几里得算法不仅计算最大公约数 $\\gcd(a,b)$，还能找到满足贝祖等式 $ax + by = \\gcd(a,b)$ 的整数 $x$ 和 $y$。",
     "link": "algorithms/extended-euclidean-algorithm.html",
     "tags": ["最大公约数", "贝祖等式", "数论算法"]
   },
   {
     "title": "贝祖定理",
+    "difficulty": "入门",
     "description": "对于任意整数 $a$ 和 $b$，存在整数 $x$ 和 $y$，使得 $ax + by = \\gcd(a, b)$。特别地，当 $a$ 和 $b$ 互质时，存在 $x, y$ 使得 $ax + by = 1$。",
     "link": "theorems/bezout-theorem.html",
     "tags": ["最大公约数", "整数方程", "数论基础"]
   },
   {
-    "title": "算术基本定理",
-    "description": "每个大于1的自然数都可以唯一地分解为素数的乘积（不考虑素数因子的顺序）。这一性质称为整数的唯一分解定理。",
-    "link": "theorems/fundamental-theorem-of-arithmetic.html",
-    "tags": ["质因数分解", "唯一分解", "数论基础"]
-  },
-  {
     "title": "埃拉托斯特尼筛法",
+    "difficulty": "入门",
     "description": "一种用于查找不超过给定整数 $n$ 的所有素数的简单算法。通过标记合数的倍数，逐步筛选出所有素数。",
     "link": "algorithms/sieve-of-eratosthenes.html",
     "tags": ["素数筛选", "算法", "数论算法"]
   },
   {
     "title": "欧拉筛法",
+    "difficulty": "基础",
     "description": "一种时间复杂度为 $O(n)$ 的线性筛法，用于高效筛选素数。每个合数只被其最小质因子筛选一次，避免了重复标记。",
     "link": "algorithms/euler-sieve.html",
     "tags": ["线性筛法", "素数筛选", "高效算法"]
   },
   {
     "title": "模逆元",
+    "difficulty": "基础",
     "description": "在模运算中，若整数 $a$ 与模数 $m$ 互质，则存在整数 $x$ 使得 $ax \\equiv 1 \\pmod{m}$，$x$ 称为 $a$ 模 $m$ 的逆元，记作 $a^{-1}$。",
     "link": "algorithms/modular-inverse.html",
     "tags": ["模运算", "逆元", "扩展欧几里得算法", "费马小定理"]
   },
   {
-    "title": "原根",
-    "description": "对于正整数$n$，若整数$a$模$n$的阶等于欧拉函数$\\varphi(n)$，则称$a$为模$n$的一个原根。原根的存在性为：模$n$有原根当且仅当$n=1,2,4,p^k,2p^k$，其中$p$为奇素数。",
-    "link": "theorems/primitive-root.html",
-    "tags": ["原根", "阶", "欧拉函数", "循环群", "离散对数"]
-  },
-  {
-    "title": "二次互反律",
-    "description": "对于奇素数$p$和$q$，勒让德符号满足$\\left(\\frac{p}{q}\\right)\\left(\\frac{q}{p}\\right) = (-1)^{\\frac{p-1}{2}\\frac{q-1}{2}}$。这是判断二次剩余的核心定理。",
-    "link": "theorems/quadratic-reciprocity.html",
-    "tags": ["二次剩余", "勒让德符号", "高斯定理"]
-  },
-  {
-    "title": "素数定理",
-    "description": "描述素数分布渐近规律的定理：当$x$趋近于无穷大时，不超过$x$的素数个数$\\pi(x)$渐近等于$x/\\ln x$，即$\\pi(x) \\sim \\frac{x}{\\ln x}$。",
-    "link": "theorems/prime-number-theorem.html",
-    "tags": ["素数分布", "渐近分析", "解析数论"]
-  },
-  {
-    "title": "莫比乌斯反演公式",
-    "description": "如果数论函数$f$和$g$满足$f(n) = \\sum_{d|n} g(d)$，则$g(n) = \\sum_{d|n} \\mu(d) f(n/d)$，其中$\\mu$是莫比乌斯函数。",
-    "link": "theorems/mobius-inversion.html",
-    "tags": ["莫比乌斯函数", "数论函数", "反演公式", "容斥原理"]
+    "title": "费马小定理",
+    "difficulty": "基础",
+    "description": "如果 $p$ 是素数，且 $a$ 不是 $p$ 的倍数，则 $a^{p-1} \\equiv 1 \\pmod{p}$。这是数论中的一个基本定理，在密码学中有重要应用。",
+    "link": "theorems/fermat-little-theorem.html",
+    "tags": ["模运算", "素数", "同余", "数论基础", "密码学"]
   },
   {
     "title": "欧拉定理",
+    "difficulty": "基础",
     "description": "若正整数 $n$ 和整数 $a$ 互质，则 $a^{\\varphi(n)} \\equiv 1 \\pmod{n}$，其中 $\\varphi(n)$ 是欧拉函数，表示小于 $n$ 且与 $n$ 互质的正整数的个数。",
     "link": "theorems/euler-theorem.html",
     "tags": ["欧拉函数", "同余", "费马小定理推广"]
   },
   {
+    "title": "欧拉函数公式",
+    "difficulty": "基础",
+    "description": "欧拉函数$\\varphi(n)$表示小于$n$且与$n$互质的正整数的个数。计算公式：若$n = p_1^{a_1} p_2^{a_2} \\cdots p_k^{a_k}$，则$\\varphi(n) = n \\prod_{i=1}^k (1 - \\frac{1}{p_i})$。",
+    "link": "theorems/euler-function-formula.html",
+    "tags": ["欧拉函数", "互质", "数论函数", "积性函数"]
+  },
+  {
+    "title": "线性丢番图方程",
+    "difficulty": "基础",
+    "description": "形如$ax + by = c$的整数解的存在条件与求解方法。当$\\gcd(a,b)$整除$c$时方程有整数解，可通过扩展欧几里得算法构造特解。",
+    "link": "theorems/linear-diophantine-equation.html",
+    "tags": ["不定方程", "整数解", "扩展欧几里得", "贝祖等式"]
+  },
+  {
+    "title": "勾股数公式",
+    "difficulty": "基础",
+    "description": "所有本原勾股数（即满足$a^2+b^2=c^2$且$\\gcd(a,b,c)=1$的正整数三元组）都可以由公式$a=m^2-n^2, b=2mn, c=m^2+n^2$生成，其中$m>n>0$，$\\gcd(m,n)=1$，$m,n$一奇一偶。",
+    "link": "theorems/pythagorean-triples.html",
+    "tags": ["勾股数", "毕达哥拉斯三元组", "不定方程", "数论公式"]
+  },
+  {
+    "title": "中国剩余定理",
+    "difficulty": "基础",
+    "description": "给定一组两两互质的正整数 $m_1, m_2, \\dots, m_k$，对于任意整数 $a_1, a_2, \\dots, a_k$，同余方程组 $x \\equiv a_i \\pmod{m_i}$ 在模 $M = m_1 m_2 \\cdots m_k$ 下有唯一解。",
+    "link": "theorems/chinese-remainder-theorem.html",
+    "tags": ["同余方程", "模运算", "数论定理"]
+  },
+  {
     "title": "威尔逊定理",
+    "difficulty": "基础",
     "description": "一个大于1的自然数$p$是质数的充分必要条件是$(p-1)! \\equiv -1 \\pmod{p}$。",
     "link": "theorems/wilson-theorem.html",
     "tags": ["质数判定", "同余", "数论定理"]
   },
   {
     "title": "除数函数公式",
+    "difficulty": "基础",
     "description": "除数函数$d(n)$和$\\sigma(n)$的计算公式：若$n = p_1^{a_1} p_2^{a_2} \\cdots p_k^{a_k}$，则$d(n) = (a_1+1)(a_2+1)\\cdots(a_k+1)$，$\\sigma(n) = \\prod_{i=1}^k \\frac{p_i^{a_i+1}-1}{p_i-1}$。",
     "link": "theorems/divisor-function.html",
     "tags": ["除数函数", "约数个数", "约数和", "数论函数"]
   },
   {
-    "title": "欧拉函数公式",
-    "description": "欧拉函数$\\varphi(n)$表示小于$n$且与$n$互质的正整数的个数。计算公式：若$n = p_1^{a_1} p_2^{a_2} \\cdots p_k^{a_k}$，则$\\varphi(n) = n \\prod_{i=1}^k (1 - \\frac{1}{p_i})$。",
-    "link": "theorems/euler-function-formula.html",
-    "tags": ["欧拉函数", "互质", "数论函数", "积性函数"]
-  },
-  {
-    "title": "勾股数公式",
-    "description": "所有本原勾股数（即满足$a^2+b^2=c^2$且$\\gcd(a,b,c)=1$的正整数三元组）都可以由公式$a=m^2-n^2, b=2mn, c=m^2+n^2$生成，其中$m>n>0$，$\\gcd(m,n)=1$，$m,n$一奇一偶。",
-    "link": "theorems/pythagorean-triples.html",
-    "tags": ["勾股数", "毕达哥拉斯三元组", "不定方程", "数论公式"]
-  },
-  {
-    "title": "费马大定理",
-    "description": "当整数$n>2$时，关于$x,y,z$的不定方程$x^n+y^n=z^n$没有正整数解。这一定理由皮埃尔·德·费马于1637年提出，但直到1995年才被安德鲁·怀尔斯证明。",
-    "link": "theorems/fermat-last-theorem.html",
-    "tags": ["费马大定理", "不定方程", "怀尔斯证明", "数论难题"]
-  },
-  {
     "title": "大步小步算法",
+    "difficulty": "基础",
     "description": "用于求解离散对数问题$g^x \\equiv h \\pmod{p}$的算法，时间复杂度$O(\\sqrt{p})$，是时间-空间权衡的经典例子。",
     "link": "algorithms/baby-step-giant-step.html",
     "tags": ["离散对数", "密码学", "算法", "时间-空间权衡"]
   },
   {
-    "title": "狄利克雷卷积",
-    "description": "数论函数的一种二元运算，定义为$(f*g)(n)=\\sum_{d|n} f(d)g(n/d)$。该运算满足交换律、结合律，且有单位元$\\varepsilon$，使数论函数构成一个交换环。",
-    "link": "theorems/dirichlet-convolution.html",
-    "tags": ["数论函数", "卷积", "莫比乌斯反演", "代数结构"]
-  },
-  {
-    "title": "卢卡斯定理",
-    "description": "计算组合数模素数的定理：$C(n,m) \\equiv \\prod_{i=0}^{k} C(n_i, m_i) \\pmod{p}$，其中$n_i, m_i$是$n, m$的$p$进制表示的数字。",
-    "link": "theorems/lucas-theorem.html",
-    "tags": ["组合数", "模运算", "素数模", "二项式系数"]
-  },
-  {
-    "title": "佩尔方程",
-    "description": "形如$x^2 - dy^2 = 1$的二次丢番图方程，其中$d$是非平方正整数。该方程有无穷多组正整数解，基本解可以通过连分数法求得。",
-    "link": "theorems/pell-equation.html",
-    "tags": ["不定方程", "二次方程", "连分数", "丢番图方程"]
-  },
-  {
-    "title": "卡迈克尔定理",
-    "description": "定义了卡迈克尔函数$\\lambda(n)$，它是使得$a^{\\lambda(n)} \\equiv 1 \\pmod{n}$对所有与$n$互质的$a$成立的最小正整数。$\\lambda(n)$是$n$的简化剩余系的指数。",
-    "link": "theorems/carmichael-theorem.html",
-    "tags": ["卡迈克尔函数", "指数", "原根", "数论函数"]
-  },
-  {
-    "title": "阶的性质定理",
-    "description": "关于模$n$的整数$a$的阶的基本性质：设$\\gcd(a,n)=1$，$a$模$n$的阶$\\operatorname{ord}_n(a)$是满足$a^k \\equiv 1 \\pmod{n}$的最小正整数$k$，则$\\operatorname{ord}_n(a)$整除任意满足$a^m \\equiv 1 \\pmod{n}$的整数$m$。",
-    "link": "theorems/order-properties.html",
-    "tags": ["阶", "原根", "模运算", "数论性质"]
-  },
-  {
-    "title": "线性丢番图方程",
-    "description": "形如$ax + by = c$的整数解的存在条件与求解方法。当$\\gcd(a,b)$整除$c$时方程有整数解，可通过扩展欧几里得算法构造特解。",
-    "link": "theorems/linear-diophantine-equation.html",
-    "tags": ["不定方程", "整数解", "扩展欧几里得", "贝祖等式"]
-  },
-  {
     "title": "米勒-拉宾素性测试",
+    "difficulty": "进阶",
     "description": "一种高效的概率素数测试算法。对于奇整数$n>1$，将$n-1$分解为$2^s \\cdot d$，通过检验$a^d \\pmod{n}$和$a^{2^r d} \\pmod{n}$来判断$n$是否为素数。",
     "link": "algorithms/miller-rabin-primality-test.html",
     "tags": ["素性测试", "概率算法", "密码学", "数论算法"]
   },
   {
-    "title": "狄利克雷定理",
-    "description": "关于等差数列中素数分布的定理：对于任意互质的正整数$a$和$d$，等差数列$a, a+d, a+2d, \\dots$中包含无穷多个素数。",
-    "link": "theorems/dirichlet-theorem.html",
-    "tags": ["素数分布", "等差数列", "解析数论", "算术级数"]
-  },
-  {
-    "title": "黎曼ζ函数",
-    "description": "黎曼ζ函数定义为 $\\zeta(s) = \\sum_{n=1}^\\infty \\frac{1}{n^s}$，最初在 $\\operatorname{Re}(s)>1$ 上定义，后通过解析延拓成为整个复平面上的亚纯函数。它在数论和解析数论中具有核心地位，与素数分布密切相关。",
-    "link": "theorems/riemann-zeta-function.html",
-    "tags": ["解析数论", "复变函数", "素数分布", "特殊函数"]
-  },
-  {
     "title": "Pollard Rho 算法",
+    "difficulty": "进阶",
     "description": "Pollard Rho算法是一种用于分解大整数的概率算法，基于弗洛伊德判圈算法，通过生成伪随机序列寻找模n下的碰撞来实现因数分解。",
     "link": "algorithms/pollard-rho-algorithm.html",
     "tags": ["因数分解", "随机算法", "数论算法", "密码学"]
   },
   {
-    "title": "数论变换 (NTT)",
-    "description": "数论变换是离散傅里叶变换在有限域上的类比，用于模素数环上的快速多项式乘法，时间复杂度为 $O(n \\log n)$，是许多密码学和编码理论算法的基础。",
-    "link": "algorithms/number-theoretic-transform.html",
-    "tags": ["快速傅里叶变换", "多项式乘法", "模运算", "密码学", "编码理论"]
+    "title": "原根",
+    "difficulty": "进阶",
+    "description": "对于正整数$n$，若整数$a$模$n$的阶等于欧拉函数$\\varphi(n)$，则称$a$为模$n$的一个原根。原根的存在性为：模$n$有原根当且仅当$n=1,2,4,p^k,2p^k$，其中$p$为奇素数。",
+    "link": "theorems/primitive-root.html",
+    "tags": ["原根", "阶", "欧拉函数", "循环群", "离散对数"]
   },
   {
-    "title": "拉格朗日四平方和定理",
-    "description": "每个正整数都可以表示为最多四个整数的平方和，即 $n = a^2 + b^2 + c^2 + d^2$，其中 $a,b,c,d$ 是非负整数。这是数论中的一个基本结果。",
-    "link": "theorems/lagrange-four-square-theorem.html",
-    "tags": ["平方和", "数论", "正整数", "华林问题"]
+    "title": "阶的性质定理",
+    "difficulty": "进阶",
+    "description": "关于模$n$的整数$a$的阶的基本性质：设$\\gcd(a,n)=1$，$a$模$n$的阶$\\operatorname{ord}_n(a)$是满足$a^k \\equiv 1 \\pmod{n}$的最小正整数$k$，则$\\operatorname{ord}_n(a)$整除任意满足$a^m \\equiv 1 \\pmod{n}$的整数$m$。",
+    "link": "theorems/order-properties.html",
+    "tags": ["阶", "原根", "模运算", "数论性质"]
+  },
+  {
+    "title": "二次互反律",
+    "difficulty": "进阶",
+    "description": "对于奇素数$p$和$q$，勒让德符号满足$\\left(\\frac{p}{q}\\right)\\left(\\frac{q}{p}\\right) = (-1)^{\\frac{p-1}{2}\\frac{q-1}{2}}$。这是判断二次剩余的核心定理。",
+    "link": "theorems/quadratic-reciprocity.html",
+    "tags": ["二次剩余", "勒让德符号", "高斯定理"]
+  },
+  {
+    "title": "Tonelli-Shanks算法",
+    "difficulty": "进阶",
+    "description": "在模奇素数 $p$ 下求解二次剩余平方根的算法，用于求 $x^2 \\equiv n \\pmod{p}$ 的解。",
+    "link": "algorithms/tonelli-shanks.html",
+    "tags": ["模运算", "平方根", "二次剩余", "数论算法"]
+  },
+  {
+    "title": "卢卡斯定理",
+    "difficulty": "进阶",
+    "description": "计算组合数模素数的定理：$C(n,m) \\equiv \\prod_{i=0}^{k} C(n_i, m_i) \\pmod{p}$，其中$n_i, m_i$是$n, m$的$p$进制表示的数字。",
+    "link": "theorems/lucas-theorem.html",
+    "tags": ["组合数", "模运算", "素数模", "二项式系数"]
+  },
+  {
+    "title": "狄利克雷卷积",
+    "difficulty": "进阶",
+    "description": "数论函数的一种二元运算，定义为$(f*g)(n)=\\sum_{d|n} f(d)g(n/d)$。该运算满足交换律、结合律，且有单位元$\\varepsilon$，使数论函数构成一个交换环。",
+    "link": "theorems/dirichlet-convolution.html",
+    "tags": ["数论函数", "卷积", "莫比乌斯反演", "代数结构"]
+  },
+  {
+    "title": "莫比乌斯反演公式",
+    "difficulty": "进阶",
+    "description": "如果数论函数$f$和$g$满足$f(n) = \\sum_{d|n} g(d)$，则$g(n) = \\sum_{d|n} \\mu(d) f(n/d)$，其中$\\mu$是莫比乌斯函数。",
+    "link": "theorems/mobius-inversion.html",
+    "tags": ["莫比乌斯函数", "数论函数", "反演公式", "容斥原理"]
+  },
+  {
+    "title": "卡迈克尔定理",
+    "difficulty": "进阶",
+    "description": "定义了卡迈克尔函数$\\lambda(n)$，它是使得$a^{\\lambda(n)} \\equiv 1 \\pmod{n}$对所有与$n$互质的$a$成立的最小正整数。$\\lambda(n)$是$n$的简化剩余系的指数。",
+    "link": "theorems/carmichael-theorem.html",
+    "tags": ["卡迈克尔函数", "指数", "原根", "数论函数"]
   },
   {
     "title": "伯特兰公设",
+    "difficulty": "进阶",
     "description": "对于任意大于1的整数 $n$，至少存在一个素数 $p$ 满足 $n < p < 2n$。这是数论中关于素数分布的重要定理，由切比雪夫首先证明。",
     "link": "theorems/bertrand-postulate.html",
     "tags": ["素数分布", "数论", "切比雪夫定理", "素数间隔"]
   },
   {
+    "title": "素数定理",
+    "difficulty": "进阶",
+    "description": "描述素数分布渐近规律的定理：当$x$趋近于无穷大时，不超过$x$的素数个数$\\pi(x)$渐近等于$x/\\ln x$，即$\\pi(x) \\sim \\frac{x}{\\ln x}$。",
+    "link": "theorems/prime-number-theorem.html",
+    "tags": ["素数分布", "渐近分析", "解析数论"]
+  },
+  {
+    "title": "数论变换 (NTT)",
+    "difficulty": "进阶",
+    "description": "数论变换是离散傅里叶变换在有限域上的类比，用于模素数环上的快速多项式乘法，时间复杂度为 $O(n \\log n)$，是许多密码学和编码理论算法的基础。",
+    "link": "algorithms/number-theoretic-transform.html",
+    "tags": ["快速傅里叶变换", "多项式乘法", "模运算", "密码学", "编码理论"]
+  },
+  {
+    "title": "费马二平方和定理",
+    "difficulty": "进阶",
+    "description": "一个奇素数 $p$ 可以表示为两个整数的平方和 $p = a^2 + b^2$ 当且仅当 $p \\equiv 1 \\pmod{4}$。这是数论中关于素数表示的重要定理。",
+    "link": "theorems/fermat-two-square-theorem.html",
+    "tags": ["素数", "平方和", "模运算", "数论"]
+  },
+  {
+    "title": "拉格朗日四平方和定理",
+    "difficulty": "进阶",
+    "description": "每个正整数都可以表示为最多四个整数的平方和，即 $n = a^2 + b^2 + c^2 + d^2$，其中 $a,b,c,d$ 是非负整数。这是数论中的一个基本结果。",
+    "link": "theorems/lagrange-four-square-theorem.html",
+    "tags": ["平方和", "数论", "正整数", "华林问题"]
+  },
+  {
+    "title": "勒让德三平方和定理",
+    "difficulty": "进阶",
+    "description": "一个自然数可以表示为三个整数的平方和当且仅当它不是形如 $4^a(8b+7)$ 的数，其中 $a$ 和 $b$ 是非负整数。",
+    "link": "theorems/legendre-three-square-theorem.html",
+    "tags": ["平方和", "数论", "丢番图方程", "整数表示"]
+  },
+  {
+    "title": "佩尔方程",
+    "difficulty": "高阶",
+    "description": "形如$x^2 - dy^2 = 1$的二次丢番图方程，其中$d$是非平方正整数。该方程有无穷多组正整数解，基本解可以通过连分数法求得。",
+    "link": "theorems/pell-equation.html",
+    "tags": ["不定方程", "二次方程", "连分数", "丢番图方程"]
+  },
+  {
+    "title": "AKS素性测试",
+    "difficulty": "高阶",
+    "description": "AKS素性测试是一种确定性的、多项式时间的、无依赖的素数判定算法，由Agrawal、Kayal和Saxena于2002年提出，证明了\"素数属于P\"。其核心基于有限域上的多项式恒等式 $(X+a)^n \\equiv X^n + a \\pmod{X^r-1, n}$ 的检验。",
+    "link": "algorithms/aks-primality-test.html",
+    "tags": ["素数判定", "确定性算法", "多项式时间", "数论", "P问题"]
+  },
+  {
+    "title": "狄利克雷定理",
+    "difficulty": "高阶",
+    "description": "关于等差数列中素数分布的定理：对于任意互质的正整数$a$和$d$，等差数列$a, a+d, a+2d, \\dots$中包含无穷多个素数。",
+    "link": "theorems/dirichlet-theorem.html",
+    "tags": ["素数分布", "等差数列", "解析数论", "算术级数"]
+  },
+  {
     "title": "狄利克雷算术级数定理",
+    "difficulty": "高阶",
     "description": "若正整数 $a$ 与 $d$ 互质（$\\gcd(a,d)=1$），则算术级数 $a, a+d, a+2d, \\dots$ 中包含无穷多个素数。",
     "link": "theorems/dirichlet-arithmetic-progression.html",
     "tags": ["素数分布", "算术级数", "解析数论", "狄利克雷L函数"]
   },
   {
     "title": "算术级数中的素数定理",
+    "difficulty": "高阶",
     "description": "狄利克雷定理：若 $a$ 和 $d$ 互质，则算术级数 $a + nd$（$n \\in \\mathbb{N}$）中包含无穷多个素数。",
     "link": "theorems/arithmetic-progression-primes-theorem.html",
     "tags": ["素数", "算术级数", "狄利克雷定理", "解析数论"]
   },
   {
+    "title": "黎曼ζ函数",
+    "difficulty": "高阶",
+    "description": "黎曼ζ函数定义为 $\\zeta(s) = \\sum_{n=1}^\\infty \\frac{1}{n^s}$，最初在 $\\operatorname{Re}(s)>1$ 上定义，后通过解析延拓成为整个复平面上的亚纯函数。它在数论和解析数论中具有核心地位，与素数分布密切相关。",
+    "link": "theorems/riemann-zeta-function.html",
+    "tags": ["解析数论", "复变函数", "素数分布", "特殊函数"]
+  },
+  {
+    "title": "费马大定理",
+    "difficulty": "高阶",
+    "description": "当整数$n>2$时，关于$x,y,z$的不定方程$x^n+y^n=z^n$没有正整数解。这一定理由皮埃尔·德·费马于1637年提出，但直到1995年才被安德鲁·怀尔斯证明。",
+    "link": "theorems/fermat-last-theorem.html",
+    "tags": ["费马大定理", "不定方程", "怀尔斯证明", "数论难题"]
+  },
+  {
     "title": "杜教筛",
+    "difficulty": "高阶",
     "description": "杜教筛是一种用于高效计算数论函数前缀和的算法，通过狄利克雷卷积和递归分块技术，在亚线性时间内计算 $\\sum_{i=1}^{n} f(i)$，其中 $f$ 是积性函数。",
     "link": "algorithms/du-sieve.html",
     "tags": ["前缀和", "积性函数", "狄利克雷卷积", "数论算法"]
   },
   {
     "title": "洲阁筛",
+    "difficulty": "高阶",
     "description": "洲阁筛是一种用于计算积性函数前缀和的通用算法，通过分段筛法和递归思想，在 $O(\\frac{n^{3/4}}{\\log n})$ 时间内计算 $\\sum_{i=1}^{n} f(i)$，适用于广泛的积性函数类。",
     "link": "algorithms/zhouge-sieve.html",
     "tags": ["前缀和", "积性函数", "分段筛", "数论算法"]
-  },
-  {
-    "title": "费马二平方和定理",
-    "description": "一个奇素数 $p$ 可以表示为两个整数的平方和 $p = a^2 + b^2$ 当且仅当 $p \\equiv 1 \\pmod{4}$。这是数论中关于素数表示的重要定理。",
-    "link": "theorems/fermat-two-square-theorem.html",
-    "tags": ["素数", "平方和", "模运算", "数论"]
-  },
-  {
-    "title": "勒让德三平方和定理",
-    "description": "一个自然数可以表示为三个整数的平方和当且仅当它不是形如 $4^a(8b+7)$ 的数，其中 $a$ 和 $b$ 是非负整数。",
-    "link": "theorems/legendre-three-square-theorem.html",
-    "tags": ["平方和", "数论", "丢番图方程", "整数表示"]
-  },
-  {
-    "title": "Tonelli-Shanks算法",
-    "description": "在模奇素数 $p$ 下求解二次剩余平方根的算法，用于求 $x^2 \\equiv n \\pmod{p}$ 的解。",
-    "link": "algorithms/tonelli-shanks.html",
-    "tags": ["模运算", "平方根", "二次剩余", "数论算法"]
-  },
-  {
-    "title": "AKS素性测试",
-    "description": "AKS素性测试是一种确定性的、多项式时间的、无依赖的素数判定算法，由Agrawal、Kayal和Saxena于2002年提出，证明了\"素数属于P\"。其核心基于有限域上的多项式恒等式 $(X+a)^n \\equiv X^n + a \\pmod{X^r-1, n}$ 的检验。",
-    "link": "algorithms/aks-primality-test.html",
-    "tags": ["素数判定", "确定性算法", "多项式时间", "数论", "P问题"]
   }
 ]
-

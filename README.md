@@ -1,6 +1,6 @@
-# 算法竞赛数论百科
+# 数论百科
 
-欢迎来到 **算法竞赛数论百科**！这是一个面向算法竞赛（信息学奥林匹克竞赛等）的数论知识库，系统整理了竞赛中常用的数论定理、算法与 C++ 实现，帮助你快速查阅、理解和掌握数论知识。
+欢迎来到 **数论百科**！这是一个系统整理数论定理、算法与 C++ 实现的知识库，覆盖从基础定理到高阶算法，帮助你快速查阅、理解和掌握数论知识。
 
 ---
 
@@ -8,7 +8,7 @@
 
 - **全面的资源**：覆盖从基础定理（费马小定理、中国剩余定理等）到高阶算法（Miller-Rabin、Pollard-Rho、NTT、杜教筛等）。
 - **实用的 C++ 实现**：每个算法/定理条目都配有可直接编译运行的 **C++14** 示例代码（不使用万能头 `bits/stdc++.h`）。
-- **助力竞赛**：以“定理 + 证明 + 复杂度分析 + 代码”的结构组织内容，便于在赛前复习与赛时快速查证。
+- **助力学习**：以“定理 + 证明 + 复杂度分析 + 代码”的结构组织内容，便于循序渐进地学习与快速查证。
 
 ---
 
@@ -98,10 +98,10 @@ int main() {
 - `theorems.json` — 首页卡片数据源。
 - `style.css` / `script.js` / `chart.js` — 全局样式、搜索逻辑与质数分布图表。
 
-通过探索本项目，你将掌握算法竞赛中常用数论算法的思想与实现。
+通过探索本项目，你将掌握常用数论算法的思想与实现。
 
 ---
 
-# Number Theory Encyclopedia for Competitive Programming
+# Encyclopedia of Number Theory
 
-A Chinese knowledge base of number theory for competitive programming (informatics olympiad), organized as "theorem + proof + complexity + C++14 implementation". All code examples use explicit standard headers and compile with `g++ -std=c++14`.
+A Chinese knowledge base of number theory, organized as "theorem + proof + complexity + C++14 implementation". All code examples use explicit standard headers and compile with `g++ -std=c++14`.

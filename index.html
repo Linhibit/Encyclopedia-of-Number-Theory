@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>算法竞赛数论百科 | Number Theory for Competitive Programming</title>
+    <title>数论百科 | Encyclopedia of Number Theory</title>
     <link rel="stylesheet" href="style.css">
     <script>
     window.MathJax = {
@@ -20,9 +20,9 @@
 </head>
 <body>
     <header>
-        <h1>算法竞赛数论百科</h1>
-        <p class="tagline">从经典定理到高效算法，构建竞赛级数论知识体系</p>
-        <p class="subtitle">Number Theory for Competitive Programming</p>
+        <h1>数论百科</h1>
+        <p class="tagline">从经典定理到高效算法，系统掌握数论</p>
+        <p class="subtitle">Encyclopedia of Number Theory</p>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="搜索定理、术语或公式...">
         </div>
@@ -31,27 +31,40 @@
 
     <main>
         <section class="chart-section" aria-labelledby="chartTitle">
-            <h2 id="chartTitle">质数分布可视化</h2>
-            <p class="chart-desc">
-                观察不超过 <b>N</b> 的质数个数 <b>π(N)</b> 随 N 的增长，并与渐近线 <b>N / ln N</b>（素数定理）对比。
-                拖动滑块可调整范围上限 N。
+            <div class="chart-head">
+                <h2 id="chartTitle">质数分布可视化</h2>
+                <div class="chart-tabs" role="tablist" aria-label="切换图表类型">
+                    <button type="button" class="chart-tab active" data-view="spiral" role="tab" aria-selected="true">质数螺旋</button>
+                    <button type="button" class="chart-tab" data-view="curve" role="tab" aria-selected="false">增长曲线</button>
+                </div>
+            </div>
+
+            <p class="chart-desc" id="chartDesc">
+                乌拉姆螺旋：把正整数按螺旋排列，质数会沿对角线聚成明显的线条，直观揭示质数分布中的隐藏规律。
             </p>
 
-            <div class="chart-controls">
-                <label for="primeRange">范围上限 N：<span id="primeRangeValue">1000</span></label>
+            <div class="chart-controls" id="spiralControls">
+                <label for="spiralSize">边长：<span id="spiralSizeValue">101</span></label>
+                <input type="range" id="spiralSize" min="31" max="301" step="2" value="101">
+            </div>
+            <div class="chart-controls" id="curveControls" hidden>
+                <label for="primeRange">范围 N：<span id="primeRangeValue">1000</span></label>
                 <input type="range" id="primeRange" min="100" max="1000000" step="100" value="1000">
                 <button type="button" id="resetChart">重置</button>
             </div>
 
-            <div class="chart-legend" aria-hidden="true">
-                <span class="legend-item"><span class="legend-swatch" style="background:#d32f2f;"></span>π(N)（质数个数）</span>
-                <span class="legend-item"><span class="legend-swatch" style="background:#007bff;"></span>N / ln N（素数定理渐近线）</span>
+            <div class="chart-canvas-wrap">
+                <canvas id="primeChart" width="900" height="460" aria-label="质数分布图表"></canvas>
+                <div class="chart-tooltip" id="chartTooltip" hidden></div>
             </div>
-
-            <canvas id="primeChart" width="900" height="360" aria-label="质数分布图表"></canvas>
 
             <div class="chart-stats" id="chartStats"></div>
         </section>
+
+        <div class="grid-heading">
+            <h2>知识库</h2>
+            <p class="grid-sub">按难度从低到高排列，共收录 42 项</p>
+        </div>
 
         <section class="theorem-grid" id="theoremGrid">
             <p style="text-align:center; grid-column: 1/-1;">正在加载定理库...</p>
@@ -59,7 +72,7 @@
     </main>
 
     <footer>
-        <p>© 2026 算法竞赛数论百科 | 构建于 GitHub Pages</p>
+        <p>© 2026 数论百科 | 构建于 GitHub Pages</p>
     </footer>
 
     <script src="script.js"></script>
